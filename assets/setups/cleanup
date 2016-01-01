@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Cleanup archives.
+
+apt-get clean --yes;

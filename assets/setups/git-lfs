@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
-# Install Git & Git LFS.
+# Remove existing.
+
+if can_run git; then
+  apt-get --purge remove git --yes; fi;
+
+# Install Git (latest version).
 
 add-apt-repository ppa:git-core/ppa --yes;
 apt-get update; apt-get install git --yes;
+
+# Install the Hub tool from GitHub.
 
 apt-get install ruby --yes; # Required by `hub`.
 
@@ -11,6 +18,8 @@ curl https://hub.github.com/standalone \
   --output /usr/bin/hub --location;
 
 chmod +x /usr/bin/hub; # Make `hub` executable now.
+
+# Install Git LFS for large file storage.
 
 curl https://packagecloud.io/gpg.key | sudo apt-key add -;
 apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main' --yes;

@@ -20,24 +20,22 @@ while read -r _oldrev _newrev _refname; do
 
     enable_app_maintenance_mode; # Temporarily.
 
-    git --git-dir=/repos/app.git --work-tree=/app checkout master --force;
-    echo 'Deployed master branch to /app directory.';
+    cd /app; # Move into the `/app` directory for deployment.
+
+    git --git-dir=/repos/app.git --work-tree=/app checkout --force;
+    echo 'Deployed master branch to `/app` directory.';
 
     git --git-dir=/repos/app.git --work-tree=/app submodule init;
     git --git-dir=/repos/app.git --work-tree=/app submodule update;
-    echo 'Updated submodules in the /app directory.';
+    echo 'Updated submodules in the `/app` directory.';
 
-    git --git-dir=/repos/app.git --work-tree=/app lfs init;
-    git --git-dir=/repos/app.git --work-tree=/app lfs pull;
-    echo 'Updated LFS files in the /app directory.';
+    if [[ -f ./build.xml ]] && can_run phing; then
+      phing build; # Runs the build routine.
+      echo 'Ran `phing build` in the `/app` directory.'; fi;
 
-    if [[ -f /app/build.xml ]] && can_run phing; then
-      cd /app && phing build; # Runs the build routine.
-      echo 'Ran phing in the /app directory.'; fi;
-
-    if [[ -x /app/.post-receive ]]; then
-      /app/.post-receive; # Custom post-receive hook.
-      echo 'Ran .post-receive in the /app directory.'; fi;
+    if [[ -x ./.post-receive ]]; then
+      ./.post-receive; # Custom post-receive hook.
+      echo 'Ran `.post-receive` in the `/app` directory.'; fi;
 
     disable_app_maintenance_mode; # Restore.
   fi;

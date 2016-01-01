@@ -14,8 +14,8 @@
   helper = store
 [filter "lfs"]
   required = true
-  clean = git lfs clean %f
-  smudge = git lfs smudge %f
+  clean = git-lfs clean %f
+  smudge = git-lfs smudge %f
 [alias]
   s = status
   df = diff
