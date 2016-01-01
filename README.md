@@ -150,20 +150,20 @@ See `/Vagrantfile` where you will find this section already implemented.
 _~ See also: `/assets/setups/wordpress`_
 
 ```ruby
-# Mount WordPress project directory.
-if File.directory? File.expand_path('~/projects/wordpress')
-  config.vm.synced_folder File.expand_path('~/projects/wordpress'), '/wordpress'
-end
+# Mount WordPress projects directory.
+if File.directory?(wp_projects_dir = ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
+  config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['ro'];
+end;
 
-# Mount WordPress project directory.
-if File.directory? File.expand_path('~/projects/jaswsinc/wordpress')
-  config.vm.synced_folder File.expand_path('~/projects/jaswsinc/wordpress'), '/jaswsinc-wordpress'
-end
+# Mount WordPress personal projects directory.
+if File.directory?(wp_personal_projects_dir = ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
+  config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['ro'];
+end;
 
-# Mount WordPress project directory.
-if File.directory? File.expand_path('~/projects/websharks/wordpress')
-  config.vm.synced_folder File.expand_path('~/projects/websharks/wordpress'), '/websharks-wordpress'
-end
+# Mount WordPress business projects directory.
+if File.directory?(wp_business_projects_dir = ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
+  config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['ro'];
+end;
 ```
 
 #### ↑ What is happening here w/ these WordPress directories?
@@ -172,7 +172,7 @@ The `Vagrantfile` is automatically mounting drives on your VM that are sourced b
 
 In the `assets/setups/wordpress` file, we iterate `/wordpress` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<http://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
 
-The additional mounts (i.e., `~/projects/jaswsinc/wordpress` and `~/projects/websharks/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `assets/setups/wordpress` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
+The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `assets/setups/wordpress` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
 
 #### The default WordPress mapping looks like this:
 
@@ -189,3 +189,13 @@ Inside `~/projects/wordpress` you need to have two sub-directories. One for them
 - `~/projects/wordpress/plugins` (put WP plugins here; e.g., `my-plugin`)
 
 Now, whenever you run `/bootstrap/installer` from the VM, your local copy of `~/projects/wordpress/themes/my-theme` becomes `/app/src/wp-content/themes/my-theme` on the VM. Your local copy of `~/projects/wordpress/plugins/my-plugin` becomes `/app/src/wp-content/plugins/my-plugin` on the VM ... and so on... for each theme/plugin sub-directory, and for each of the three possible mounts listed above. This all happens automatically if you followed the instructions correctly.
+
+#### Can I override the default source directories for WordPress?
+
+Yes. Looking over the code snippet above, you can see that there are three environment variables that you can set in your `~/.profile` that (if found) will override the default locations automatically. Here's a quick example showing how you might customize these in your own `~/.profile`.
+
+```bash
+export WP_PROJECTS_DIR=~/my-projects/wordpress;
+#export WP_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
+#export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
+```

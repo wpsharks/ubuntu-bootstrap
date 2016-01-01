@@ -35,9 +35,7 @@ if can_run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
     # Create theme/plugin symlinks if possible.
 
-    for _wp_dir in /wordpress \
-    					/jaswsinc-wordpress \
-    					/websharks-wordpress ; do
+    for _wp_dir in /wordpress /wp-personal /wp-business; do
 
     	# Create theme symlinks if possible.
 
