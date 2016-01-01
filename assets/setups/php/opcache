@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+
+  ## Enable the OPcache extension.
+
+  echo 'zend_extension=opcache.so' > /etc/php/conf.d/opcache.ini;
+  ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/cli/conf.d/opcache.ini;
+  ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/fpm/conf.d/opcache.ini;
+
+  ## Install cachetool utility for stats/reset, etc.
+
+  curl http://gordalina.github.io/cachetool/downloads/cachetool.phar \
+    --output /usr/bin/cachetool; # Save as binary.
+
+  chmod +x /usr/bin/cachetool; # Make it executable.
+
+  echo 'adapter: fastcgi' > /etc/cachetool.yml;
+  echo 'fastcgi: /var/run/php-fpm.sock' >> /etc/cachetool.yml;
+
+  # Restart service.
+
+  service php-fpm restart;
+
+else echo 'Skipping OPcache extension for custom PHP.'; fi;

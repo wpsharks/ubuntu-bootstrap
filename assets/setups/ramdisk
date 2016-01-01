@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_RAMDISK}" == 1 ]]; then
+
+  # Mount a RAM disk partition.
+
+  mkdir --parents /dev/shm/ramdisk;
+  echo 'tmpfs /dev/shm/ramdisk tmpfs defaults,size=33% 0 0' >> /etc/fstab;
+  mount -a; # Mount the new partition.
+
+else echo 'Skipping RAMdisk installation.'; fi;

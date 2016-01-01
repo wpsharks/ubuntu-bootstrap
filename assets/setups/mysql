@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
+
+  # Install MariaDB (i.e., MySQL).
+
+  mkdir --parents --mode=777 /var/log/mysql;
+
+  apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db;
+  add-apt-repository 'deb http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.0/ubuntu trusty main';
+  apt-get update; # Update after adding new repo.
+
+  echo 'mariadb-server mysql-server/root_password password '"${CFG_MYSQL_DB_PASSWORD}" | debconf-set-selections;
+  echo 'mariadb-server mysql-server/root_password_again password '"${CFG_MYSQL_DB_PASSWORD}" | debconf-set-selections;
+  apt-get install mariadb-server --yes; # Install w/ the above options.
+
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;";
+
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
+
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = '';";
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = 'root' AND \`Host\` NOT IN ('localhost', '127.0.0.1', '::1');";
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`test\`; DELETE FROM \`mysql\`.\`db\` WHERE \`Db\` = 'test' OR \`Db\` LIKE 'test\\_%';";
+
+  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
+
+  ln --symbolic /bootstrap/assets/mysql/.cnf /etc/mysql/conf.d/z90.cnf;
+  perl -i -wpe 's/^\s*;?\s*innodb_buffer_pool_size\s*\=.*$/innodb_buffer_pool_size = '"$(ram_mb_divided_by 3)"'M/um' /bootstrap/assets/mysql/.cnf;
+  echo '/bootstrap/assets/mysql/.cnf r,' >> /etc/apparmor.d/local/usr.sbin.mysqld;
+
+  # Install phpMyAdmin for MySQL administration.
+
+  git clone https://github.com/phpmyadmin/phpmyadmin /usr/local/src/pma --branch=STABLE --depth=1;
+  ln --symbolic /bootstrap/assets/tools/.pma.php /usr/local/src/pma/config.inc.php;
+  ln --symbolic /usr/local/src/pma /bootstrap/assets/tools/pma;
+
+  # Restart service.
+
+  service mysql restart;
+
+  # Import a MySQL database?
+
+  if [[ -f "${CFG_INSTALL_MYSQL_DB_IMPORT_FILE}" ]]; then
+    mysql \
+      --user="${CFG_MYSQL_DB_USERNAME}" \
+      --password="${CFG_MYSQL_DB_PASSWORD}" \
+      "${CFG_MYSQL_DB_NAME}" < "${CFG_INSTALL_MYSQL_DB_IMPORT_FILE}";
+  fi;
+
+else echo 'Skipping MariaDB (MySQL) installation.'; fi;

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Include strict mode & functions.
+
+. /bootstrap/assets/bash/strict-mode;
+. /bootstrap/assets/bash/functions;
+
+# Test PHP-FPM configuration file for errors.
+
+errors=$(/usr/sbin/php-fpm --fpm-config /etc/php/fpm/fpm.conf --test 2>&1 | grep --perl-regexp '\[ERROR\]' || true);
+
+if [ -n "${errors}" ]; then
+  echo 'Errors exist...';
+  echo "${errors}";
+  exit 1;
+else
+  echo 'Config file is good :-)';
+  exit 0;
+fi;

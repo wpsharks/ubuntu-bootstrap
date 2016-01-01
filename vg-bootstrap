@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# This script runs on the VM after a `vagrant up`.
+# This is an easy way to customize the software on your VM.
+
+# Include strict mode & functions.
+
+. /bootstrap/assets/bash/strict-mode;
+. /bootstrap/assets/bash/functions;
+
+# Add your customizations here.
+# See README.md for available options.
+
+# e.g., `apt-get update --yes`
+# e.g., `apt-get install git --yes`
+# etc, etc, etc. Customize away!

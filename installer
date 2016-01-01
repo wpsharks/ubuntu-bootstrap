@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Sanity check; lives in the right location?
+
+if [[ "${BASH_SOURCE[0]}" != '/bootstrap/installer' ]]; then
+  echo 'I must live in the /bootstrap directory.'; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/assets/bash/strict-mode;
+. /bootstrap/assets/bash/functions;
+
+# Maybe run setup routines; i.e., once only.
+
+if [[ ! -f /etc/bootstrap/.completed ]]; then
+
+  export CFG_USE_DEFAULTS; CFG_USE_DEFAULTS="${1:-}";
+  . /bootstrap/assets/setups/config;
+
+  set -o xtrace; # Print each command that is run.
+
+  . /bootstrap/assets/setups/aptitude;
+  . /bootstrap/assets/setups/timezone;
+  . /bootstrap/assets/setups/utilities;
+  . /bootstrap/assets/setups/git-lfs;
+
+  . /bootstrap/assets/setups/mkdirs;
+  . /bootstrap/assets/setups/swap;
+
+  . /bootstrap/assets/setups/zsh;
+  . /bootstrap/assets/setups/users;
+
+  . /bootstrap/assets/setups/env-vars;
+  . /bootstrap/assets/setups/ssl-certs;
+  . /bootstrap/assets/setups/htpasswd;
+
+  . /bootstrap/assets/setups/postfix;
+
+  . /bootstrap/assets/setups/nginx;
+  . /bootstrap/assets/setups/apache;
+
+  . /bootstrap/assets/setups/mysql;
+
+  . /bootstrap/assets/setups/ramdisk;
+  . /bootstrap/assets/setups/memcache;
+
+  . /bootstrap/assets/setups/php/_stub;
+
+  . /bootstrap/assets/setups/phing;
+  . /bootstrap/assets/setups/composer;
+  . /bootstrap/assets/setups/wsc;
+
+  . /bootstrap/assets/setups/app-repo;
+  . /bootstrap/assets/setups/wordpress;
+
+  . /bootstrap/assets/setups/ssh-config;
+  . /bootstrap/assets/setups/firewall;
+  . /bootstrap/assets/setups/fail2ban;
+
+else # Provide details about why we are not running again.
+  echo 'Installation complete. Can only be run once!';
+fi; # End `.is-complete` check.
+
+# Mark setup as being complete now.
+
+echo "$(date +%s)" > /etc/bootstrap/.completed;

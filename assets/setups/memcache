@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_MEMCACHE}" == 1 ]]; then
+
+  # Install Memcached daemon.
+
+  apt-get install memcached --yes;
+
+  # Config RAM allowance.
+
+  rm --force /etc/memcached.conf;
+  ln --symbolic /bootstrap/assets/memcache/.conf /etc/memcached.conf;
+  perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"$(ram_mb_divided_by 3)"'/um' /bootstrap/assets/memcache/.conf;
+
+  # Restart service.
+
+  service memcached restart;
+
+else echo 'Skipping Memcache installation.'; fi;

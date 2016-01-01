@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Install utilities.
+
+apt-get install g++ --yes;
+apt-get install cmake --yes;
+apt-get install autoconf --yes;
+apt-get install pkg-config --yes;
+apt-get install libssl-dev --yes;
+apt-get install apache2-utils --yes;
+apt-get install build-essential --yes;
+apt-get install coreutils --yes;
+
+apt-get install zip --yes;
+apt-get install unzip --yes;
+
+apt-get install pandoc --yes;
+apt-get install pandoc-citeproc --yes;
+
+apt-get install acl --yes;
+apt-get install htop --yes;
+apt-get install tree --yes;
+apt-get install colordiff --yes;

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Create directories.
+
+mkdir --parents /app;
+chown --recursive www-data:www-data /app;
+chmod g+s /app; # Stick w/ this group.
+
+if ! is_vagrant; then
+  cp --force --recursive --preserve=mode /bootstrap/app/. /app;
+fi; # Vagrant mounts this. In production we copy it over.
+
+mkdir --parents /repos/app.git;
+chown --recursive www-data:www-data /repos/app.git;
+chmod g+s /repos/app.git; # Stick w/ this group.
+
+mkdir --parents /usr/local/src;
+mkdir --parents /etc/bootstrap;

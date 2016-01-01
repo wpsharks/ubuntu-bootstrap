@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# New groups.
+
+addgroup ssh-access;
+addgroup sftp-only;
+
+# Create admin user.
+
+create_user \
+  "${CFG_ADMIN_USERNAME}" \
+  "${CFG_ADMIN_PASSWORD}" \
+  sudo; # Group.
+
+setup_user \
+  "${CFG_ADMIN_USERNAME}" \
+  "${CFG_ADMIN_NAME}" \
+  "${CFG_ADMIN_EMAIL}" \
+  "${CFG_ADMIN_PREFERRED_SHELL}" \
+  "${CFG_ADMIN_AUTHORIZED_SSH_KEYS}";
+
+usermod --append --groups=adm "${CFG_ADMIN_USERNAME}";
+usermod --append --groups=ssh-access "${CFG_ADMIN_USERNAME}";
+usermod --append --groups=www-data "${CFG_ADMIN_USERNAME}";
+
+# If running a VM, setup the vagrant user.
+
+if is_vagrant; then
+
+  setup_user \
+    vagrant \
+    "${CFG_ADMIN_NAME}" \
+    "${CFG_ADMIN_EMAIL}" \
+    "${CFG_ADMIN_PREFERRED_SHELL}";
+
+usermod --append --groups=adm vagrant;
+usermod --append --groups=sudo vagrant;
+usermod --append --groups=ssh-access vagrant;
+usermod --append --groups=www-data vagrant;
+
+fi; # On vagrant boxes only.
+
+# Setup the root user also.
+
+setup_user \
+  root \
+  "${CFG_ADMIN_NAME}" \
+  "${CFG_ADMIN_EMAIL}" \
+  "${CFG_ADMIN_PREFERRED_SHELL}";

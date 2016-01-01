@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Environment vars.
+
+. ~/.env-vars;

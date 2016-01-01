@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Install Git & Git LFS.
+
+apt-get install git --yes;
+
+apt-get install ruby --yes; # Required by `hub`.
+
+curl https://hub.github.com/standalone \
+  --output /usr/bin/hub --location;
+
+chmod +x /usr/bin/hub; # Make `hub` executable now.
+
+curl https://packagecloud.io/gpg.key | sudo apt-key add -;
+apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main' --yes;
+apt-get update; apt-get install git-lfs --yes;
+
+# Make sure we have the large files for this repo.
+
+cd "$(repo_dir)"; git lfs pull;

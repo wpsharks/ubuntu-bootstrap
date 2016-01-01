@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Include strict mode & functions.
+
+. /bootstrap/assets/bash/strict-mode;
+. /bootstrap/assets/bash/functions;
+
+# Trap errors and recover gracefully.
+
+trap auto_disable_app_maintenance_mode_on_error ERR;
+
+# Deploy app when master branch is pushed to repo.
+
+while read -r _oldrev _newrev _refname; do
+
+  _branch="$(git --git-dir=/repos/app.git \
+    rev-parse --symbolic --abbrev-ref "${_refname}")";
+
+  if [[ -n "${_oldrev}" && -n "${_newrev}" && "${_branch}" == master ]]; then
+
+    enable_app_maintenance_mode; # Temporarily.
+
+    git --git-dir=/repos/app.git --work-tree=/app checkout master --force;
+    echo 'Deployed master branch to /app directory.';
+
+    git --git-dir=/repos/app.git --work-tree=/app submodule init;
+    git --git-dir=/repos/app.git --work-tree=/app submodule update;
+    echo 'Updated submodules in the /app directory.';
+
+    git --git-dir=/repos/app.git --work-tree=/app lfs init;
+    git --git-dir=/repos/app.git --work-tree=/app lfs pull;
+    echo 'Updated LFS files in the /app directory.';
+
+    if [[ -f /app/build.xml ]] && can_run phing; then
+      cd /app && phing build; # Runs the build routine.
+      echo 'Ran phing in the /app directory.'; fi;
+
+    if [[ -x /app/.post-receive ]]; then
+      /app/.post-receive; # Custom post-receive hook.
+      echo 'Ran .post-receive in the /app directory.'; fi;
+
+    disable_app_maintenance_mode; # Restore.
+  fi;
+
+done; unset _oldrev; unset _newrev; unset _refname;
