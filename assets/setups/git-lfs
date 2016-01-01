@@ -2,7 +2,8 @@
 
 # Install Git & Git LFS.
 
-apt-get install git --yes;
+add-apt-repository ppa:git-core/ppa --yes;
+apt-get update; apt-get install git --yes;
 
 apt-get install ruby --yes; # Required by `hub`.
 
