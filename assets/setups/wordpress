@@ -20,14 +20,14 @@ if can_run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   # Setup the `/wp-config.php` file with auto-generated security keys.
 
   ln --symbolic /bootstrap/assets/wordpress/.wp-config.php /app/src/wp-config.php;
-  perl -i -wpe 's/%%AUTH_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%LOGGED_IN_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%NONCE_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%AUTH_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%LOGGED_IN_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%NONCE_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%AUTH_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%LOGGED_IN_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%NONCE_KEY%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%AUTH_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%LOGGED_IN_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
+  perl -i -wpe 's/%%NONCE_SALT%%/'"$(esc_regex_rv "$(keygen 64)")"'/u' /bootstrap/assets/wordpress/.wp-config.php;
 
   # Build symlinks to development files when run via Vagrant.
 
