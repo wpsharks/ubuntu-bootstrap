@@ -14,6 +14,7 @@ You need to have VirtualBox, Vagrant, and Landrush installed.
 $ brew cask install virtualbox
 $ brew cask install vagrant
 $ vagrant plugin install landrush
+
 $ vagrant plugin install vagrant-cachier # Suggested (optional).
 $ vagrant plugin install vagrant-triggers # Suggested (optional).
 ```
@@ -24,11 +25,11 @@ You need to install the `ubuntu/trusty64` Box.
 $ vagrant box add ubuntu/trusty64
 ```
 
-#### Step 2: Clone GitHub Repo (Ubuntu LEMP Stack)
+#### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
 
 ```bash
 $ mkdir ~/VMs && cd ~/VMs
-$ git clone https://github.com/jaswsinc/vagrant-ubuntu-lemp my.vm
+$ git clone https://github.com/websharks/ubuntu-bootstrap my.vm
 ```
 
 _Note that `my.vm` becomes your domain name. Change it if you like. Must end with `.vm` please._
@@ -87,9 +88,11 @@ Available Tools (Using Any of These is Optional):
 - <https://my.vm/tools/pma> PhpMyAdmin
   DB name: `admin`, DB username: `admin`, DB password: `admin`
 - <https://my.vm/tools/opcache.php> PHP OPcache extension status dump.
-- <https://my.vm/tools/info.php> PHP info (i.e., `phpinfo()`) page.
+- <https://my.vm/tools/info.php> `phpinfo()` output page.
 - <https://my.vm/tools/fpm-status.php> PHP-FPM status page.
-- <https://my.vm/tools/status.nginx> NGINX status page.
+- <https://my.vm/tools/status.nginx> NGINX status page (if Nginx was installed).
+- <https://my.vm/tools/apache-status> Apache status page (if Apache was installed).
+- <https://my.vm/tools/apache-info> Apache page (if Apache was installed).
 
 #### Step 9: Tear it Down and Customize
 
@@ -104,7 +107,7 @@ In the project directory you'll find a `/vg-bootstrap` file. This bash script ru
 
 1. Customize `/bootstrap/installer` and the associated setup files that it calls upon, which are located in: `/assets/setups/*`. _**Note:** If you go this route, there really is no reason to customize `/vg-bootstrap`. You can leave it as-is._
 
-2. Instead of working with the more complex installer, you can keep things simple and add your customizations to the `/vg-bootstrap` script, which is a very simple starting point. The `/vg-bootstrap` runs whenever you type `vagrant up`, so this is a logical choice for beginners. _**Note:** If you go this route, you can simply choose not to run `/bootstrap/installer`, because all of your customizations will be in the `/vg-bootstrap`; i.e., there will be no reason to run the installer._
+2. Or, instead of working with the more complex installer, you can keep things simple and add your customizations to the `/vg-bootstrap` script, which is a very simple starting point. The `/vg-bootstrap` runs whenever you type `vagrant up`, so this is a logical choice for beginners. _**Note:** If you go this route, you can simply choose not to run `/bootstrap/installer`, because all of your customizations will be in the `/vg-bootstrap`; i.e., there will be no reason to run the installer._
 
 ##### When you're done with your customizations, type:
 
@@ -112,7 +115,7 @@ In the project directory you'll find a `/vg-bootstrap` file. This bash script ru
 $ vagrant up
 ```
 
-###### If you decided to use the `/installer` option, also type:
+###### If you decided to use the `/bootstrap/installer` option, also type:
 
 ```bash
 $ vagrant ssh
