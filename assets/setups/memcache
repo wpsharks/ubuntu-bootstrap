@@ -10,7 +10,7 @@ if [[ "${CFG_INSTALL_MEMCACHE}" == 1 ]]; then
 
   rm --force /etc/memcached.conf;
   ln --symbolic /bootstrap/assets/memcache/.conf /etc/memcached.conf;
-  perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"$(ram_mb_divided_by 3)"'/um' /bootstrap/assets/memcache/.conf;
+  perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"$(ram-mb-divided-by 3)"'/um' /bootstrap/assets/memcache/.conf;
 
   # Restart service.
 

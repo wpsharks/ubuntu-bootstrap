@@ -20,4 +20,5 @@ apt-get install pandoc-citeproc --yes;
 apt-get install acl --yes;
 apt-get install htop --yes;
 apt-get install tree --yes;
+apt-get install ncdu --yes;
 apt-get install colordiff --yes;

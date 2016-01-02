@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Remove duplicates from a space-separated list.
+
+function dedupe-list() {
+  echo "${1:-}" | xargs -n1 | sort -u | xargs;
+};

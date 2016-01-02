@@ -7,7 +7,7 @@ set -o errexit;
 set -o errtrace;
 set -o pipefail;
 
-# Other bash options.
+# Shell options.
 
 shopt -s dotglob;
 shopt -s globstar;

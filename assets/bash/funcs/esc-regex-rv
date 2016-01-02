@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Escape regex replacement value.
+
+function esc-regex-rv() {
+  local rv="${1:-}";
+  rv="${rv/@/\\@}";
+  rv="${rv/$/\\$}";
+  echo "${rv}";
+};

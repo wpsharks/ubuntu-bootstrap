@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Calculate RAM (in MB) divided by X.
+
+function ram-mb-divided-by() {
+  divisor="${1:-3}"; # Defaults to `3` (33%).
+  echo "$(free -m | grep --perl-regexp 'Mem\:' | awk '{print int($2/'"${divisor}"')}')";
+};

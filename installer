@@ -23,6 +23,7 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/assets/setups/timezone;
   . /bootstrap/assets/setups/utilities;
   . /bootstrap/assets/setups/git-lfs;
+  . /bootstrap/assets/setups/keybase;
 
   . /bootstrap/assets/setups/mkdirs;
   . /bootstrap/assets/setups/swap;
@@ -58,6 +59,10 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/assets/setups/fail2ban;
 
   . /bootstrap/assets/setups/cleanup;
+
+  set +o xtrace; # Turn off comand printing.
+
+  . /bootstrap/assets/setups/finale;
 
 else # Provide details about why we are not running again.
   echo 'Installation complete. Can only be run once!';

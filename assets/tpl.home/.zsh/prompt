@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# Custom Zsh prompts.
+# Prompt handler.
 
 function precmd() {
   # Left prompt (main).
 
-  PROMPT='%F{240}'"${PWD}"$'\n';
+  PROMPT='%F{002}'"$(whoami)";
+  PROMPT+='%F{240}@%F{006}'"$(hostname --long)";
+  PROMPT+='%F{233}[%F{240}'"${PWD}"'%F{233}]'$'\n';
   PROMPT+='%F{002}$ ';
   PROMPT+='%f';
 
@@ -14,6 +16,6 @@ function precmd() {
 
   RPROMPT='%F{002}'"$(whoami)";
   RPROMPT+='%F{240}@%F{006}'"$(hostname --long)";
-  is_vagrant && RPROMPT+='%F{240} (VM)' || RPROMPT+='';
+  is-vagrant && RPROMPT+='%F{240} (VM)' || RPROMPT+='';
   RPROMPT+='%f';
 };

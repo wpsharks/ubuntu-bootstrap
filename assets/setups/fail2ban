@@ -9,7 +9,7 @@ if [[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]]; then
   # Symlink local Fail2Ban jail config file.
 
   ln --symbolic /bootstrap/assets/fail2ban/.conf /etc/fail2ban/jail.local;
-  perl -i -wpe 's/^(\s*)destemail\s*\=.*$/$1destemail = '"$(esc_regex_rv "${CFG_ADMIN_EMAIL}")"'/uim' /bootstrap/assets/fail2ban/.conf;
+  perl -i -wpe 's/^(\s*)destemail\s*\=.*$/$1destemail = '"$(esc-regex-rv "${CFG_ADMIN_EMAIL}")"'/uim' /bootstrap/assets/fail2ban/.conf;
 
   # Restart service.
 

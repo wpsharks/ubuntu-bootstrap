@@ -30,7 +30,7 @@ export OPENSSL_CSR_ALTNAMES="DNS:${CFG_ROOT_HOST},DNS:*.${CFG_ROOT_HOST}";
 
 # Generate CA private key & certificate for this server.
 
-if is_vagrant && [[ -f /bootstrap/assets/ssl/vm-ca-private-key.pem ]] \
+if is-vagrant && [[ -f /bootstrap/assets/ssl/vm-ca-private-key.pem ]] \
   && [[ -f /bootstrap/assets/ssl/vm-ca-crt.pem ]]; then
 
   ## Use existing, because it is likely that we have saved these in our local keychain already.
@@ -144,7 +144,7 @@ openssl dhparam -dsaparam -out /etc/bootstrap/ssl/dhparam.pem 2048;
 
 # Generate the official certificate files for this server.
 
-if is_vagrant || [[ "${CFG_INSTALL_CRTS_VIA_LE}" != 1 ]]; then
+if is-vagrant || [[ "${CFG_INSTALL_CRTS_VIA_LE}" != 1 ]]; then
 
   ln --symbolic /etc/bootstrap/ssl/server-private-key.pem /etc/bootstrap/ssl/official-private-key.pem;
   ln --symbolic /etc/bootstrap/ssl/server-crt.pem /etc/bootstrap/ssl/official-crt.pem;

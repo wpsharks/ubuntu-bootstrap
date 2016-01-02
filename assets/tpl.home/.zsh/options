@@ -18,14 +18,14 @@ setopt interactive_comments; # See: <http://jas.xyz/1Re99Pf>
 # --- Colors & Syntax Highlighting --- #
 
 # Exports `LS_COLORS`. See: <http://jas.xyz/1NLuHB4>
-eval "$(dircolors /usr/local/src/dircolors-solarized/dircolors.256dark)";
+eval "$(dircolors /usr/local/src/dircolors-solarized/dircolors.ansi-dark)";
 
 # Syntax highlightingl e.g., `brew install zsh-syntax-highlighting`.
 . /usr/local/src/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh;
 
 # --- Auto-Complete Options --- #
 
-# Add completions directory to `$fpath`.
+# Add completions directory to `${fpath}`.
 fpath=(/usr/local/src/zsh-completions/src ${fpath});
 
 # Initialize completion & dependencies in Zsh.
@@ -63,13 +63,13 @@ zstyle ':completion:*:messages' format "%F{233} %d.%f";
 zstyle ':completion:*:warnings' format "%F{233} No matches for %d.%f";
 
 # Expand or complete with dots.
-j-expand-or-complete-with-dots() {
+z-expand-or-complete-with-dots() {
   echo -n "\e[31m...\e[0m";
   zle expand-or-complete; zle redisplay;
-}; zle -N j-expand-or-complete-with-dots;
+}; zle -N z-expand-or-complete-with-dots;
 
 # Note that TAB in xterm is `Ctrl-I`. See: <http://jas.xyz/1FOdg0D>
-bindkey '^I' j-expand-or-complete-with-dots;
+bindkey '^I' z-expand-or-complete-with-dots;
 
 # Shift-TAB to reverse menu auto-completions.
 bindkey '^[[Z' reverse-menu-complete; # See: <http://jas.xyz/1cXKgYP>

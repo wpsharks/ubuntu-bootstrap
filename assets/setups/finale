@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Grand finale.
+
+echo '-- Bootstrap installation complete. ------';
+
+# Suggest a reload of current login shell.
+
+echo 'Log out & back in. Or type: `'"$(basename "${SHELL}")"' -l` to reload shell.';

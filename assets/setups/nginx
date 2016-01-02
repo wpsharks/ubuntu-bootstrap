@@ -14,7 +14,7 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
   rm --force /etc/nginx/sites-enabled/default;
   ln --symbolic /bootstrap/assets/nginx/.conf /etc/nginx/nginx.conf;
 
-  if is_vagrant; then # Disable sendfile on vagrant VMs.
+  if is-vagrant; then # Disable sendfile on vagrant VMs.
     perl -i -wpe 's/^(\s*)sendfile\s+.*$/$1sendfile off;/uim' /bootstrap/assets/nginx/.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 

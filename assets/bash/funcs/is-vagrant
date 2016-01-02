@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Is vagrant?
+
+function is-vagrant() {
+  if id --user vagrant &>/dev/null; then
+    return 0;
+  elif [[ -d "$(repo-dir)"/.vagrant ]]; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};

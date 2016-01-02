@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Adds a new global environment variable.
+
+function add-global-env-var() {
+  local key="${1:-}";
+  local value="${2:-}";
+
+  if [[ -z "${key}" ]]; then
+    return 1; fi; # Must have.
+
+  ## System-wide; including CRON jobs.
+
+  echo "${key}='${value}'" >> /etc/environment;
+
+  ## Adds PHP-FPM environment variables.
+
+  if [[ "${value}" == '' ]]; then # FPM chokes on empty strings.
+   # Single spaces are handled by /bootstrap/assets/php/ap.php automatically.
+    echo "env[${key}] = ' '" >> /etc/php/fpm/env.conf; # Use a single space.
+  else echo "env[${key}] = '${value}'" >> /etc/php/fpm/env.conf; fi;
+
+  ## Adds environment variables for Apache also.
+
+  if [[ -f /etc/apache2/envvars ]]; then
+    echo "export ${key}='${value}'" >> /etc/apache2/envvars;
+  else # Adds a file that our Apache installer can read from.
+    echo "export ${key}='${value}'" >> /etc/apache2/~envvars;
+  fi;
+  ## Keep these environment variables when running `sudo`.
+  ## Note that double quotes are required here.
+
+  echo "Defaults env_keep += \"${key}\"" >> /etc/sudoers.d/env-vars;
+};

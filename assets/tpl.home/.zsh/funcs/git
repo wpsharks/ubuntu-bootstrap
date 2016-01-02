@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# `hub` alias for GitHub.
+
+function git() {
+  hub "${@}";
+};

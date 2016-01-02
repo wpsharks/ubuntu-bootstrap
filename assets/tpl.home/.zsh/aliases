@@ -1,55 +1,5 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# CD shortcuts.
-
-alias home='cd ~/';
-alias back='cd -';
-alias up='cd ../';
-alias up1='cd ../';
-alias up2='cd ../../';
-alias up3='cd ../../../';
-alias up4='cd ../../../../';
-alias up5='cd ../../../../../';
-
-# CD path.
-
-CDPATH=.':'~\
-':'~/projects;
-
-# Colorize diffs.
-
-alias diff='colordiff';
-
-# Set grep color & defaults.
-
-alias grep='grep --perl-regexp --color=auto';
-
-# Make directory creation easier.
-
-alias mkdir='mkdir --parents --verbose';
-
-# Even better directory listings via `tree` command.
-# Note that `tree` supports a `-P [regex]` flag also. Nice!
-# Similarly, you can use `-I [regex]` to ignore specific files.
-
-alias ls='tree -aFpLug 1 --dirsfirst --filelimit=500'; # One level only.
-alias ld='tree -aFpLug 1 --dirsfirst --filelimit=500 -d'; # Only show directories.
-alias lt='tree -aFpLug 2 --dirsfirst'; # Tree; defaults to two levels.
-
-# Reload interactive login shell.
-
-alias reload='"${SHELL}" -l';
-
-# Get my IP address.
-
-alias ip='dig +short myip.opendns.com @resolver1.opendns.com';
-
-# Setup `hub` alias for GitHub.
-
-alias git='hub'; # See: <http://j.mp/1oRECZZ>
-
-# ----------------------------------------------------------------------------------------------------------------------
-
-# See also: `~/.bin`; for more enhanced aliases that were written instead as shell scripts.
-# See also: `~/.gitconfig` aliases and `~/.bin/git-*`; for Git script aliases.
+# Aliases are deprecated in favor of shell functions.
+# See: `~/.zsh/funcs` for improved aliases.

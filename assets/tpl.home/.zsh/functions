@@ -1,33 +1,9 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# Load spectrum.
+# Function includes.
+# shellcheck disable=SC1090
 
-autoload -Uz colors;
-colors; typeset -Ag fg bg;
-
-for _color in {000..255}; do
-    fg[${_color}]="%{[38;5;${_color}m%}";
-    bg[${_color}]="%{[48;5;${_color}m%}";
-done; unset _color;
-
-# Spectrum display function.
-
-function spectrum() {
-  local _code; # Initialize for routine below.
-  local test='This is a color test ::               ';
-
-  for _code in {000..255}; do
-    print -P -- "${_code}: %{${fg[${_code}]}%}${test}%{${reset_color}%}"
-  done; unset _code;
-};
-
-# Is vagrant?
-
-function is_vagrant() {
-  if id -u vagrant &>/dev/null; then
-    return 0;
-  else # 1 = false.
-    return 1;
-  fi;
-};
+for _file in ~/.zsh/funcs/**; do
+  [[ -f "${_file}" ]] && . "${_file}";
+done; unset _file;

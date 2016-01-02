@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Up one directory.
+
+function up() {
+  builtin cd ../ && ls;
+};

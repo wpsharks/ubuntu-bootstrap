@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Directory listings.
+
+function ls() {
+  command tree -aFpugh --dirsfirst -L 1 "${@}";
+};

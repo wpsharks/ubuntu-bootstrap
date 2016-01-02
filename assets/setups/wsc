@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can_run php && can_run composer \
+if can-run php && can-run composer \
   && [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
 
   # Install websharks/core library.

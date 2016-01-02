@@ -1,2 +1,3 @@
-use_shadow = OFF
-use_colors = OFF
+use_shadow = ON
+use_colors = ON
+title_color = (BLACK,WHITE,ON)

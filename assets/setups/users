@@ -7,12 +7,12 @@ addgroup sftp-only;
 
 # Create admin user.
 
-create_user \
+create-user \
   "${CFG_ADMIN_USERNAME}" \
   "${CFG_ADMIN_PASSWORD}" \
   sudo; # Group.
 
-setup_user \
+setup-user \
   "${CFG_ADMIN_USERNAME}" \
   "${CFG_ADMIN_NAME}" \
   "${CFG_ADMIN_EMAIL}" \
@@ -25,9 +25,9 @@ usermod --append --groups=www-data "${CFG_ADMIN_USERNAME}";
 
 # If running a VM, setup the vagrant user.
 
-if is_vagrant; then
+if is-vagrant; then
 
-  setup_user \
+  setup-user \
     vagrant \
     "${CFG_ADMIN_NAME}" \
     "${CFG_ADMIN_EMAIL}" \
@@ -42,7 +42,7 @@ fi; # On vagrant boxes only.
 
 # Setup the root user also.
 
-setup_user \
+setup-user \
   root \
   "${CFG_ADMIN_NAME}" \
   "${CFG_ADMIN_EMAIL}" \

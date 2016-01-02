@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can_run php; then
+if can-run php; then
 
   # Install Composer dependency management for PHP.
 

@@ -2,7 +2,7 @@
 
 # Remove existing.
 
-if can_run git; then
+if can-run git; then
   apt-get --purge remove git --yes; fi;
 
 # Install Git (latest version).
@@ -27,4 +27,4 @@ apt-get update; apt-get install git-lfs --yes;
 
 # Make sure we have the large files for this repo.
 
-cd "$(repo_dir)"; git lfs pull;
+cd "$(repo-dir)"; git lfs pull;

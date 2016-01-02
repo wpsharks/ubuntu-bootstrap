@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Prev directory.
+
+function back() {
+  builtin cd - && ls;
+};

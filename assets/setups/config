@@ -102,7 +102,7 @@ export CFG_INSTALL_UNATTENDED_UPGRADES; cfgs+=('CFG_INSTALL_UNATTENDED_UPGRADES'
 CFG_HOST="$(hostname --fqdn)";
 
 CFG_ROOT_HOST="$(hostname --domain)";
-if [[ "$(dot_count "${CFG_ROOT_HOST}")" -lt 1 ]]; then
+if [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]]; then
    CFG_ROOT_HOST="${CFG_HOST}";
 fi; # If only one TLD, `hostname` is root.
 
@@ -111,31 +111,31 @@ CFG_SLUG="$(hostname --short)";
 CFG_OTHER_HOSTS=''; # Normally empty.
 
 CFG_ADMIN_USERNAME=''; # Ask the admin.
-if is_vagrant; then # Vagrant default is `admin`.
+if is-vagrant; then # Vagrant default is `admin`.
   CFG_ADMIN_USERNAME='admin';
 fi;
 
 CFG_ADMIN_PASSWORD=''; # Ask the admin.
-if is_vagrant; then # Vagrant default is `admin`.
+if is-vagrant; then # Vagrant default is `admin`.
   CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
 fi;
 
 CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
 
 CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com';
-if is_vagrant; then # Vagrant default is fake (@ VM root host).
+if is-vagrant; then # Vagrant default is fake (@ VM root host).
   CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
 fi;
 
 CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
-if is_vagrant; then # Vagrant default is fake (@ VM root host).
+if is-vagrant; then # Vagrant default is fake (@ VM root host).
   CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 fi;
 
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh'; # Or `/bin/bash`.
 
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/assets/ssh/%%CFG_ADMIN_USERNAME%%/id_rsa.pub';
-if ! is_vagrant && [[ -f /root/.ssh/authorized_keys ]]; then
+if ! is-vagrant && [[ -f /root/.ssh/authorized_keys ]]; then
   CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
 fi; # DigitalOcean; i.e., if you have an SSH key automatically added to each Droplet.
 
@@ -152,12 +152,12 @@ CFG_MYSQL_DB_COLLATE='utf8mb4_unicode_ci';
 CFG_MYSQL_DB_NAME='db0';
 
 CFG_MYSQL_DB_USERNAME='client'; # More secure.
-if is_vagrant; then # Vagrant default makes this easier.
+if is-vagrant; then # Vagrant default makes this easier.
   CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
 fi;
 
 CFG_MYSQL_DB_PASSWORD="$(keygen 32)"; # More secure.
-if is_vagrant; then # Vagrant default makes this easier.
+if is-vagrant; then # Vagrant default makes this easier.
   CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 fi;
 
@@ -169,17 +169,17 @@ CFG_EMAIL_FROM_NAME='%%CFG_HOST%%';
 CFG_EMAIL_FROM_EMAIL='%%CFG_ADMIN_PUBLIC_EMAIL%%';
 
 CFG_EMAIL_SMTP_HOST='email-smtp.us-east-1.amazonaws.com';
-if is_vagrant; then # Vagrant can use Postfix.
+if is-vagrant; then # Vagrant can use Postfix.
   CFG_EMAIL_SMTP_HOST='127.0.0.1';
 fi;
 
 CFG_EMAIL_SMTP_PORT='587'; # Use `587` for `tls`.
-if is_vagrant; then # Vagrant can use Postfix.
+if is-vagrant; then # Vagrant can use Postfix.
   CFG_EMAIL_SMTP_PORT='25';
 fi;
 
 CFG_EMAIL_SMTP_SECURE='tls'; # ``, `ssl`, `tls`.
-if is_vagrant; then # Vagrant can use Postfix.
+if is-vagrant; then # Vagrant can use Postfix.
   CFG_EMAIL_SMTP_SECURE='';
 fi;
 
@@ -189,17 +189,17 @@ CFG_EMAIL_SMTP_PASSWORD=''; # Admin must enter; defaults to empty for Postfix.
 CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)"; # Keep this secure (always).
 
 CFG_INSTALL_SWAP='1'; # Better in production.
-if is_vagrant; then # Not recommended on Vagrant.
+if is-vagrant; then # Not recommended on Vagrant.
   CFG_INSTALL_SWAP='0';
 fi;
 
 CFG_INSTALL_CRTS_VIA_LE='0'; # Off until stable.
-if is_vagrant; then # Not possible on a Vagrant VM.
+if is-vagrant; then # Not possible on a Vagrant VM.
   CFG_INSTALL_CRTS_VIA_LE='0';
 fi;
 
 CFG_INSTALL_APP_REPO='1'; # Better in production.
-if is_vagrant; then # Vagrant off (not recommended).
+if is-vagrant; then # Vagrant off (not recommended).
   CFG_INSTALL_APP_REPO='0';
 fi;
 
@@ -220,12 +220,12 @@ CFG_INSTALL_PHP_VERSION='custom';
 # Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`, `5.4`.
 
 CFG_INSTALL_WORDPRESS='0'; # No, use app repo in production.
-if is_vagrant; then # Vagrant = yes = easier.
+if is-vagrant; then # Vagrant = yes = easier.
   CFG_INSTALL_WORDPRESS='1';
 fi;
 
 CFG_INSTALL_WORDPRESS_VG_SYMLINKS='0';
-if is_vagrant; then # Yes. Specifically for Vagrant VMs.
+if is-vagrant; then # Yes. Specifically for Vagrant VMs.
   CFG_INSTALL_WORDPRESS_VG_SYMLINKS='%%CFG_INSTALL_WORDPRESS%%';
 fi;
 
@@ -233,12 +233,12 @@ CFG_INSTALL_FIREWALL='1';
 CFG_INSTALL_FAIL2BAN='1';
 
 CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0';
-if is_vagrant; then # Yes, enable cross VM connections.
+if is-vagrant; then # Yes, enable cross VM connections.
   CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
 fi;
 
 CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1';
-if is_vagrant; then # Not possible in a Vagrant VM.
+if is-vagrant; then # Not possible in a Vagrant VM.
   CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
 fi;
 
@@ -350,13 +350,13 @@ function validate_cfgs() {
     cfg_warning+=' Please uncheck one of CFG_INSTALL_APP_REPO or CFG_INSTALL_WORDPRESS.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is_vagrant; then
+  elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is-vagrant; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='Cannot install SSL certificates via LetsEncrypt when running on a VM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is_vagrant; then
+  elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vagrant; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='CloudFlare integration is not possible when running on a VM.'$'\n';
@@ -368,7 +368,7 @@ function validate_cfgs() {
 
   if [[ -n "${cfg_warning}" ]]; then
 
-    if is_vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
+    if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
 
       cfg_warning+='This error occurred because there is invalid data in the hard-coded defaults.'$'\n';
       cfg_warning+='Please remove the `--use-defaults` flag and run again.'$'\n';
@@ -399,7 +399,7 @@ function cfgs_wizard() {
   local _cfg_package_options _cfg_package_option;
   local _cfg_response; # All used below.
 
-  if is_vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
+  if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
 
     # Fill, clean, sanitize.
 

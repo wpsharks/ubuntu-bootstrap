@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# New user creation utility.
+
+function create-user() {
+  local user="${1:-}";
+  local pass="${2:-}";
+  local group="${3:-}";
+
+  if [[ -z "${user}" || -z "${pass}" || -z "${group}" ]]; then
+    return 1; fi; # Missing required arg(s).
+
+  if user-exists "${user}"; then
+    return 1; fi; # User exists!
+
+  useradd "${user}" --gid "${group}" --create-home;
+  echo "${user}"':'"${pass}" | chpasswd;
+};

@@ -10,17 +10,17 @@ set -o xtrace; # Print each command that is run.
 # Disable web servers & firewall temporarily.
 
 function disable_web_servers_and_firewall() {
-  can_run ufw && service ufw stop &>/dev/null;
-  can_run nginx && service nginx stop &>/dev/null;
-  can_run apache2 && service apache2 stop &>/dev/null;
+  can-run ufw && service ufw stop &>/dev/null;
+  can-run nginx && service nginx stop &>/dev/null;
+  can-run apache2 && service apache2 stop &>/dev/null;
   return 0; # In case last test fails.
 };
 # Restore web servers & firewall (i.e., enable).
 
 function restore_web_servers_and_firewall() {
-  can_run ufw && service ufw start &>/dev/null;
-  can_run nginx && service nginx start &>/dev/null;
-  can_run apache2 && service apache2 start &>/dev/null;
+  can-run ufw && service ufw start &>/dev/null;
+  can-run nginx && service nginx start &>/dev/null;
+  can-run apache2 && service apache2 start &>/dev/null;
   return 0; # In case last test fails.
 };
 # Trap errors and recover gracefully.
@@ -53,7 +53,7 @@ for _domain in $_domains_list; do
 
   if [[ "${_domain}" =~ ^www\. ]]; then
     domains+="${_domain/#www./}";
-  elif [[ "$(dot_count "${_domain}")" == 1 ]]; then
+  elif [[ "$(dot-count "${_domain}")" == 1 ]]; then
     domains+=',www.'"${_domain}";
   fi;
 done; unset _domains_list; unset _domain;
