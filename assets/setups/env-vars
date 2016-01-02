@@ -44,6 +44,8 @@ for _cfg_key in \
   'CFG_EMAIL_SMTP_USERNAME' \
   'CFG_EMAIL_SMTP_PASSWORD' \
   \
+  'CFG_BITLY_KEY' \
+  \
   'CFG_TOOLS_PMA_BLOWFISH_KEY' \
   ; do add-global-env-var "${_cfg_key}" "${!_cfg_key}";
 done; unset _cfg_key;
