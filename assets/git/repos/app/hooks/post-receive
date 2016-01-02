@@ -20,6 +20,8 @@ while read -r _oldrev _newrev _refname; do
 
     enable-app-maintenance-mode; # Temporarily.
 
+    umask 0002; # 775 & 664 (required umask for shared access).
+
     cd /app; # Move into the `/app` directory for deployment.
 
     git --git-dir=/repos/app.git --work-tree=/app checkout --force;

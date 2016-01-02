@@ -13,3 +13,4 @@ fi;
 
 . ~/.env-path;
 . ~/.env-vars;
+. ~/.env-ops;

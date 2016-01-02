@@ -2,6 +2,10 @@
 
 if [[ "${CFG_INSTALL_APP_REPO}" == 1 ]]; then
 
+  # Create directory.
+
+  mkdir --parents /repos/app.git;
+
   # Configure repo.
 
   git init --bare /repos/app.git;
@@ -10,8 +14,9 @@ if [[ "${CFG_INSTALL_APP_REPO}" == 1 ]]; then
 
   # Set permissions for files in the app & repo directories.
 
-  find /app -type d -exec chmod 775 {} \;
-  find /app -type f -exec chmod 664 {} \;
+  chown --recursive www-data:www-data /repos/app.git;
+  chmod g+s /repos/app.git; # Stick w/ this group.
+  # NOTE: Users & app should have a umask of 0002.
 
   find /repos/app.git -type d -exec chmod 775 {} \;
   find /repos/app.git -type f -exec chmod 664 {} \;

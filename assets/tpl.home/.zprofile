@@ -5,6 +5,8 @@
 
 . ~/.zsh/env-path;
 . ~/.zsh/env-vars;
+. ~/.zsh/env-ops;
+
 . ~/.zsh/functions;
 . ~/.zsh/options;
 . ~/.zsh/aliases;
