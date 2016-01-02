@@ -3,5 +3,5 @@
 # Does a group exist?
 
 function group-exists() {
-  id --group "${1:-}" &>/dev/null;
+  grep --perl-regexp --quiet '^'"$(esc-regex "${1:-}")"'\:' /etc/group;
 };
