@@ -64,6 +64,8 @@ export CFG_EMAIL_SMTP_PASSWORD; cfgs+=('CFG_EMAIL_SMTP_PASSWORD');
 
 export CFG_BITLY_KEY; cfgs+=('CFG_BITLY_KEY');
 
+export CFG_DEFAULT_SHA_SIG_KEY; cfgs+=('CFG_DEFAULT_SHA_SIG_KEY');
+
 export CFG_TOOLS_PMA_BLOWFISH_KEY; cfgs+=('CFG_TOOLS_PMA_BLOWFISH_KEY');
 
 export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
@@ -189,6 +191,8 @@ CFG_EMAIL_SMTP_USERNAME=''; # Admin must enter; defaults to empty for Postfix.
 CFG_EMAIL_SMTP_PASSWORD=''; # Admin must enter; defaults to empty for Postfix.
 
 CFG_BITLY_KEY=''; # Admin must enter; defaults to empty.
+
+CFG_DEFAULT_SHA_SIG_KEY="$(keygen 64)"; # Keep this secure (always).
 
 CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)"; # Keep this secure (always).
 
@@ -560,6 +564,8 @@ function cfgs_wizard() {
             'CFG_EMAIL_SMTP_PASSWORD' \
             \
             'CFG_BITLY_KEY' \
+            \
+            'CFG_DEFAULT_SHA_SIG_KEY' \
             \
             'CFG_TOOLS_PMA_BLOWFISH_KEY' \
             \
