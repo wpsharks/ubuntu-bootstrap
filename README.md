@@ -119,7 +119,7 @@ $ vagrant up
 
 ```bash
 $ vagrant ssh
-$ /bootstrap/installer
+$ sudo /bootstrap/installer
 ```
 
 ---
@@ -133,7 +133,7 @@ $ git clone https://github.com/jaswsinc/vagrant-ubuntu-lemp my-second.vm
 $ cd my-second.vm
 $ vagrant up
 $ vagrant ssh
-$ /bootstrap/installer
+$ sudo /bootstrap/installer
 ```
 
 #### Understanding Domain Name Mapping
