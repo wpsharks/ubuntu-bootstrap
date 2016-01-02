@@ -6,4 +6,4 @@ echo '-- Bootstrap installation complete. ------';
 
 # Suggest a reload of current login shell.
 
-echo 'Log out & back in. Or type: `'"$(basename "${SHELL}")"' -l` to reload shell.';
+echo 'Log out & back in. Or type: `'"$(basename "${CFG_ADMIN_PREFERRED_SHELL}")"' -l` to reload shell.';
