@@ -196,6 +196,6 @@ Yes. Looking over the code snippet above, you can see that there are three envir
 
 ```bash
 export WP_PROJECTS_DIR=~/my-projects/wordpress;
-#export WP_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
-#export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
+export WP_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
+export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 ```
