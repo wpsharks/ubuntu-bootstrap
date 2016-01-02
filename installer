@@ -20,6 +20,7 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/assets/setups/config;
 
   set -o xtrace; # Print each command that is run.
+  umask 0002; # Set default umask during installation.
 
   . /bootstrap/assets/setups/aptitude;
   . /bootstrap/assets/setups/timezone;

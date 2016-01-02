@@ -14,7 +14,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
   # Set permissions for files in the app directory.
 
-  find /app -type d -exec chmod 775 {} \;
+  find /app -type d -exec chmod 2775 {} \;
   find /app -type f -exec chmod 664 {} \;
 
   # Setup the `/wp-config.php` file with auto-generated security keys.

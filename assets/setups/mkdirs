@@ -9,20 +9,14 @@ if ! is-vagrant; then
 fi; # Vagrant mounts this. In production we copy it over.
 
 chown --recursive www-data:www-data /app;
-chmod g+s /app; # Stick w/ this group.
-# NOTE: Users & app should have a umask of 0002.
-
-find /app -type d -exec chmod 775 {} \;
+find /app -type d -exec chmod 2775 {} \;
 find /app -type f -exec chmod 664 {} \;
 
 # App logs directory.
 
 mkdir --parents /var/log/app;
 chown --recursive www-data:www-data /var/log/app;
-chmod g+s /var/log/app; # Stick w/ this group.
-# NOTE: Users & app should have a umask of 0002.
-
-find /var/log/app -type d -exec chmod 775 {} \;
+find /var/log/app -type d -exec chmod 2775 {} \;
 find /var/log/app -type f -exec chmod 664 {} \;
 
 # Other misc. directories.

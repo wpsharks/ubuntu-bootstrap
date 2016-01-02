@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Does a group exist?
+
+function group-exists() {
+  id --group "${1:-}" &>/dev/null;
+};

@@ -9,8 +9,7 @@ addgroup sftp-only;
 
 create-user \
   "${CFG_ADMIN_USERNAME}" \
-  "${CFG_ADMIN_PASSWORD}" \
-  sudo; # Group.
+  "${CFG_ADMIN_PASSWORD}";
 
 setup-user \
   "${CFG_ADMIN_USERNAME}" \
@@ -20,6 +19,7 @@ setup-user \
   "${CFG_ADMIN_AUTHORIZED_SSH_KEYS}";
 
 usermod --append --groups=adm "${CFG_ADMIN_USERNAME}";
+usermod --append --groups=sudo "${CFG_ADMIN_USERNAME}";
 usermod --append --groups=ssh-access "${CFG_ADMIN_USERNAME}";
 usermod --append --groups=www-data "${CFG_ADMIN_USERNAME}";
 

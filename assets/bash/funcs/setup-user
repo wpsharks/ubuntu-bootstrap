@@ -34,7 +34,7 @@ function setup-user() {
   ## Home directory customization.
 
   cp --force --recursive --preserve=mode /bootstrap/assets/tpl.home/. "${home_dir}";
-  chown --recursive "${user}" "${home_dir}";
+  chown --recursive "${user}":"${user}" "${home_dir}";
 
   ## Setup authorized SSH keys in home directory.
 
@@ -44,7 +44,7 @@ function setup-user() {
 
     chmod 700 "${home_dir}"/.ssh;
     chmod 600 "${home_dir}"/.ssh/authorized_keys;
-    chown --recursive "${user}" "${home_dir}"/.ssh;
+    chown --recursive "${user}":"${user}" "${home_dir}"/.ssh;
   fi;
   ## Git configuration for this user.
 
