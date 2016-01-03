@@ -11,7 +11,6 @@ for _cfg_key in \
   'CFG_HOST' \
   'CFG_ROOT_HOST' \
   'CFG_SLUG' \
-  \
   'CFG_OTHER_HOSTS' \
   \
   'CFG_ADMIN_USERNAME' \
@@ -19,33 +18,17 @@ for _cfg_key in \
   'CFG_ADMIN_EMAIL' \
   'CFG_ADMIN_PUBLIC_EMAIL' \
   \
+  'CFG_TOOLS_PMA_BLOWFISH_KEY' \
+  \
   'CFG_MYSQL_DB_HOST' \
   'CFG_MYSQL_DB_PORT' \
   'CFG_MYSQL_SSL_ENABLE' \
-  \
   'CFG_MYSQL_DB_CHARSET' \
   'CFG_MYSQL_DB_COLLATE' \
-  \
   'CFG_MYSQL_DB_NAME' \
   'CFG_MYSQL_DB_USERNAME' \
   'CFG_MYSQL_DB_PASSWORD' \
   \
-  'CFG_MEMCACHE_NAMESPACE' \
-  'CFG_MEMCACHE_HOST' \
-  'CFG_MEMCACHE_PORT' \
-  \
-  'CFG_EMAIL_FROM_NAME' \
-  'CFG_EMAIL_FROM_EMAIL' \
-  \
-  'CFG_EMAIL_SMTP_HOST' \
-  'CFG_EMAIL_SMTP_PORT' \
-  'CFG_EMAIL_SMTP_SECURE' \
-  \
-  'CFG_EMAIL_SMTP_USERNAME' \
-  'CFG_EMAIL_SMTP_PASSWORD' \
-  \
-  'CFG_TOOLS_PMA_BLOWFISH_KEY' \
-  \
-  'CFG_APP_CONFIG_FILE' \
+  'CFG_CONFIG_FILE' \
   ; do add-global-env-var "${_cfg_key}" "${!_cfg_key}";
 done; unset _cfg_key;

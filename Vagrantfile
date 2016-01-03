@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder '.', '/vagrant', disabled: true;
 
   # Mount an `/app` directory that will be owned by `www-data:www-data`.
-  config.vm.synced_folder 'app/', '/app', owner: 'www-data', group: 'www-data', mount_options: ['dmode=775,fmode=664'];
+  config.vm.synced_folder 'app/', '/app', owner: 'www-data', group: 'www-data', mount_options: ['dmode=2775,fmode=664'];
 
   # Mount WordPress projects directory.
   if File.directory?(wp_projects_dir = ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
