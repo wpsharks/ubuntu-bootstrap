@@ -30,7 +30,7 @@ while read -r _oldrev _newrev _refname; do
     echo 'Updated submodules in the `/app` directory.';
 
     if [[ -f ./build.xml ]] && can-run phing; then
-      phing build; # Runs the build routine.
+      phing post-receive-build; # Runs the build routine.
       echo 'Ran `phing build` in the `/app` directory.'; fi;
 
     if [[ -x ./.post-receive ]]; then
