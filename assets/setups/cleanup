@@ -2,4 +2,6 @@
 
 # Cleanup archives.
 
-apt-get clean --yes;
+if ! is-vagrant; then
+  apt-get clean --yes;
+fi;

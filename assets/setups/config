@@ -46,7 +46,6 @@ export CFG_MYSQL_DB_PASSWORD; cfgs+=('CFG_MYSQL_DB_PASSWORD');
 
 export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
 export CFG_INSTALL_CRTS_VIA_LE; cfgs+=('CFG_INSTALL_CRTS_VIA_LE');
-export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
 export CFG_INSTALL_POSTFIX; cfgs+=('CFG_INSTALL_POSTFIX');
 export CFG_INSTALL_NGINX; cfgs+=('CFG_INSTALL_NGINX');
 export CFG_INSTALL_APACHE; cfgs+=('CFG_INSTALL_APACHE');
@@ -56,8 +55,9 @@ export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
 export CFG_INSTALL_MEMCACHE; cfgs+=('CFG_INSTALL_MEMCACHE');
 export CFG_INSTALL_PHP; cfgs+=('CFG_INSTALL_PHP');
 export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
+export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
 export CFG_INSTALL_WORDPRESS; cfgs+=('CFG_INSTALL_WORDPRESS');
-export CFG_INSTALL_WORDPRESS_VG_SYMLINKS; cfgs+=('CFG_INSTALL_WORDPRESS_VG_SYMLINKS');
+export CFG_INSTALL_WORDPRESS_VM_SYMLINKS; cfgs+=('CFG_INSTALL_WORDPRESS_VM_SYMLINKS');
 export CFG_INSTALL_FIREWALL; cfgs+=('CFG_INSTALL_FIREWALL');
 export CFG_INSTALL_FAIL2BAN; cfgs+=('CFG_INSTALL_FAIL2BAN');
 export CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN; cfgs+=('CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN');
@@ -141,11 +141,6 @@ if is-vagrant; then
   CFG_INSTALL_CRTS_VIA_LE='0';
 fi;
 
-CFG_INSTALL_APP_REPO='1';
-if is-vagrant; then
-  CFG_INSTALL_APP_REPO='0';
-fi;
-
 CFG_INSTALL_POSTFIX='1';
 CFG_INSTALL_NGINX='1';
 CFG_INSTALL_APACHE='0';
@@ -158,14 +153,12 @@ CFG_INSTALL_PHP_VERSION='custom';
 # `custom` or `custom-src` (i.e., from source).
 # Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`, `5.4`.
 
-CFG_INSTALL_WORDPRESS='0';
-if is-vagrant; then
-  CFG_INSTALL_WORDPRESS='1';
-fi;
+CFG_INSTALL_APP_REPO='1';
+CFG_INSTALL_WORDPRESS='1';
 
-CFG_INSTALL_WORDPRESS_VG_SYMLINKS='0';
-if is-vagrant; then
-  CFG_INSTALL_WORDPRESS_VG_SYMLINKS='%%CFG_INSTALL_WORDPRESS%%';
+CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
+if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
+  CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
 fi;
 
 CFG_INSTALL_FIREWALL='1';
@@ -273,12 +266,10 @@ function validate_cfgs() {
     cfg_warning+='Please choose Nginx or Apache (not both). These run on the same ports.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_APP_REPO}" == 1 && "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
+  elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vagrant; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='WordPress cannot be installed now if you also want to construct an app repo.'$'\n';
-    cfg_warning+=' Installing an app repo implies that you will push WordPress to the site via Git.'$'\n';
-    cfg_warning+=' Please uncheck one of CFG_INSTALL_APP_REPO or CFG_INSTALL_WORDPRESS.'$'\n';
+    cfg_warning+='The installation of VM symlinks applies only when running a VM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is-vagrant; then
@@ -302,7 +293,8 @@ function validate_cfgs() {
     if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
 
       cfg_warning+='This error occurred because there is invalid data in the hard-coded defaults.'$'\n';
-      cfg_warning+='Please remove the `--use-defaults` flag and run again.'$'\n';
+      cfg_warning+='Please remove the `--use-defaults` flag and try again.'$'\n';
+      cfg_warning+='Also, please report this error to the developers.'$'\n';
       cfg_warning+='Press any key to exit...'$'\n';
 
       read -n1 -rsp "${cfg_warning}"; exit 1;
@@ -381,7 +373,6 @@ function cfgs_wizard() {
         \
         'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -389,8 +380,9 @@ function cfgs_wizard() {
         'CFG_INSTALL_RAMDISK' 'Install?' "$([[ "${CFG_INSTALL_RAMDISK}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_MEMCACHE' 'Install?' "$([[ "${CFG_INSTALL_MEMCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHP' 'Install?' "$([[ "${CFG_INSTALL_PHP}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_WORDPRESS_VG_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VG_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_FIREWALL' 'Install?' "$([[ "${CFG_INSTALL_FIREWALL}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_FAIL2BAN' 'Install?' "$([[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_UNATTENDED_UPGRADES' 'Install?' "$([[ "${CFG_INSTALL_UNATTENDED_UPGRADES}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -399,7 +391,6 @@ function cfgs_wizard() {
 
       CFG_INSTALL_SWAP='0';
       CFG_INSTALL_CRTS_VIA_LE='0';
-      CFG_INSTALL_APP_REPO='0';
       CFG_INSTALL_POSTFIX='0';
       CFG_INSTALL_NGINX='0';
       CFG_INSTALL_APACHE='0';
@@ -407,8 +398,9 @@ function cfgs_wizard() {
       CFG_INSTALL_RAMDISK='0';
       CFG_INSTALL_MEMCACHE='0';
       CFG_INSTALL_PHP='0';
+      CFG_INSTALL_APP_REPO='0';
       CFG_INSTALL_WORDPRESS='0';
-      CFG_INSTALL_WORDPRESS_VG_SYMLINKS='0';
+      CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
       CFG_INSTALL_FIREWALL='0';
       CFG_INSTALL_FAIL2BAN='0';
       CFG_INSTALL_UNATTENDED_UPGRADES='0';
@@ -423,7 +415,7 @@ function cfgs_wizard() {
         --title 'Configure additional details?' \
         --yes-label 'Yes (Configure)' \
         --no-label 'No (Use Defaults)' \
-        --defaultno \
+        --no-cancel \
         --yesno '' 5 75; then
 
           ### Ask for additional specific details.

@@ -12,10 +12,11 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   rm --force --recursive /tmp/wordpress-latest;
   rm /tmp/wordpress-latest.zip;
 
-  # Set permissions for files in the app directory.
+  # Set permissions in the `/app/src` directory.
 
-  find /app -type d -exec chmod 2775 {} \;
-  find /app -type f -exec chmod 664 {} \;
+  chown --recursive www-data /app/src;
+  find /app/src -type d -exec chmod 2775 {} \;
+  find /app/src -type f -exec chmod 664 {} \;
 
   # Setup the `/wp-config.php` file with auto-generated security keys.
 
@@ -31,7 +32,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
   # Build symlinks to development files when run via Vagrant.
 
-  if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS_VG_SYMLINKS}" == 1 ]]; then
+  if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]]; then
 
     # Create theme/plugin symlinks if possible.
 
@@ -67,5 +68,12 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
     done; unset _wp_dir; # End WordPress symlinks.
 
   else echo 'Skipping WP symlinks.'; fi;
+
+  # Install WP-CLI now also.
+
+  curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    --output /usr/bin/wp; # Save as binary.
+
+  chmod +x /usr/bin/wp; # Make it executable.
 
 else echo 'Skipping WordPress installation.'; fi;

@@ -6,7 +6,7 @@ if ! is-vagrant; then # If NOT on a vagrant box.
 
   perl -i -wpe 's/^(\s*)PermitRootLogin\s+.*$/$1PermitRootLogin no/uim' /etc/ssh/sshd_config;
   echo '# Allow Specific Groups Only' >> /etc/ssh/sshd_config;
-  echo 'AllowGroups sudo ssh-access sftp-only' >> /etc/ssh/sshd_config;
+  echo 'AllowGroups sudo ssh-access' >> /etc/ssh/sshd_config;
 
   # See <http://en.wikibooks.org/wiki/OpenSSH/Cookbook/SFTP>
   # addgroup sftp-only; # Already done in: `assets/setups/users`
