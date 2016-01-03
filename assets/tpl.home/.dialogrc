@@ -1,3 +1,59 @@
-use_shadow = ON
+aspect = 1
+separate_widget = ""
+visit_items = OFF
+tab_len = 0
+
 use_colors = ON
-title_color = (BLACK,WHITE,ON)
+use_shadow = OFF
+
+screen_color = (BLACK,CYAN,OFF)
+shadow_color = (BLACK,BLACK,OFF)
+
+button_key_inactive_color = (BLACK,CYAN,ON)
+button_key_active_color = (BLACK,CYAN,ON)
+
+button_label_inactive_color = screen_color
+button_label_active_color = screen_color
+
+button_inactive_color = screen_color
+button_active_color = screen_color
+
+dialog_color = screen_color
+title_color = screen_color
+
+border_color = screen_color
+border2_color = screen_color
+
+inputbox_color = dialog_color
+inputbox_border_color = border_color
+inputbox_border2_color = border2_color
+
+searchbox_color = dialog_color
+searchbox_title_color = title_color
+searchbox_border_color = border_color
+searchbox_border2_color = border2_color
+
+menubox_color = dialog_color
+menubox_border_color = border_color
+menubox_border2_color = border2_color
+
+form_text_color = dialog_color
+form_item_readonly_color = dialog_color
+form_active_text_color = button_active_color
+
+tag_color = dialog_color
+tag_selected_color = (BLACK,WHITE,OFF)
+tag_key_color = button_key_inactive_color
+tag_key_selected_color = (BLACK,WHITE,ON)
+
+item_color = dialog_color
+item_selected_color = button_active_color
+
+check_color = dialog_color
+check_selected_color = button_active_color
+
+gauge_color = dialog_color
+position_indicator_color = dialog_color
+uarrow_color = button_inactive_color
+darrow_color = button_inactive_color
+itemhelp_color = button_inactive_color

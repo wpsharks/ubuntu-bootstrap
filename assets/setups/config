@@ -377,7 +377,7 @@ function cfgs_wizard() {
         --title 'Installation Package Options' \
         --no-cancel \
         \
-        --separate-output --checklist 'Choose installation packages:' 25 75 25 \
+        --separate-output --checklist 'Use space bar to toggle these.' 25 75 25 \
         \
         'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -424,7 +424,7 @@ function cfgs_wizard() {
         --yes-label 'Yes (Configure)' \
         --no-label 'No (Use Defaults)' \
         --defaultno \
-        --yesno 'Would you like to configure any additional details?' 8 75; then
+        --yesno '' 5 75; then
 
           ### Ask for additional specific details.
 
