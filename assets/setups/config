@@ -106,7 +106,7 @@ fi;
 
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
 
-CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/assets/ssh/%%CFG_ADMIN_USERNAME%%/id_rsa.pub';
+CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/assets/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
 if ! is-vagrant && [[ -f /root/.ssh/authorized_keys ]]; then
   CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
 fi;
