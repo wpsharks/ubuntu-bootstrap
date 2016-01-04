@@ -45,6 +45,7 @@ export CFG_MYSQL_DB_USERNAME; cfgs+=('CFG_MYSQL_DB_USERNAME');
 export CFG_MYSQL_DB_PASSWORD; cfgs+=('CFG_MYSQL_DB_PASSWORD');
 
 export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
+export CFG_INSTALL_WS_CA_FILES; cfgs+=('CFG_INSTALL_WS_CA_FILES');
 export CFG_INSTALL_CRTS_VIA_LE; cfgs+=('CFG_INSTALL_CRTS_VIA_LE');
 export CFG_INSTALL_POSTFIX; cfgs+=('CFG_INSTALL_POSTFIX');
 export CFG_INSTALL_NGINX; cfgs+=('CFG_INSTALL_NGINX');
@@ -134,6 +135,11 @@ fi;
 CFG_INSTALL_SWAP='1';
 if is-vagrant; then
   CFG_INSTALL_SWAP='0';
+fi;
+
+CFG_INSTALL_WS_CA_FILES='1';
+if is-vagrant; then
+  CFG_INSTALL_WS_CA_FILES='0';
 fi;
 
 CFG_INSTALL_CRTS_VIA_LE='0';
@@ -372,6 +378,7 @@ function cfgs_wizard() {
         --separate-output --checklist 'Use space bar to toggle these.' 25 75 25 \
         \
         'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -390,6 +397,7 @@ function cfgs_wizard() {
         3>&1 1>&2 2>&3)"; # Output collection occurs here.
 
       CFG_INSTALL_SWAP='0';
+      CFG_INSTALL_WS_CA_FILES='0';
       CFG_INSTALL_CRTS_VIA_LE='0';
       CFG_INSTALL_POSTFIX='0';
       CFG_INSTALL_NGINX='0';
