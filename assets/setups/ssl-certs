@@ -29,17 +29,20 @@ export OPENSSL_CSR_ALTNAMES="DNS:${CFG_ROOT_HOST},DNS:*.${CFG_ROOT_HOST}";
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Generate CA private key & certificate for this server.
+## Use existing if possible, because it is likely that we have saved these in our local keychain already.
+## Doing so allows for the CA to be marked as "Always Trust" in order to avoid self-signed errors.
 
-if is-vagrant && [[ -f /bootstrap/assets/ssl/vm-ca-private-key.pem ]] \
-  && [[ -f /bootstrap/assets/ssl/vm-ca-crt.pem ]]; then
+if [[ -f /etc/bootstrap/ssl/ws-ca-private-key.pem && -f /etc/bootstrap/ssl/ws-ca-crt.pem ]]; then
 
-  ## Use existing, because it is likely that we have saved these in our local keychain already.
-  ## Doing so allows for the CA to be marked as "Always Trust" in order to avoid self-signed errors.
+  ln --symbolic /etc/bootstrap/ssl/ws-ca-private-key.pem /etc/bootstrap/ssl/server-ca-private-key.pem;
+  ln --symbolic /etc/bootstrap/ssl/ws-ca-crt.pem /etc/bootstrap/ssl/server-ca-crt.pem;
+
+elif is-vagrant && [[ -f /bootstrap/assets/ssl/vm-ca-private-key.pem && -f /bootstrap/assets/ssl/vm-ca-crt.pem ]]; then
 
   ln --symbolic /bootstrap/assets/ssl/vm-ca-private-key.pem /etc/bootstrap/ssl/server-ca-private-key.pem;
   ln --symbolic /bootstrap/assets/ssl/vm-ca-crt.pem /etc/bootstrap/ssl/server-ca-crt.pem;
 
-else ## Automatic CA generation, and/or for a production server.
+else ## Automatic CA generation if the default is not available.
 
   ## CA public/private key pair for this server.
 
