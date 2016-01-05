@@ -33,9 +33,9 @@ while read -r _oldrev _newrev _refname; do
       phing post-receive-build; # Runs the build routine.
       echo 'Ran `phing build` in the `/app` directory.'; fi;
 
-    if [[ -x ./.post-receive ]]; then
-      ./.post-receive; # Custom post-receive hook.
-      echo 'Ran `.post-receive` in the `/app` directory.'; fi;
+    if [[ -x ./post-receive ]]; then
+      ./post-receive; # Custom post-receive hook.
+      echo 'Ran `post-receive` in the `/app` directory.'; fi;
 
     disable-app-maintenance-mode; # Restore.
   fi;
