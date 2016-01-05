@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Does a group exist?
+
+function group-exists() {
+  grep --perl-regexp --quiet '^'"$(esc-regex "${1:-}")"'\:' /etc/group;
+};

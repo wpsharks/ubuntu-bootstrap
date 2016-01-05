@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Random key generator.
+
+function keygen() {
+  cat /dev/urandom | tr -dc "${2:-a-zA-Z0-9}" | fold -w ${1:-64} | head -n 1 || true;
+};

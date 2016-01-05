@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+
+  # Install PHP and process manager.
+
+  _custom_php_version=7.0.1;
+
+  ## Dependencies.
+
+  apt-get install g++ --yes;
+  apt-get install bison --yes;
+  apt-get install libltdl-dev --yes;
+  apt-get install libicu-dev --yes;
+  apt-get install libbz2-dev --yes;
+  apt-get install libxml2-dev --yes;
+  apt-get install libxslt1-dev --yes;
+  apt-get install libpspell-dev --yes;
+  apt-get install libenchant-dev --yes;
+  apt-get install libmcrypt-dev --yes;
+  apt-get install libgmp-dev --yes;
+  apt-get install libpng-dev --yes;
+  apt-get install libjpeg8-dev --yes;
+  apt-get install libfreetype6-dev --yes;
+  apt-get install libmariadbclient-dev --yes;
+  apt-get install libmemcached-dev --yes;
+  apt-get install libmemcached-tools --yes;
+  apt-get install libmemcached10 --yes;
+  apt-get install libcurl4-openssl-dev --yes;
+
+  ln --symbolic /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h;
+
+  mkdir --parents /usr/local/php;
+
+  mkdir --parents /etc/php/conf.d;
+  mkdir --parents /etc/php/cli/conf.d;
+  mkdir --parents /etc/php/fpm/conf.d;
+
+  mkdir --parents --mode=750 /var/log/php;
+  chown www-data:adm /var/log/php;
+
+  ## Compile PHP & any additional extensions.
+
+  ### If we have a GZ file we can use it to save time!
+
+  if [[ "${CFG_INSTALL_PHP_VERSION}" != custom-src && -f /bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz ]]; then
+
+    tar --extract --ungzip --verbose --strip-components=3 \
+      --file=/bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz -C /usr/local/php;
+
+  else ### Compile PHP & any additional extensions from source; i.e., `custom-src`.
+
+    git clone https://github.com/php/php-src /usr/local/src/php --branch=php-"${_custom_php_version}" --depth=1;
+
+    cd /usr/local/src/php;
+
+    ./buildconf --force;
+
+    _php_configure_args=" \
+      --prefix=/usr/local/php \
+      \
+      --without-pear \
+      \
+      --with-bz2 \
+      --with-zlib \
+      --enable-zip \
+      \
+      --with-mcrypt \
+      --with-openssl \
+      \
+      --with-curl \
+      --enable-ftp \
+      \
+      --with-mysqli \
+      --with-pdo-mysql \
+      \
+      --enable-sockets \
+      --enable-pcntl \
+      \
+      --with-pspell \
+      --with-enchant \
+      \
+      --with-gettext \
+      --enable-intl \
+      \
+      --with-gd \
+      --enable-exif \
+      --with-png-dir \
+      --with-jpeg-dir \
+      --with-freetype-dir \
+      \
+      --with-gmp \
+      --enable-bcmath \
+      \
+      --enable-sysvmsg \
+      --enable-sysvsem \
+      --enable-sysvshm \
+      \
+      --with-xsl \
+      --enable-mbstring \
+      --enable-calendar \
+    ";
+    ./configure ${_php_configure_args} \
+      --with-config-file-path=/etc/php/cli \
+      --with-config-file-scan-dir=/etc/php/cli/conf.d;
+
+    make; make install; make clean;
+
+    ./configure ${_php_configure_args} \
+      --disable-cli --enable-fpm \
+      --with-fpm-user=www-data \
+      --with-fpm-group=www-data \
+      --with-config-file-path=/etc/php/fpm \
+      --with-config-file-scan-dir=/etc/php/fpm/conf.d;
+
+    make; make install; make clean;
+
+    ### Compile the igbinary extension.
+
+    # @TODO Once it supports PHP7.
+    #git clone xxx /usr/local/src/igbinary --branch=master --depth=1;
+
+    #cd /usr/local/src/igbinary;
+
+    #phpize; # Does not require PEAR.
+
+    #./configure \
+    #CFLAGS='-O2 -g' --enable-igbinary \
+    #--with-php-config=/usr/local/php/bin/php-config;
+
+    #make;
+    #make install;
+
+    ### Compile memcached extension.
+
+    git clone https://github.com/php-memcached-dev/php-memcached /usr/local/src/php-memcached --branch=php7 --depth=1;
+
+    cd /usr/local/src/php-memcached;
+
+    /usr/local/php/bin/phpize; # Does not require PEAR.
+
+    ./configure \
+    --disable-memcached-sasl \
+    --with-php-config=/usr/local/php/bin/php-config;
+    # @TODO Once it supports PHP7 use `--enable-memcached-igbinary`.
+
+    make; make install;
+
+    ### Tar & GZ the PHP build (w/ extensions too).
+
+    rm --force /bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz;
+
+    tar --create --verbose --gzip \
+      --file=/bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz \
+      /usr/local/php;
+  fi;
+
+  ## Create binary symlinks.
+
+  ln --symbolic /usr/local/php/bin/php /usr/bin/php;
+  ln --symbolic /usr/local/php/bin/phpize /usr/bin/phpize;
+  ln --symbolic /usr/local/php/sbin/php-fpm /usr/sbin/php-fpm;
+  ln --symbolic /bootstrap/src/php/fpm/test-config /usr/sbin/php-fpm-test-config;
+
+  ## Create PHP config file symlinks.
+
+  ln --symbolic /bootstrap/src/php/.ini /etc/php/conf.d/z90.ini;
+  ln --symbolic /etc/php/conf.d/z90.ini /etc/php/cli/conf.d/z90.ini;
+  ln --symbolic /etc/php/conf.d/z90.ini /etc/php/fpm/conf.d/z90.ini;
+  ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php/fpm/fpm.conf;
+
+  ## Create the upstart configuration file for PHP-FPM.
+  ## Note: this cannot be a symlink. That results in an error.
+
+  cp /bootstrap/src/php/fpm/upstart.tpl.conf /etc/init/php-fpm.conf;
+
+  ## Setup log rotation for PHP-related log files.
+  ## Note that app-specific log files can be placed here also.
+
+  ln --symbolic /bootstrap/src/php/logrotate /etc/logrotate.d/php;
+
+  # Enable other extensions (based on config).
+
+  . /bootstrap/src/setups/php/igbinary;
+  . /bootstrap/src/setups/php/memcache;
+  . /bootstrap/src/setups/php/opcache;
+
+  # Restart service.
+
+  service php-fpm restart;
+
+  # Housekeeping.
+
+  unset _custom_php_version; unset _php_configure_args;
+
+else echo 'Skipping custom PHP installation.'; fi;

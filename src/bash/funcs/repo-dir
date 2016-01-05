@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Repo dir.
+
+function repo-dir() {
+  local file;
+  local dir;
+  file="${BASH_SOURCE[0]}";
+  dir="$(dirname "${file}")";
+  dir="$(dirname "${dir}")";
+  dir="$(dirname "${dir}")";
+  echo "${dir}";
+};

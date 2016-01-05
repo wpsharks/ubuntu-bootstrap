@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
+
+  # Install.
+
+  apt-get install ufw --yes;
+
+  # Default config.
+
+  ufw default deny incoming;
+  ufw default allow outgoing;
+
+  # Allow SSH access for admins.
+
+  ufw limit 22/tcp; # SSH, SFTP, Git, etc.
+  # limit = max of 6 connections every 30 seconds.
+  # See: `/lib/ufw/user.rules` for details.
+
+  # Open MySQL port 3306 to all VPN connections?
+
+  if can-run mysql && { is-vagrant || [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; }; then
+    if is-vagrant; then # On a local VM this has a slightly different meaning.
+      ufw allow 3306/tcp; # Wide open on a local Vagrant VM.
+    else # On the private network interface only.
+      ufw allow in on eth1 to any port 3306;
+    fi;
+  fi;
+  # Open up the HTTP/HTTPS port numbers `80` and `443`?
+
+  if can-run nginx || can-run apache2; then # Running a web server?
+    if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+
+      # See: <https://www.cloudflare.com/ips/>
+      _ips_v4="$(curl https://www.cloudflare.com/ips-v4)";
+      _ips_v6="$(curl https://www.cloudflare.com/ips-v6)";
+
+      while read -ra _ip; do
+        _ip="$(trim "${_ip}")";
+        if [[ -n "${_ip}" ]]; then
+          sudo ufw allow from "${_ip}" to any port 80;
+          sudo ufw allow from "${_ip}" to any port 443;
+        fi;
+      done <<< "${_ips_v4}"$'\n'"${_ips_v6}";
+
+      unset _ips_v4; unset _ips_v6; unset _ip;
+
+    else # Wide open w/o any DDoS protection whatsoever.
+      ufw allow 80/tcp; ufw allow 443/tcp;
+    fi;
+  fi;
+  # Restart firewall now; i.e., apply changes.
+
+  service ufw restart; # Via upstart.
+
+else echo 'Skipping firewall installation.'; fi;

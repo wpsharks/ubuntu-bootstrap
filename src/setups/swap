@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_SWAP}" == 1 ]]; then
+
+  # Configure swap space.
+  # see <http://jas.xyz/1NFX0iw>
+
+  fallocate -l 4G /swap;
+  chmod 600 /swap;
+
+  mkswap /swap;
+  swapon /swap;
+  echo '/swap none swap sw 0 0' >> /etc/fstab;
+
+  echo '10' > /proc/sys/vm/swappiness;
+  echo 'vm.swappiness = 10' >> /etc/sysctl.conf;
+
+  sysctl vm.vfs_cache_pressure=50;
+  echo 'vm.vfs_cache_pressure = 50' >> /etc/sysctl.conf;
+
+else echo 'Skipping /swap installation.'; fi;

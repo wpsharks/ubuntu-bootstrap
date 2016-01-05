@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Mkdir w/ better defaults.
-
-function mkdir() {
-  command mkdir --parents --verbose "${@}";
-};

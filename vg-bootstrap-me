@@ -5,8 +5,8 @@
 
 # Include strict mode & functions.
 
-. "$(dirname "${BASH_SOURCE[0]}")"/assets/bash/strict-mode;
-. "$(dirname "${BASH_SOURCE[0]}")"/assets/bash/functions;
+. "$(dirname "${BASH_SOURCE[0]}")"/src/bash/strict-mode;
+. "$(dirname "${BASH_SOURCE[0]}")"/src/bash/functions;
 
 # Maybe flush the DNS cache to avoid problems.
 

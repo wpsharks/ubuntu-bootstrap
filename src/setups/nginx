@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
+
+  # Install Ngnix web server.
+
+  apt-add-repository ppa:nginx/development --yes;
+  apt-get update; # Update after adding repo.
+  apt-get install nginx --yes;
+
+  # Config Ngnix web server.
+
+  rm --force /etc/nginx/nginx.conf;
+  rm --force /etc/nginx/sites-enabled/default;
+  ln --symbolic /bootstrap/src/nginx/.conf /etc/nginx/nginx.conf;
+
+  if is-vagrant; then # Disable sendfile on vagrant VMs.
+    perl -i -wpe 's/^(\s*)sendfile\s+.*$/$1sendfile off;/uim' /bootstrap/src/nginx/.conf;
+  fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
+
+  # Restart service.
+
+  service nginx restart;
+
+else echo 'Skipping Nginx installation.'; fi;

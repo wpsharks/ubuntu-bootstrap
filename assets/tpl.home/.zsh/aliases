@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Aliases are deprecated in favor of shell functions.
-# See: `~/.zsh/funcs` for improved aliases.

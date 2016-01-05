@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Validate incoming args.
+
+file="${1:-}";
+recipient="${2:-}";
+
+if [[ ! -f "${file}" ]]; then
+  echo 'Expecting input file.'; exit 1;
+fi;
+
+# Upload for sharing via transfer.sh.
+
+if [[ -n "${recipient}" ]]; then
+
+  echo 'Uploading encrypted file for: '"${recipient}";
+
+  link="$(cat "${file}" \
+    | keybase encrypt "${recipient}" \
+    | curl --upload-file '-' https://transfer.sh/"$(basename "${file}")" \
+    )";
+
+  echo -n "${link}" | pbcopy; echo "${link}";
+  echo 'Copied to clipboard; expires in 14 days';
+
+else # Unencrypted file (default behavior w/ no recipient).
+
+  echo 'Uploading file for public sharing.';
+
+  link="$(cat "${file}" \
+    | curl --upload-file '-' https://transfer.sh/"$(basename "${file}")" \
+    )";
+
+  echo -n "${link}" | pbcopy; echo "${link}";
+  echo 'Copied to clipboard; expires in 14 days';
+fi;

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Diff (in color).
+
+function diff() {
+  colordiff "${@}";
+};

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Configure server timezone.
+
+echo 'Etc/UTC' > /etc/timezone;
+dpkg-reconfigure --frontend noninteractive tzdata;

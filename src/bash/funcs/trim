@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Trim utility.
+
+function trim() {
+  if [[ -p /dev/stdin ]]; then
+    echo -n "$(perl -wpe 's/(^\s+|\s+\$)//ug')";
+  else
+    echo -n "$(echo "${1:-}" | perl -wpe 's/(^\s+|\s+\$)//ug')";
+  fi;
+};

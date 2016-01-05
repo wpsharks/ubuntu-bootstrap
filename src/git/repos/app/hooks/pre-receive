@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Check permissions.
+
+if ! user-in-group "$(whoami)" app; then
+  echo 'Permission denied. You are not in the `app` group.'; exit 1;
+fi; # This prevents pushers who are not in the `app` group.

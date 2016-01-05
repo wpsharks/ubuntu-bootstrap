@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Remove existing.
+
+if can-run git; then
+  apt-get --purge remove git --yes; fi;
+
+# Install Git (latest version).
+
+add-apt-repository ppa:git-core/ppa --yes;
+apt-get update; apt-get install git --yes;
+
+# Install the Hub tool from GitHub.
+
+curl https://github.com/github/hub/releases/download/v2.2.2/hub-linux-amd64-2.2.2.tgz --output /tmp/hub.tgz --location;
+
+mkdir --parents /usr/local/src/hub; # Live in this directory.
+tar --extract --ungzip --verbose --strip-components=1 --file=/tmp/hub.tgz -C /usr/local/src/hub;
+
+ln --symbolic /usr/local/src/hub/bin/hub /usr/bin/hub;
+chmod +x /usr/bin/hub; # Make `hub` executable now.
+
+# Install Git LFS for large file storage.
+
+curl https://packagecloud.io/gpg.key | sudo apt-key add -;
+apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main' --yes;
+apt-get update; apt-get install git-lfs --yes;
+
+# Make sure we have the large files for this repo.
+
+cd "$(repo-dir)"; git lfs pull;

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Install Keybase utility.
+
+mkdir --parents /usr/local/src/keybase;
+
+curl https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb \
+   --output /usr/local/src/keybase/latest-amd64.deb;
+
+dpkg --install /usr/local/src/keybase/latest-amd64.deb;

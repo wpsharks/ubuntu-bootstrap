@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_APP_REPO}" == 1 ]]; then
+
+  # Configure repo.
+  # See also: `/src/setups/mkdirs`.
+
+  git init --bare /repos/app.git;
+  git --git-dir=/repos/app.git symbolic-ref HEAD refs/heads/master;
+
+  ln --symbolic --force /bootstrap/src/git/repos/app/hooks/pre-receive /repos/app.git/hooks/pre-receive;
+  ln --symbolic --force /bootstrap/src/git/repos/app/hooks/post-receive /repos/app.git/hooks/post-receive;
+
+  # Set permissions for files in the repo directory.
+
+  chown --recursive nobody:app /repos/app.git;
+  find /repos/app.git -type d -exec chmod 2775 {} \;
+  find /repos/app.git -type f -exec chmod 664 {} \;
+
+else echo 'Skipping app repo installation.'; fi;

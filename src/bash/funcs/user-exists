@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Does a user exist?
+
+function user-exists() {
+  id --user "${1:-}" &>/dev/null;
+};

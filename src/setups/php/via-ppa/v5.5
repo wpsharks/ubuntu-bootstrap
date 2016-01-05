@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
+
+  # Install from Ondrej's PPA.
+  # See: <https://launchpad.net/~ondrej/+archive/ubuntu/php5>
+
+  add-apt-repository ppa:ondrej/php5 --yes;
+  apt-get update; # Update after adding PPA.
+
+  apt-get install php5-cli --yes;
+  apt-get install php5-fpm --yes;
+
+  apt-get install php5-mysql --yes;
+  apt-get install php5-curl --yes;
+  apt-get install php5-intl --yes;
+  apt-get install php5-pspell --yes;
+  apt-get install php5-gmp --yes;
+  apt-get install php5-gd --yes;
+  apt-get install php5-mcrypt --yes;
+  apt-get install php5-memcached --yes;
+
+  ## Create PHP config file symlinks.
+
+  ln --symbolic /bootstrap/src/php/.ini /etc/php5/cli/conf.d/z90.ini;
+  ln --symbolic /bootstrap/src/php/.ini /etc/php5/fpm/conf.d/z90.ini;
+
+  mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf~;
+  ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php5/fpm/pool.d/z90.conf;
+
+  perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask0002/uim' /etc/init/php5-fpm.conf;
+
+  # Restart service.
+
+  service php5-fpm restart;
+
+else echo 'Skipping PHP v5.5 installation.'; fi;

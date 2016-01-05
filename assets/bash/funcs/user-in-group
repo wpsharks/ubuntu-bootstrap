@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Is a user in a specific group?
-
-function user-in-group() {
-  id --name --groups "${1:-}" | grep --perl-regexp --quiet "\b${2:-}\b";
-};

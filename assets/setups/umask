@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-# Set hard-coded system-wide default.
-
-perl -i -wpe 's/^(\s*)UMASK\s+.*$/$1UMASK 002/uim' /etc/login.defs;
-
-# Set the default for sudoers also; this is a special case.
-
-echo 'Defaults umask=0002' > /etc/sudoers.d/umask;

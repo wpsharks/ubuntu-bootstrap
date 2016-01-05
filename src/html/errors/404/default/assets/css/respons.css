@@ -1,0 +1,95 @@
+
+
+@media (max-width: 1200px) {
+
+    .info {
+        margin-left: 300px;
+    }
+
+}
+
+@media (max-width: 992px) {
+
+    .info {
+        margin-left: 0;
+        text-align: center;
+    }
+    #wrapper{
+        min-height: 0px;
+        height: auto;
+
+    }
+    #footer {
+        height: auto;
+        margin-top: 0;
+    }
+
+}
+
+@media (max-width: 768px) {
+    .brick {
+        width: 256px;
+    }
+    .number {
+        text-align: center;
+    }
+    .number .four {
+        width: 123px;
+        height: 157px;
+    }
+    .number .zero {
+        width: 130px;
+        height: 157px;
+    }
+    .number .zero .nail {
+        width: 18px;
+        top: 12px;
+        left: 64px;
+    }
+
+    .worker {
+        left: 20px;
+        top: 7px;
+        width: 200px;
+        height: 249px;
+    }
+
+    .tools {
+        right: 8px;
+        top: 166px;
+        width: 330px;
+        height: 90px;
+    }
+
+    .info h2 {
+        font-size: 30px;
+    }
+
+    .info p {
+        font-size: 16px;
+    }
+
+}
+
+@media (max-width: 440px) {
+    .brick {
+        width: 156px;
+    }
+    .number {
+        text-align: center;
+        margin-top: 32px;
+    }
+    .number .four {
+        width: 80px;
+        height: 103px;
+    }
+    .number .zero {
+        width: 85px;
+        height: 112px;
+    }
+    .number .zero .nail {
+        width: 11px;
+        top: 14px;
+        left: 44px;
+    }
+}

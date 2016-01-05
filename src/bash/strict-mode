@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# Strict mode.
+
+set -o nounset;
+set -o errexit;
+set -o errtrace;
+set -o pipefail;
+
+# Shell options.
+
+shopt -s dotglob;
+shopt -s globstar;
+shopt -s nullglob;
+shopt -s failglob;
+
+# Stack trace handler.
+
+function stack_trace() {
+  local last_command_status_code=$?;
+  set +o xtrace; # See: <http://jas.xyz/1my00XN>
+  local exit_status_code="${1:-1}";
+
+  echo '----------------------------------------------------------------------';
+  echo 'Error in '"${BASH_SOURCE[1]}"':'"${BASH_LINENO[0]}";
+  echo '`'"${BASH_COMMAND}"'` exited with status `'"${last_command_status_code}"'`.';
+
+  if [[ ${#FUNCNAME[@]} -gt 2 ]]; then
+    echo 'Stack Trace:';
+    for ((_i=1; _i < ${#FUNCNAME[@]}-1; _i++)); do
+      echo " ${_i}: ${BASH_SOURCE[${_i}+1]}:${BASH_LINENO[${_i}]} ${FUNCNAME[${_i}]}(...)";
+    done;
+  fi;
+  echo 'Exiting w/ status `'"${exit_status_code}"'`.'; exit "${exit_status_code}";
+}; trap stack_trace ERR;

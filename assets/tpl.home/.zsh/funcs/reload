@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Reload current login shell.
-
-function reload() {
-  "${SHELL}" -l;
-};

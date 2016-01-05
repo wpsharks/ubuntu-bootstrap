@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Get my IP address.
-
-function myip() {
-  dig +short myip.opendns.com @resolver1.opendns.com;
-};

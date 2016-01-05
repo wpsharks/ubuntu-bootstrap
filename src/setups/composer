@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if can-run php; then
+
+  # Install Composer dependency management for PHP.
+
+  curl https://getcomposer.org/installer \
+    | php -- --install-dir=/usr/bin --filename=composer;
+
+else echo 'Skipping PHP Composer installation.'; fi;

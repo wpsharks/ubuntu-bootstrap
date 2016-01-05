@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Home directory.
+
+function home() {
+  builtin cd ~/ && ls;
+};

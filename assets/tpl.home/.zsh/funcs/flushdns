@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Flush DNS cache on a Mac.
-
-function flushdns() {
-  sudo /etc/init.d/dns-clean;
-};

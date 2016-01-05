@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+
+  ## Enable the memcached extension.
+
+  echo 'extension=memcached.so' > /etc/php/conf.d/memcached.ini;
+  ln --symbolic /etc/php/conf.d/memcached.ini /etc/php/cli/conf.d/memcached.ini;
+  ln --symbolic /etc/php/conf.d/memcached.ini /etc/php/fpm/conf.d/memcached.ini;
+
+  # Restart service.
+
+  service php-fpm restart;
+
+else echo 'Skipping Memcache extension for custom PHP.'; fi;

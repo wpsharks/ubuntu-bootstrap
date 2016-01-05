@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if can-run php && can-run composer \
+  && [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+
+  # Install websharks/core library.
+
+  git clone https://github.com/websharks/core /usr/local/src/wsc --branch=master --depth=1;
+
+  # Satisfy websharks/core dependencies.
+
+  cd /usr/local/src/wsc; composer install;
+
+  # Configure websharks/core CRON jobs.
+
+  echo '@hourly root /bootstrap/src/crons/logs-via-email >/dev/null 2>&1' >> /etc/crontab;
+
+else echo 'Skipping websharks/core installation'; fi;

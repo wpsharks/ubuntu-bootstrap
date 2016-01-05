@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Change directory.
-
-function cd() {
-  builtin cd "${@}" && ls;
-};

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Prompt handler.
+
+function precmd() {
+  # Left prompt (main).
+
+  PROMPT='%F{002}'"$(whoami)";
+  PROMPT+='%F{240}@%F{006}'"$(hostname --long)";
+  PROMPT+='%F{233}[%F{240}'"${PWD}"'%F{233}]'$'\n';
+  PROMPT+='%F{002}$ ';
+  PROMPT+='%f';
+
+  # Right side.
+
+  RPROMPT='%F{002}'"$(whoami)";
+  RPROMPT+='%F{240}@%F{006}'"$(hostname --long)";
+  is-vagrant && RPROMPT+='%F{240} (VM)' || RPROMPT+='';
+  RPROMPT+='%f';
+};

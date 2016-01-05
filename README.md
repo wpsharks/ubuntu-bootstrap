@@ -105,7 +105,7 @@ In the project directory you'll find a `/vg-bootstrap` file. This bash script ru
 
 ##### Customization (Two Choices Available)
 
-1. Customize `/bootstrap/installer` and the associated setup files that it calls upon, which are located in: `/assets/setups/*`. _**Note:** If you go this route, there really is no reason to customize `/vg-bootstrap`. You can leave it as-is._
+1. Customize `/bootstrap/installer` and the associated setup files that it calls upon, which are located in: `/src/setups/*`. _**Note:** If you go this route, there really is no reason to customize `/vg-bootstrap`. You can leave it as-is._
 
 2. Or, instead of working with the more complex installer, you can keep things simple and add your customizations to the `/vg-bootstrap` script, which is a very simple starting point. The `/vg-bootstrap` runs whenever you type `vagrant up`, so this is a logical choice for beginners. _**Note:** If you go this route, you can simply choose not to run `/bootstrap/installer`, because all of your customizations will be in the `/vg-bootstrap`; i.e., there will be no reason to run the installer._
 
@@ -147,7 +147,7 @@ In either case, the domain name is also wildcarded; i.e., `my.vm`, `www.my.vm`, 
 ### Testing WordPress Themes/Plugins Easily!
 
 See `/Vagrantfile` where you will find this section already implemented.
-_~ See also: `/assets/setups/wordpress`_
+_~ See also: `/src/setups/wordpress`_
 
 ```ruby
 # Mount WordPress projects directory.
@@ -170,15 +170,15 @@ end;
 
 The `Vagrantfile` is automatically mounting drives on your VM that are sourced by your local `~/projects` directory (if you have one). Thus, if you have your WordPress themes/plugins in `~/projects/wordpress` (i.e., in your local filesystem), it will be mounted on the VM automatically, as `/wordpress`.
 
-In the `assets/setups/wordpress` file, we iterate `/wordpress` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<http://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
+In the `src/setups/wordpress` file, we iterate `/wordpress` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<http://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
 
-The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `assets/setups/wordpress` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
+The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `src/setups/wordpress` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
 
 #### The default WordPress mapping looks like this:
 
 - `~/projects/wordpress` on your local system.
   - Is mounted on the VM, as: `/wordpress`
-- Then (on the VM) the `/assets/setups/wordpress` script symlinks each theme/plugin into:
+- Then (on the VM) the `/src/setups/wordpress` script symlinks each theme/plugin into:
   - `/app/src/wp-content/[themes|plugins]` appropriately.
 
 #### What directory structure do I need exactly?

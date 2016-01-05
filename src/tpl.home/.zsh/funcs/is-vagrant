@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Is vagrant?
+
+function is-vagrant() {
+  if id -u vagrant &>/dev/null; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};

@@ -1,0 +1,503 @@
+#!/usr/bin/env bash
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Need the dialog utility.
+
+apt-get install dialog --yes --force-yes;
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Set the dialogrc file for this routine.
+
+export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Config keys.
+
+cfgs=(); # Initialize.
+
+export CFG_HOST; cfgs+=('CFG_HOST');
+export CFG_ROOT_HOST; cfgs+=('CFG_ROOT_HOST');
+export CFG_SLUG; cfgs+=('CFG_SLUG');
+export CFG_OTHER_HOSTS; cfgs+=('CFG_OTHER_HOSTS');
+
+export CFG_ADMIN_USERNAME; cfgs+=('CFG_ADMIN_USERNAME');
+export CFG_ADMIN_PASSWORD; cfgs+=('CFG_ADMIN_PASSWORD');
+export CFG_ADMIN_NAME; cfgs+=('CFG_ADMIN_NAME');
+export CFG_ADMIN_EMAIL; cfgs+=('CFG_ADMIN_EMAIL');
+export CFG_ADMIN_PUBLIC_EMAIL; cfgs+=('CFG_ADMIN_PUBLIC_EMAIL');
+export CFG_ADMIN_PREFERRED_SHELL; cfgs+=('CFG_ADMIN_PREFERRED_SHELL');
+export CFG_ADMIN_AUTHORIZED_SSH_KEYS; cfgs+=('CFG_ADMIN_AUTHORIZED_SSH_KEYS');
+
+export CFG_TOOLS_USERNAME; cfgs+=('CFG_TOOLS_USERNAME');
+export CFG_TOOLS_PASSWORD; cfgs+=('CFG_TOOLS_PASSWORD');
+export CFG_TOOLS_PMA_BLOWFISH_KEY; cfgs+=('CFG_TOOLS_PMA_BLOWFISH_KEY');
+
+export CFG_MYSQL_DB_HOST; cfgs+=('CFG_MYSQL_DB_HOST');
+export CFG_MYSQL_DB_PORT; cfgs+=('CFG_MYSQL_DB_PORT');
+export CFG_MYSQL_SSL_ENABLE; cfgs+=('CFG_MYSQL_SSL_ENABLE');
+export CFG_MYSQL_DB_CHARSET; cfgs+=('CFG_MYSQL_DB_CHARSET');
+export CFG_MYSQL_DB_COLLATE; cfgs+=('CFG_MYSQL_DB_COLLATE');
+export CFG_MYSQL_DB_NAME; cfgs+=('CFG_MYSQL_DB_NAME');
+export CFG_MYSQL_DB_USERNAME; cfgs+=('CFG_MYSQL_DB_USERNAME');
+export CFG_MYSQL_DB_PASSWORD; cfgs+=('CFG_MYSQL_DB_PASSWORD');
+
+export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
+export CFG_INSTALL_WS_CA_FILES; cfgs+=('CFG_INSTALL_WS_CA_FILES');
+export CFG_INSTALL_CRTS_VIA_LE; cfgs+=('CFG_INSTALL_CRTS_VIA_LE');
+export CFG_INSTALL_POSTFIX; cfgs+=('CFG_INSTALL_POSTFIX');
+export CFG_INSTALL_NGINX; cfgs+=('CFG_INSTALL_NGINX');
+export CFG_INSTALL_APACHE; cfgs+=('CFG_INSTALL_APACHE');
+export CFG_INSTALL_MYSQL; cfgs+=('CFG_INSTALL_MYSQL');
+export CFG_INSTALL_MYSQL_DB_IMPORT_FILE; cfgs+=('CFG_INSTALL_MYSQL_DB_IMPORT_FILE');
+export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
+export CFG_INSTALL_MEMCACHE; cfgs+=('CFG_INSTALL_MEMCACHE');
+export CFG_INSTALL_PHP; cfgs+=('CFG_INSTALL_PHP');
+export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
+export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
+export CFG_INSTALL_WORDPRESS; cfgs+=('CFG_INSTALL_WORDPRESS');
+export CFG_INSTALL_WORDPRESS_VM_SYMLINKS; cfgs+=('CFG_INSTALL_WORDPRESS_VM_SYMLINKS');
+export CFG_INSTALL_FIREWALL; cfgs+=('CFG_INSTALL_FIREWALL');
+export CFG_INSTALL_FAIL2BAN; cfgs+=('CFG_INSTALL_FAIL2BAN');
+export CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN; cfgs+=('CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN');
+export CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443; cfgs+=('CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443');
+export CFG_INSTALL_UNATTENDED_UPGRADES; cfgs+=('CFG_INSTALL_UNATTENDED_UPGRADES');
+
+export CFG_CONFIG_FILE; cfgs+=('CFG_CONFIG_FILE');
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Default config. values.
+
+CFG_HOST="$(hostname --fqdn)";
+
+CFG_ROOT_HOST="$(hostname --domain)";
+if [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]]; then
+   CFG_ROOT_HOST="${CFG_HOST}";
+fi;
+
+CFG_SLUG="$(hostname --short)";
+
+CFG_OTHER_HOSTS='';
+
+CFG_ADMIN_USERNAME='';
+if is-vagrant; then
+  CFG_ADMIN_USERNAME='admin';
+fi;
+
+CFG_ADMIN_PASSWORD='';
+if is-vagrant; then
+  CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
+fi;
+
+CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
+
+CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com';
+if is-vagrant; then
+  CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
+fi;
+
+CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
+if is-vagrant; then
+  CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
+fi;
+
+CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
+
+CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
+if ! is-vagrant && [[ -f /root/.ssh/authorized_keys ]]; then
+  CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
+fi;
+
+CFG_TOOLS_USERNAME='%%CFG_ADMIN_USERNAME%%';
+CFG_TOOLS_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)";
+
+CFG_MYSQL_DB_HOST='127.0.0.1';
+CFG_MYSQL_DB_PORT='3306';
+CFG_MYSQL_SSL_ENABLE='1';
+CFG_MYSQL_DB_CHARSET='utf8mb4';
+CFG_MYSQL_DB_COLLATE='utf8mb4_unicode_ci';
+CFG_MYSQL_DB_NAME='db0';
+
+CFG_MYSQL_DB_USERNAME='client';
+if is-vagrant; then
+  CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
+fi;
+
+CFG_MYSQL_DB_PASSWORD="$(keygen 32)";
+if is-vagrant; then
+  CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+fi;
+
+CFG_INSTALL_SWAP='1';
+if is-vagrant; then
+  CFG_INSTALL_SWAP='0';
+fi;
+
+CFG_INSTALL_WS_CA_FILES='1';
+if is-vagrant; then
+  CFG_INSTALL_WS_CA_FILES='0';
+fi;
+
+CFG_INSTALL_CRTS_VIA_LE='0';
+if is-vagrant; then
+  CFG_INSTALL_CRTS_VIA_LE='0';
+fi;
+
+CFG_INSTALL_POSTFIX='1';
+CFG_INSTALL_NGINX='1';
+CFG_INSTALL_APACHE='0';
+CFG_INSTALL_MYSQL='1';
+CFG_INSTALL_MYSQL_DB_IMPORT_FILE='';
+CFG_INSTALL_RAMDISK='1';
+CFG_INSTALL_MEMCACHE='1';
+CFG_INSTALL_PHP='1';
+CFG_INSTALL_PHP_VERSION='custom';
+# `custom` or `custom-src` (i.e., from source).
+# Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`, `5.4`.
+
+CFG_INSTALL_APP_REPO='1';
+CFG_INSTALL_WORDPRESS='1';
+
+CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
+if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
+  CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
+fi;
+
+CFG_INSTALL_FIREWALL='1';
+CFG_INSTALL_FAIL2BAN='1';
+
+CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0';
+if is-vagrant; then
+  CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
+fi;
+
+CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1';
+if is-vagrant; then
+  CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
+fi;
+
+CFG_INSTALL_UNATTENDED_UPGRADES='1';
+
+CFG_CONFIG_FILE='/app/.config.json';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Fills replacement codes.
+
+function fill_cfg_rcs() {
+  local _cfg_key;
+  local _cfg_rc_key;
+
+  for _cfg_key in "${cfgs[@]}"; do
+    if [[ -z "${1:-}" || "${_cfg_key}" == "${1}" ]]; then
+      for _cfg_rc_key in "${cfgs[@]}"; do
+        export "${_cfg_key}"="${!_cfg_key//%%${_cfg_rc_key}%%/${!_cfg_rc_key}}";
+      done;
+    fi;
+  done;
+};
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Fill, clean, sanitize.
+
+function fill_clean_sanitize_cfgs() {
+  local _cfg_key;
+
+  fill_cfg_rcs; # All!
+
+  for _cfg_key in "${cfgs[@]}"; do
+    export "${_cfg_key}"="$(trim "${!_cfg_key}")";
+  done;
+
+  CFG_HOST="${CFG_HOST,,}";
+  CFG_ROOT_HOST="${CFG_ROOT_HOST,,}";
+  CFG_SLUG="${CFG_SLUG,,}";
+  CFG_OTHER_HOSTS="${CFG_OTHER_HOSTS,,}";
+  CFG_OTHER_HOSTS="$(echo "${CFG_OTHER_HOSTS}" | tr ',' ' ')";
+
+  CFG_ADMIN_USERNAME="${CFG_ADMIN_USERNAME,,}";
+  CFG_ADMIN_EMAIL="${CFG_ADMIN_EMAIL,,}";
+  CFG_ADMIN_PUBLIC_EMAIL="${CFG_ADMIN_PUBLIC_EMAIL,,}";
+
+  CFG_TOOLS_USERNAME="${CFG_TOOLS_USERNAME,,}";
+
+  CFG_MYSQL_DB_HOST="${CFG_MYSQL_DB_HOST,,}";
+  CFG_MYSQL_DB_CHARSET="${CFG_MYSQL_DB_CHARSET,,}";
+  CFG_MYSQL_DB_COLLATE="${CFG_MYSQL_DB_COLLATE,,}";
+  CFG_MYSQL_DB_NAME="${CFG_MYSQL_DB_NAME,,}";
+  CFG_MYSQL_DB_USERNAME="${CFG_MYSQL_DB_USERNAME,,}";
+};
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Validate configuration variables.
+
+function validate_cfgs() {
+  local _cfg_key;
+  local cfg_key_empty='';
+  local cfg_warning='';
+
+  ## Check emptys.
+
+  for _cfg_key in \
+    'CFG_ADMIN_USERNAME' \
+    'CFG_ADMIN_PASSWORD' \
+    'CFG_ADMIN_NAME' \
+    'CFG_ADMIN_EMAIL' \
+    'CFG_ADMIN_PUBLIC_EMAIL' \
+    ; do # None of these can be empty.
+
+      if [[ -z "${!_cfg_key}" ]]; then
+        cfg_key_empty="${_cfg_key}";
+        break; # Stop here.
+      fi;
+  done;
+
+  ## Validation; any problems?
+
+  if [[ -n "${cfg_key_empty}" ]]; then
+
+    cfg_warning='-- Config Errors Exist -------------------------------------------------------------'$'\n';
+    cfg_warning+='The following configuration key is empty: `'"${cfg_key_empty}"'`'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_NGINX}" == 1 && "${CFG_INSTALL_APACHE}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Please choose Nginx or Apache (not both). These run on the same ports.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vagrant; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='The installation of VM symlinks applies only when running a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is-vagrant; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Cannot install SSL certificates via LetsEncrypt when running on a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vagrant; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='CloudFlare integration is not possible when running on a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  fi; # End conflicts/validation.
+
+  ## Start them over again? i.e., does a warning exist?
+
+  if [[ -n "${cfg_warning}" ]]; then
+
+    if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
+
+      cfg_warning+='This error occurred because there is invalid data in the hard-coded defaults.'$'\n';
+      cfg_warning+='Please remove the `--use-defaults` flag and try again.'$'\n';
+      cfg_warning+='Also, please report this error to the developers.'$'\n';
+      cfg_warning+='Press any key to exit...'$'\n';
+
+      read -n1 -rsp "${cfg_warning}"; exit 1;
+
+    else # Allow them to start over; i.e., run the wizard again.
+
+      cfg_warning+='Press any key to start again w/ your existing options...'$'\n';
+
+      read -n1 -rsp "${cfg_warning}"; return 1;
+
+    fi; # End `--use-defaults` check.
+
+  fi; # End validation and warning presentation.
+
+  return 0; # No problems.
+};
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Configuration wizard via `dialog` utility.
+
+function cfgs_wizard() {
+  local cfgs_confirmed='0';
+  local _cfg_key _i _cfg_value;
+  local _cfg_package_options _cfg_package_option;
+  local _cfg_response; # All used below.
+
+  if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
+
+    # Fill, clean, sanitize.
+
+    fill_clean_sanitize_cfgs;
+
+    # Validate config values now.
+
+    validate_cfgs; # Failure results in exit w/ error.
+
+  else # Begin wizard loop & continue until we get confirmation.
+
+    while [[ "${cfgs_confirmed}" != 1 ]]; do
+
+      ## Ask for required config values.
+
+      for _cfg_key in \
+        'CFG_ADMIN_USERNAME' \
+        'CFG_ADMIN_PASSWORD' \
+        'CFG_ADMIN_NAME' \
+        'CFG_ADMIN_EMAIL' \
+        'CFG_ADMIN_PUBLIC_EMAIL' \
+        ; do _i=0; # Ask at least once.
+
+          fill_cfg_rcs "${_cfg_key}"; # Fill replacement codes.
+
+          while [[ "${_i}" -lt 1 ]] || [[ -z "${!_cfg_key}" ]]; do _i=$((_i+1));
+
+            _cfg_value="$(dialog \
+              --backtitle 'Configuration' \
+              --title 'Required Details' \
+              --no-cancel \
+              --inputbox "${_cfg_key}" 8 75 "${!_cfg_key}" \
+              3>&1 1>&2 2>&3)";
+
+            export "${_cfg_key}"="${_cfg_value}";
+
+          done;
+      done;
+
+      ## Ask for package installation options.
+
+      _cfg_package_options="$(dialog \
+        --backtitle 'Configuration' \
+        --title 'Installation Package Options' \
+        --no-cancel \
+        \
+        --separate-output --checklist 'Use space bar to toggle these.' 25 75 25 \
+        \
+        'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_MYSQL' 'Install?' "$([[ "${CFG_INSTALL_MYSQL}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_RAMDISK' 'Install?' "$([[ "${CFG_INSTALL_RAMDISK}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_MEMCACHE' 'Install?' "$([[ "${CFG_INSTALL_MEMCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHP' 'Install?' "$([[ "${CFG_INSTALL_PHP}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_FIREWALL' 'Install?' "$([[ "${CFG_INSTALL_FIREWALL}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_FAIL2BAN' 'Install?' "$([[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_UNATTENDED_UPGRADES' 'Install?' "$([[ "${CFG_INSTALL_UNATTENDED_UPGRADES}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        3>&1 1>&2 2>&3)"; # Output collection occurs here.
+
+      CFG_INSTALL_SWAP='0';
+      CFG_INSTALL_WS_CA_FILES='0';
+      CFG_INSTALL_CRTS_VIA_LE='0';
+      CFG_INSTALL_POSTFIX='0';
+      CFG_INSTALL_NGINX='0';
+      CFG_INSTALL_APACHE='0';
+      CFG_INSTALL_MYSQL='0';
+      CFG_INSTALL_RAMDISK='0';
+      CFG_INSTALL_MEMCACHE='0';
+      CFG_INSTALL_PHP='0';
+      CFG_INSTALL_APP_REPO='0';
+      CFG_INSTALL_WORDPRESS='0';
+      CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
+      CFG_INSTALL_FIREWALL='0';
+      CFG_INSTALL_FAIL2BAN='0';
+      CFG_INSTALL_UNATTENDED_UPGRADES='0';
+
+      for _cfg_package_option in $_cfg_package_options; do
+        export "${_cfg_package_option}"='1'; done;
+
+      ## Ask if they want to configure additional specifics.
+
+      if dialog \
+        --backtitle 'Configuration' \
+        --title 'Configure additional details?' \
+        --yes-label 'Yes (Configure)' \
+        --no-label 'No (Use Defaults)' \
+        --no-cancel \
+        --yesno '' 5 75; then
+
+          ### Ask for additional specific details.
+
+          for _cfg_key in \
+            'CFG_OTHER_HOSTS' \
+            \
+            'CFG_ADMIN_PREFERRED_SHELL' \
+            'CFG_ADMIN_AUTHORIZED_SSH_KEYS' \
+            \
+            'CFG_TOOLS_USERNAME' \
+            'CFG_TOOLS_PASSWORD' \
+            'CFG_TOOLS_PMA_BLOWFISH_KEY' \
+            \
+            'CFG_MYSQL_DB_HOST' \
+            'CFG_MYSQL_DB_PORT' \
+            'CFG_MYSQL_SSL_ENABLE' \
+            'CFG_MYSQL_DB_CHARSET' \
+            'CFG_MYSQL_DB_COLLATE' \
+            'CFG_MYSQL_DB_NAME' \
+            'CFG_MYSQL_DB_USERNAME' \
+            'CFG_MYSQL_DB_PASSWORD' \
+            \
+            'CFG_INSTALL_PHP_VERSION' \
+            'CFG_INSTALL_MYSQL_DB_IMPORT_FILE' \
+            'CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN' \
+            'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' \
+            \
+            'CFG_CONFIG_FILE' \
+            ; do
+              fill_cfg_rcs "${_cfg_key}";
+
+              _cfg_value="$(dialog \
+                --backtitle 'Configuration' \
+                --title 'Additional Details' \
+                --no-cancel \
+                --inputbox "${_cfg_key}" 10 70 "${!_cfg_key}" \
+                3>&1 1>&2 2>&3)";
+
+              export "${_cfg_key}"="${_cfg_value}";
+          done;
+      fi;
+
+      # Fill, clean, sanitize.
+
+      fill_clean_sanitize_cfgs;
+
+      # Validate config values now.
+
+      if ! validate_cfgs; then
+        continue; fi; # Begin again.
+
+      ## Sanitize & print list of all config vars now.
+
+      echo 'Your configuration looks like this:';
+      echo '-----------------------------------------';
+
+      for _cfg_key in "${cfgs[@]}"; do
+        echo "${_cfg_key}"'='"${!_cfg_key}"; done;
+
+      ## Quick review; ask for confirmation.
+
+      read -rp 'Does this all look right? [y/N] ' _cfg_response;
+      _cfg_response="${_cfg_response,,}"; # To lowercase.
+
+      if [[ "${_cfg_response}" =~ ^(yes|y)$ ]]; then
+        cfgs_confirmed='1'; fi;
+
+    done;
+  fi;
+
+  return 0; # Ready to go!
+};
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+cfgs_wizard; unset cfgs; # Run wizard and do housekeeping.

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Count occurrences of string.
+
+function dot-count() {
+  grep --perl-regexp --only-matching '\.' <<< "${1:-}" | wc --lines;
+};

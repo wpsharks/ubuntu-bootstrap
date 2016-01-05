@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]]; then
+
+  # Install Fail2Ban.
+
+  apt-get install fail2ban --yes;
+
+  # Symlink local Fail2Ban jail config file.
+
+  ln --symbolic /bootstrap/src/fail2ban/.conf /etc/fail2ban/jail.local;
+  perl -i -wpe 's/^(\s*)destemail\s*\=.*$/$1destemail = '"$(esc-regex-rv "${CFG_ADMIN_EMAIL}")"'/uim' /bootstrap/src/fail2ban/.conf;
+
+  # Restart service.
+
+  service fail2ban restart;
+
+else echo 'Skipping Fail2Ban installation.'; fi;
