@@ -8,4 +8,4 @@ fi;
 
 # Remove root SSH key (security).
 
-rm -f /root/.ssh/id_rsa;
+rm --force /root/.ssh/id_rsa;
