@@ -9,3 +9,4 @@ fi;
 # Remove root SSH key (security).
 
 rm --force /root/.ssh/id_rsa;
+rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;
