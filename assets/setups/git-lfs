@@ -12,11 +12,10 @@ apt-get update; apt-get install git --yes;
 
 # Install the Hub tool from GitHub.
 
-apt-get install ruby --yes; # Required by `hub`.
-
-curl https://hub.github.com/standalone \
-  --output /usr/bin/hub --location;
-
+mkdir --parents /usr/local/src/hub; # Live in this directory.
+curl https://github.com/github/hub/releases/download/v2.2.2/hub-linux-amd64-2.2.2.tgz --output /tmp/hub.tgz;
+tar --extract --ungzip --verbose --strip-components=1 --file=/tmp/hub.tgz -C /usr/local/src/hub;
+ln --symbolic /usr/local/src/hub/bin/hub /usr/bin/hub;
 chmod +x /usr/bin/hub; # Make `hub` executable now.
 
 # Install Git LFS for large file storage.
