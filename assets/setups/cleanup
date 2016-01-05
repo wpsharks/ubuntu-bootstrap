@@ -5,3 +5,7 @@
 if ! is-vagrant; then
   apt-get clean --yes;
 fi;
+
+# Remove root SSH key (security).
+
+rm -f /root/.ssh/id_rsa;

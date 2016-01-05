@@ -63,6 +63,9 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/assets/setups/firewall;
   . /bootstrap/assets/setups/fail2ban;
 
+  if [[ -f /bootstrap-app/post-install ]]; then
+    . /bootstrap-app/post-install; fi;
+
   . /bootstrap/assets/setups/cleanup;
 
   set +o xtrace; # Turn off comand printing.
