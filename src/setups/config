@@ -266,7 +266,7 @@ function validate_cfgs() {
     cfg_warning+='The following configuration key is empty: `'"${cfg_key_empty}"'`'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]]; then
+  elif [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && is-vagrant; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='The WebSharks SSL CA files require a production server.'$'\n';
