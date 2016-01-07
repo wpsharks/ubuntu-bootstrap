@@ -17,6 +17,7 @@ apt-get install unzip --yes;
 apt-get install pandoc --yes;
 apt-get install pandoc-citeproc --yes;
 
+apt-get install jq --yes;
 apt-get install acl --yes;
 apt-get install htop --yes;
 apt-get install tree --yes;

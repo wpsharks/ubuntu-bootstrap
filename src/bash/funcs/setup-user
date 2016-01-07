@@ -3,29 +3,78 @@
 # User setup/configuration utility.
 
 function setup-user() {
-  local user="${1:-}";
-  local name="${2:-}";
-  local email="${3:-}";
-  local shell="${4:-}";
-  local ssh_keys="${5:-}";
+  ## Initialize.
 
-  ## Validation.
+  local user='';
+  local name='';
+  local email='';
+  local shell='';
+  local ssh_keys='';
+  local home_dir='';
 
-  if [[ -z "${user}" ]]; then
-    return 1; fi; # Missing.
+  ## Parse options.
 
-  if ! user-exists "${user}"; then
-    return 1; fi; # Missing.
+  local short_options='u:n:e:s:k:';
+  local long_options='user:,name:,email:,shell:,ssh-keys:';
+  local options; options="$(getopt --options "${short_options}" \
+    --longoptions "${long_options}" -- "${@}")";
 
-  ## Determine home directory.
+  eval set -- "${options}"; while true; do
+     case "${1}" in
+        -u|--user)
+          user="${2}";
+          shift 2;
+          ;;
+        -n|--name)
+          name="${2}";
+          shift 2;
+          ;;
+        -e|--email)
+          email="${2}";
+          shift 2;
+          ;;
+        -s|--shell)
+          shell="${2}";
+          shift 2;
+          ;;
+        -k|--ssh-keys)
+          ssh_keys="${2}";
+          shift 2;
+          ;;
+        --) shift; break;
+          ;;
+        *) echo 'Invalid option: '"${1}"; exit 1;
+          ;;
+     esac;
+  done;
+
+  if [[ -z "${name}" ]]; then
+    name="${user}"; fi;
 
   if [[ "${user}" == root ]]; then
-    local home_dir=/root; # Special case.
-  else local home_dir=/home/"${user}"; fi;
+    home_dir=/root; # Special case.
+  else home_dir=/home/"${user}"; fi;
 
-  if [[ ! -d "${home_dir}" ]]; then
-    return 1; fi; # Missing home dir.
+  if [[ -z "${ssh_keys}" && -f /bootstrap/src/ssh/"${user}"/authorized_keys ]]; then
+    ssh_keys=/bootstrap/src/ssh/"${user}"/authorized_keys; fi;
 
+  ## Validate options.
+
+  if [[ -z "${user}" ]]; then
+    return 1; # Missing.
+
+  elif ! user-exists "${user}"; then
+    return 1; # Missing.
+
+  elif [[ -z "${name}" ]]; then
+    return 1; # Missing.
+
+  elif [[ -z "${email}" ]]; then
+    return 1; # Missing.
+
+  elif [[ ! -d "${home_dir}" ]]; then
+    return 1; # Missing.
+  fi;
   ## Set the login shell they prefer to use.
 
   if [[ -n "${shell}" ]]; then

@@ -3,14 +3,47 @@
 # New user creation utility.
 
 function create-user() {
-  local user="${1:-}";
-  local pass="${2:-}";
+  ## Initialize.
+
+  local user='';
+  local pass='';
+
+  ## Parse options.
+
+  local short_options='u:p:';
+  local long_options='user:,pass:';
+  local options; options="$(getopt --options "${short_options}" \
+    --longoptions "${long_options}" -- "${@}")";
+
+  eval set -- "${options}"; while true; do
+     case "${1}" in
+        -u|--user)
+          user="${2}";
+          shift 2;
+          ;;
+        -p|--pass)
+          pass="${2}";
+          shift 2;
+          ;;
+        --) shift; break;
+          ;;
+        *) echo 'Invalid option: '"${1}"; exit 1;
+          ;;
+     esac;
+  done;
+
+  if [[ -z "${pass}" ]]; then
+    pass="$(keygen 15)"; fi;
+
+  ## Validate options.
 
   if [[ -z "${user}" || -z "${pass}" ]]; then
     return 1; fi; # Missing required arg(s).
 
   if user-exists "${user}"; then
     return 1; fi; # User exists!
+
+  ## Create user & set pass.
 
   if group-exists "${user}"; then
     useradd "${user}" -g "${user}" --create-home;

@@ -12,10 +12,6 @@
   default = simple
 [credential]
   helper = store
-[filter "lfs"]
-  required = true
-  clean = git-lfs clean %f
-  smudge = git-lfs smudge %f
 [alias]
   s = status
   df = diff
@@ -36,3 +32,7 @@
 
   ; Shows all of my configured aliases.
   aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge --skip %f
+	required = true

@@ -9,15 +9,15 @@ addgroup sftp-only;
 # Create admin user.
 
 create-user \
-  "${CFG_ADMIN_USERNAME}" \
-  "${CFG_ADMIN_PASSWORD}";
+  --user="${CFG_ADMIN_USERNAME}" \
+  --pass="${CFG_ADMIN_PASSWORD}";
 
 setup-user \
-  "${CFG_ADMIN_USERNAME}" \
-  "${CFG_ADMIN_NAME}" \
-  "${CFG_ADMIN_EMAIL}" \
-  "${CFG_ADMIN_PREFERRED_SHELL}" \
-  "${CFG_ADMIN_AUTHORIZED_SSH_KEYS}";
+  --user="${CFG_ADMIN_USERNAME}" \
+  --name="${CFG_ADMIN_NAME}" \
+  --email="${CFG_ADMIN_EMAIL}" \
+  --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
+  --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}";
 
 usermod --append --groups=adm "${CFG_ADMIN_USERNAME}";
 usermod --append --groups=app "${CFG_ADMIN_USERNAME}";
@@ -30,10 +30,10 @@ usermod --append --groups=www-data "${CFG_ADMIN_USERNAME}";
 if is-vagrant; then
 
   setup-user \
-    vagrant \
-    "${CFG_ADMIN_NAME}" \
-    "${CFG_ADMIN_EMAIL}" \
-    "${CFG_ADMIN_PREFERRED_SHELL}";
+    --user=vagrant \
+    --name="${CFG_ADMIN_NAME}" \
+    --email="${CFG_ADMIN_EMAIL}" \
+    --shell="${CFG_ADMIN_PREFERRED_SHELL}";
 
 usermod --append --groups=adm vagrant;
 usermod --append --groups=app vagrant;
@@ -46,7 +46,7 @@ fi; # On vagrant boxes only.
 # Setup the root user also.
 
 setup-user \
-  root \
-  "${CFG_ADMIN_NAME}" \
-  "${CFG_ADMIN_EMAIL}" \
-  "${CFG_ADMIN_PREFERRED_SHELL}";
+  --user=root \
+  --name="${CFG_ADMIN_NAME}" \
+  --email="${CFG_ADMIN_EMAIL}" \
+  --shell="${CFG_ADMIN_PREFERRED_SHELL}";
