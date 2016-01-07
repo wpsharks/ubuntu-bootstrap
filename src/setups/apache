@@ -54,8 +54,10 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
   ln --symbolic /bootstrap/src/apache/.conf /etc/apache2/conf-enabled/z90.conf;
 
   if is-vagrant; then # Disable sendfile on vagrant VMs.
-    perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/uim' /bootstrap/src/apache/.conf;
+    perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
+
+  perl -i -wpe 's/%%cookie_maintenance_bypass_value%%/'"$(keygen 64)"'/ug' /bootstrap/src/apache/.conf;
 
   # Tack our `CFG_` vars onto the existing environment vars.
   cat /etc/apache2/~envvars >> /etc/apache2/envvars; rm /etc/apache2/~envvars;

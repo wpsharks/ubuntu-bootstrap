@@ -4,7 +4,7 @@
 
 if ! is-vagrant; then # If NOT on a vagrant box.
 
-  perl -i -wpe 's/^(\s*)PermitRootLogin\s+.*$/$1PermitRootLogin no/uim' /etc/ssh/sshd_config;
+  perl -i -wpe 's/^(\s*)PermitRootLogin\s+.*$/$1PermitRootLogin no/ui' /etc/ssh/sshd_config;
   echo '# Allow Specific Groups Only' >> /etc/ssh/sshd_config;
   echo 'AllowGroups sudo ssh-access' >> /etc/ssh/sshd_config;
 
@@ -14,7 +14,7 @@ if ! is-vagrant; then # If NOT on a vagrant box.
   echo '    X11Forwarding no' >> /etc/ssh/sshd_config;
   echo '    ForceCommand internal-sftp' >> /etc/ssh/sshd_config;
 
-  perl -i -wpe 's/^(\s*)Subsystem\s+sftp\s+.*$/$1Subsystem sftp internal-sftp/uim' /etc/ssh/sshd_config;
+  perl -i -wpe 's/^(\s*)Subsystem\s+sftp\s+.*$/$1Subsystem sftp internal-sftp/ui' /etc/ssh/sshd_config;
 
   service ssh restart;
 

@@ -11,7 +11,7 @@ if [[ "${CFG_INSTALL_POSTFIX}" == 1 ]]; then
   # Tweak the main config file.
   # We do NOT open port 25, so TLS can disabled here.
   # We disable TLS, because it's not worth configuring the certificate files.
-  perl -i -wpe 's/^(\s*)smtpd_use_tls\s\=.*$/$1smtpd_use_tls=no/uim' /etc/postfix/main.cf;
+  perl -i -wpe 's/^(\s*)smtpd_use_tls\s\=.*$/$1smtpd_use_tls=no/u' /etc/postfix/main.cf;
 
   # Restart service.
 

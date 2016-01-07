@@ -3,5 +3,5 @@
 # Escape regex.
 
 function esc-regex() {
-  echo "$(echo "${1:-}" | perl -wpe 's/([.\\+*?[\^\]$(){}=!<>|:\-])/\\$1/ug')";
+  echo "$(echo "${1:-}" | perl -0wpe 's/([.\\+*?[\^\]$(){}=!<>|:\-])/\\$1/ug')";
 };

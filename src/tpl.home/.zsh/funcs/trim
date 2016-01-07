@@ -5,8 +5,8 @@
 
 function trim() {
   if [[ -p /dev/stdin ]]; then
-    echo -n "$(perl -wpe 's/(^\s+|\s+\$)//ug')";
+    echo -n "$(perl -0wpe 's/(^\s+|\s+\$)//ug')";
   else
-    echo -n "$(echo "${1:-}" | perl -wpe 's/(^\s+|\s+\$)//ug')";
+    echo -n "$(echo "${1:-}" | perl -0wpe 's/(^\s+|\s+\$)//ug')";
   fi;
 };

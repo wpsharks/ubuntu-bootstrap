@@ -97,6 +97,6 @@ function setup-user() {
   fi;
   ## Git configuration for this user.
 
-  perl -i -wpe 's/^(\s*)name\s*\=.*$/$1name = '"$(esc-regex-rv "${name}")"'/uim' "${home_dir}"/.gitconfig;
-  perl -i -wpe 's/^(\s*)email\s*\=.*$/$1email = '"$(esc-regex-rv "${email}")"'/uim' "${home_dir}"/.gitconfig;
+  perl -i -wpe 's/^(\s*)name\s*\=.*$/$1name = '"$(esc-regex-rv "${name}")"'/u' "${home_dir}"/.gitconfig;
+  perl -i -wpe 's/^(\s*)email\s*\=.*$/$1email = '"$(esc-regex-rv "${email}")"'/u' "${home_dir}"/.gitconfig;
 };

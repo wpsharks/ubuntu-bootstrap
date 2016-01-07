@@ -11,10 +11,10 @@ touch /etc/bootstrap/ssl/data/index.txt;
 echo '01' > /etc/bootstrap/ssl/data/crlnumber;
 
 cp /etc/ssl/openssl.cnf /etc/ssl/bootstrap-openssl.cnf;
-perl -i -wpe 's/^(\s*)#\s*(req_extensions\s)/$1$2/um' /etc/ssl/bootstrap-openssl.cnf;
-perl -i -wpe 's/^(\s*)#\s*(copy_extensions\s)/$1$2/um' /etc/ssl/bootstrap-openssl.cnf;
-perl -i -wpe 's/^(\s*)(\[\s*v3_req\s*\])$/$1$2\nsubjectAltName=\$ENV::OPENSSL_CSR_ALTNAMES/um' /etc/ssl/bootstrap-openssl.cnf;
-perl -i -wpe 's/^(\s*)dir\s*\=\s*[^\s]+/$1dir = \/etc\/bootstrap\/ssl\/data/um' /etc/ssl/bootstrap-openssl.cnf;
+perl -i -wpe 's/^(\s*)#\s*(req_extensions\s)/$1$2/u' /etc/ssl/bootstrap-openssl.cnf;
+perl -i -wpe 's/^(\s*)#\s*(copy_extensions\s)/$1$2/u' /etc/ssl/bootstrap-openssl.cnf;
+perl -i -wpe 's/^(\s*)(\[\s*v3_req\s*\])$/$1$2\nsubjectAltName=\$ENV::OPENSSL_CSR_ALTNAMES/u' /etc/ssl/bootstrap-openssl.cnf;
+perl -i -wpe 's/^(\s*)dir\s*\=\s*[^\s]+/$1dir = \/etc\/bootstrap\/ssl\/data/u' /etc/ssl/bootstrap-openssl.cnf;
 
 # ----------------------------------------------------------------------------------------------------------------------
 
