@@ -33,7 +33,7 @@ export OPENSSL_CSR_ALTNAMES="DNS:${CFG_ROOT_HOST},DNS:*.${CFG_ROOT_HOST}";
 ## Doing so allows for the CA to be marked as "Always Trust" in order to avoid self-signed errors.
 
 if [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]]; then
-  git clone git@bitbucket.org:websharks/ca-files --branch=master --depth=1 /tmp/ca-files;
+  git clone git@bitbucket.org:websharks/server-ca-files --branch=master --depth=1 /tmp/ca-files;
 fi; # Requires private repo access in order to acquire the official CA files.
 
 if [[ -f /tmp/ca-files/ws-ca-private-key.pem && -f /tmp/ca-files/ws-ca-crt.pem ]]; then
@@ -177,4 +177,5 @@ else ## Automatic CA generation for a production server.
 fi;
 # ----------------------------------------------------------------------------------------------------------------------
 
+rm -rf /tmp/ca-files;
 unset _ssl_csr_info; # Housekeeping.

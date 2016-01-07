@@ -266,6 +266,18 @@ function validate_cfgs() {
     cfg_warning+='The following configuration key is empty: `'"${cfg_key_empty}"'`'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
+  elif [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='The WebSharks SSL CA files require a production server.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is-vagrant; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Cannot install SSL certificates via LetsEncrypt when running on a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
   elif [[ "${CFG_INSTALL_NGINX}" == 1 && "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
@@ -276,12 +288,6 @@ function validate_cfgs() {
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='The installation of VM symlinks applies only when running a VM.'$'\n';
-    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
-
-  elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is-vagrant; then
-
-    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='Cannot install SSL certificates via LetsEncrypt when running on a VM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vagrant; then

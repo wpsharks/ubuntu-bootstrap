@@ -8,7 +8,8 @@ if can-run git; then
 # Install Git (latest version).
 
 add-apt-repository ppa:git-core/ppa --yes;
-apt-get update; apt-get install git --yes;
+apt-get update;
+apt-get install git --yes;
 
 # Install the Hub tool from GitHub.
 
@@ -24,8 +25,14 @@ chmod +x /usr/bin/hub; # Make `hub` executable now.
 
 curl https://packagecloud.io/gpg.key | sudo apt-key add -;
 apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main' --yes;
-apt-get update; apt-get install git-lfs --yes;
+apt-get update;
+apt-get install git-lfs --yes;
 
-# Make sure we have the large files for this repo.
+# Install Git-Crypt for decrypting files in repos.
 
-cd "$(repo-dir)"; git lfs pull;
+mkdir --parents /usr/local/src/git-crypt;
+git clone https://github.com/AGWA/git-crypt /usr/local/src/git-crypt --branch=master --depth=1;
+
+cd /usr/local/src/git-crypt;
+make;
+make install;

@@ -29,6 +29,10 @@ while read -r _oldrev _newrev _refname; do
     git --git-dir=/repos/app.git --work-tree=/app submodule update;
     echo 'Updated submodules in the `/app` directory.';
 
+    if [[ -f /etc/git-crypt.app.key ]] && can-run git-crypt; then
+      git-crypt unlock /etc/git-crypt.app.key;
+      echo 'Ran `git-crypt unlock` in the `/app` directory.'; fi;
+
     if [[ -f ./build.xml ]] && can-run phing; then
       phing post-receive-build; # Runs the build routine.
       echo 'Ran `phing build` in the `/app` directory.'; fi;

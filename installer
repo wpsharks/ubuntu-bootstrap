@@ -26,7 +26,7 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/src/setups/timezone;
 
   . /bootstrap/src/setups/utilities;
-  . /bootstrap/src/setups/git-lfs;
+  . /bootstrap/src/setups/git-utils;
   . /bootstrap/src/setups/keybase;
 
   . /bootstrap/src/setups/swap;
@@ -35,6 +35,8 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/src/setups/users;
   . /bootstrap/src/setups/mkdirs;
   . /bootstrap/src/setups/umask;
+
+  . /bootstrap/src/setups/git-up;
 
   . /bootstrap/src/setups/env-vars;
   . /bootstrap/src/setups/ssl-certs;

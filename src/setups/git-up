@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Download from LFS.
+
+cd "$(repo-dir)";
+git lfs pull;
+
+# Git-Crypt app key permissions.
+
+if [[ -f /etc/git-crypt.app.key ]]; then
+  chown root:app /etc/git-crypt.app.key;
+  chmod 640 /etc/git-crypt.app.key;
+fi;
