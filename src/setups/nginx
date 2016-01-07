@@ -18,7 +18,12 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
     perl -i -wpe 's/^(\s*)sendfile\s+.*$/$1sendfile off;/u' /bootstrap/src/nginx/.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
-  perl -i -wpe 's/%%cookie_maintenance_bypass_value%%/'"$(keygen 64)"'/ug' /bootstrap/src/nginx/.conf;
+  perl -i -wpe 's/%%cookie_maintenance_bypass_value%%/'"${CFG_MAINTENANCE_BYPASS_KEY}"'/ug' /bootstrap/src/nginx/.conf;
+
+  # Put live sites into maintenance mode by default.
+
+  if ! is-vagrant; then
+    touch /app/.maintenance; fi;
 
   # Restart service.
 

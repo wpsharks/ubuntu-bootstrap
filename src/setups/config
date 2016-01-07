@@ -35,6 +35,8 @@ export CFG_TOOLS_USERNAME; cfgs+=('CFG_TOOLS_USERNAME');
 export CFG_TOOLS_PASSWORD; cfgs+=('CFG_TOOLS_PASSWORD');
 export CFG_TOOLS_PMA_BLOWFISH_KEY; cfgs+=('CFG_TOOLS_PMA_BLOWFISH_KEY');
 
+export CFG_MAINTENANCE_BYPASS_KEY; cfgs+=('CFG_MAINTENANCE_BYPASS_KEY');
+
 export CFG_MYSQL_DB_HOST; cfgs+=('CFG_MYSQL_DB_HOST');
 export CFG_MYSQL_DB_PORT; cfgs+=('CFG_MYSQL_DB_PORT');
 export CFG_MYSQL_SSL_ENABLE; cfgs+=('CFG_MYSQL_SSL_ENABLE');
@@ -114,6 +116,8 @@ fi;
 CFG_TOOLS_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_TOOLS_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)";
+
+CFG_MAINTENANCE_BYPASS_KEY="$(keygen 64)";
 
 CFG_MYSQL_DB_HOST='127.0.0.1';
 CFG_MYSQL_DB_PORT='3306';
@@ -245,11 +249,29 @@ function validate_cfgs() {
   ## Check emptys.
 
   for _cfg_key in \
+    'CFG_HOST' \
+    'CFG_ROOT_HOST' \
+    'CFG_SLUG' \
+    \
     'CFG_ADMIN_USERNAME' \
     'CFG_ADMIN_PASSWORD' \
     'CFG_ADMIN_NAME' \
     'CFG_ADMIN_EMAIL' \
     'CFG_ADMIN_PUBLIC_EMAIL' \
+    \
+    'CFG_TOOLS_USERNAME' \
+    'CFG_TOOLS_PASSWORD' \
+    'CFG_TOOLS_PMA_BLOWFISH_KEY' \
+    \
+    'CFG_MAINTENANCE_BYPASS_KEY' \
+    \
+    'CFG_MYSQL_DB_HOST' \
+    'CFG_MYSQL_DB_PORT' \
+    'CFG_MYSQL_DB_CHARSET' \
+    'CFG_MYSQL_DB_COLLATE' \
+    'CFG_MYSQL_DB_NAME' \
+    'CFG_MYSQL_DB_USERNAME' \
+    'CFG_MYSQL_DB_PASSWORD' \
     ; do # None of these can be empty.
 
       if [[ -z "${!_cfg_key}" ]]; then
@@ -443,6 +465,8 @@ function cfgs_wizard() {
             'CFG_TOOLS_USERNAME' \
             'CFG_TOOLS_PASSWORD' \
             'CFG_TOOLS_PMA_BLOWFISH_KEY' \
+            \
+            'CFG_MAINTENANCE_BYPASS_KEY' \
             \
             'CFG_MYSQL_DB_HOST' \
             'CFG_MYSQL_DB_PORT' \
