@@ -41,9 +41,9 @@ function setup-user() {
           ssh_keys="${2}";
           shift 2;
           ;;
-        --) shift; break;
+        --) shift 1; break;
           ;;
-        *) echo 'Invalid option: '"${1}"; exit 1;
+        *) echo 'Internal error.'; exit 1;
           ;;
      esac;
   done;

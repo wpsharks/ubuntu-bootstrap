@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Is a GitHub repo?
+
+function git-repo-has-github-origin() {
+  git remote -v | grep --perl-regexp --ignore-case '^origin\s.+?github\.com' &>/dev/null;
+};

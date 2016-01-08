@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Is git repo dirty?
+
+function git-repo-is-dirty() {
+  if [[ -n "$(git status --short 2>/dev/null)" ]]; then
+    return 0; # Yes, the repo is dirty.
+  else return 1; fi; # Clean.
+};

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# GitHub issue ref.
+
+function git-github-issue-ref() {
+  local owner="${1:-}";
+  local slug="${2:-}";
+  local issue="${3:-}";
+
+  if [[ -z "${owner}" || -z "${slug}" || -z "${issue}" || ! "${issue}" =~ ^[1-9][0-9]*$ ]]; then
+    echo 'Invalid input parameters. Unable to generate GitHub issue URL.';
+    exit 1; fi; # Error status.
+
+  echo "${owner}"'/'"$(echo "${slug}" | perl -wpe 's/\-pro$//ui')"'#'"${issue}";
+};

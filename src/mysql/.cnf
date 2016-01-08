@@ -66,6 +66,7 @@ innodb_file_per_table          = 1
 
 # INNODB BUFFER POOL (MEMORY CACHE) #
 ; This should be roughly 50-75% of available of RAM.
+; This is altered dynamically by the bootstrap/installer.
 innodb_buffer_pool_size        = 64M
 
 # LOGGING #

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Parse GitHub repo origin.
+
+function git-repo-github-origin-parse() {
+  local response='';
+  local parse="${1:-}";
+  local owner_slug_regex='s/(.+?\bgithub\.com[\/:])([^\/]+?)\/([^\/]+?)(?:\.git)?\s+\((?:fetch|push)\)\s*$/$2\/$3/ui';
+  local owner_slug; owner_slug="$(git remote -v | grep --perl-regexp --ignore-case '^origin\s.+?\bgithub\.com[\/:]' -m 1 | perl -wpe "${owner_slug_regex}")";
+
+  if [[ "${parse}" == 'owner' ]]; then
+    response="$(echo "${owner_slug}" | perl -wpe 's/\/.+$//u')";
+  elif [[ "${parse}" == 'slug' ]]; then
+    response="$(echo "${owner_slug}" | perl -wpe 's/^.+?\///u')"; fi;
+
+  if [[ -z "${response}" ]]; then
+    echo 'Failed to parse '"${parse}"'.';
+    exit 1; fi; # Error status;
+
+  echo "${response}"; # Return parsed response.
+};

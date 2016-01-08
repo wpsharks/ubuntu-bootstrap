@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Git remote branch exists?
+
+function git-remote-branch-exists() {
+  if [[ -z "${1:-}" ]]; then
+    return 1; fi; # Not possible.
+  git ls-remote --exit-code origin refs/heads/"${1}" &>/dev/null;
+};
