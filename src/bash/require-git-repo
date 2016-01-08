@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Require a git repo.
+
+if ! in-git-repo; then
+  echo 'Not a Git repo.'; exit 1;
+fi;

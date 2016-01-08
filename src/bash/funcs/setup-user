@@ -16,8 +16,7 @@ function setup-user() {
 
   local short_options='u:n:e:s:k:';
   local long_options='user:,name:,email:,shell:,ssh-keys:';
-  local options; options="$(getopt --options "${short_options}" \
-    --longoptions "${long_options}" -- "${@}")";
+  local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
   eval set -- "${options}"; while true; do
      case "${1}" in

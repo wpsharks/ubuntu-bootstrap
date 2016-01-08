@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Directory name.
+
+function dirname() {
+  local dirname="${1:-}";
+  local times="${2:-}";
+  local realpath="${3:-}";
+
+  if [[ -z "${times}" || "${times}" -lt 1 ]]; then
+    times=1; fi; # Must be >= `1`.
+
+  if [[ "${realpath}" == '--realpath' ]]; then
+    dirname="$(readlink "${dirname}")"; fi;
+
+  while [[ "${times}" -gt 0 ]]; do
+    dirname="$(command dirname "${dirname}")";
+    ((times--));
+  done;
+
+  echo "${dirname}";
+};

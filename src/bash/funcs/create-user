@@ -12,8 +12,7 @@ function create-user() {
 
   local short_options='u:p:';
   local long_options='user:,pass:';
-  local options; options="$(getopt --options "${short_options}" \
-    --longoptions "${long_options}" -- "${@}")";
+  local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
   eval set -- "${options}"; while true; do
      case "${1}" in
