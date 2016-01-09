@@ -28,7 +28,7 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" == 5.4 ]]; then
   mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf~;
   ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php5/fpm/pool.d/z90.conf;
 
-  perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask0002/u' /etc/init/php5-fpm.conf;
+  perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask 0002/u' /etc/init/php5-fpm.conf;
 
   # Restart service.
 

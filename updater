@@ -36,6 +36,8 @@ if [[ -f /etc/bootstrap/.installed ]]; then
   if [[ -f /bootstrap-app/post-update ]]; then
     . /bootstrap-app/post-update; fi;
 
+  restart-app-related-services;
+
   . /bootstrap/version; # Update.
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
   echo "${CFG_VERSION}" > /etc/bootstrap/.installed;
