@@ -22,4 +22,5 @@ apt-get install acl --yes;
 apt-get install htop --yes;
 apt-get install tree --yes;
 apt-get install ncdu --yes;
+apt-get install xclip --yes;
 apt-get install colordiff --yes;
