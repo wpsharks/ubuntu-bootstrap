@@ -11,8 +11,9 @@ installation_branch="$(git-current-branch)";
 # Make sure we have an installation branch.
 
 if [[ "${installation_branch}" == 'master' ]]; then
-  git checkout -b "$(hostname --long)"; installation_branch="$(hostname --long)"; fi;
-
+  git checkout -b "$(hostname --long)";
+  installation_branch="$(hostname --long)";
+fi;
 # Save changes in the installation branch.
 
 git add --all; # Stage any changed files in this branch.
@@ -23,15 +24,17 @@ git commit --message='Saving before update.' --no-edit || true;
 if is-vagrant; then
   git remote remove origin || true;
   git remote add origin https://github.com/websharks/ubuntu-bootstrap;
-  git branch --set-upstream-to=origin/master master;
 fi;
-# Move to master branch & pull latest changes.
+# Fetch latest changes from the origin.
 
-git checkout master; git pull;
+git fetch origin master;
 
-# Move to installation branch & merge master in.
+# Make sure the upstream is set accordingly.
 
-git checkout "${installation_branch}";
+git branch --set-upstream-to=origin/master master;
+
+# Merge changes from master branch now.
+
 git merge master;
 
 # Housekeeping.
