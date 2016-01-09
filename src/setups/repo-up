@@ -29,11 +29,7 @@ fi;
 
 git fetch origin master;
 
-# Make sure the upstream is set accordingly.
-
-git branch --set-upstream-to=origin/master master;
-
-# Merge changes from master branch now.
+# Merge changes from master.
 
 git merge master;
 
