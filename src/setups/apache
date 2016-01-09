@@ -57,8 +57,6 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
     perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
-  perl -i -wpe 's/%%cookie_maintenance_bypass_value%%/'"${CFG_MAINTENANCE_BYPASS_KEY}"'/ug' /bootstrap/src/apache/.conf;
-
   # Tack our `CFG_` vars onto the existing environment vars.
   cat /etc/apache2/~envvars >> /etc/apache2/envvars; rm /etc/apache2/~envvars;
 
