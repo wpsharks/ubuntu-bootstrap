@@ -18,9 +18,9 @@ cfg_use_defaults=0;
 
 # Parse installation options.
 
-local cfg_short_options='';
-local cfg_long_options='use-defaults';
-local cfg_options; cfg_options="$(getopt --options "${cfg_short_options}" --longoptions "${cfg_long_options}" -- "${@}")";
+cfg_short_options='';
+cfg_long_options='use-defaults';
+cfg_options="$(getopt --options "${cfg_short_options}" --longoptions "${cfg_long_options}" -- "${@}")";
 
 eval set -- "${cfg_options}"; while true; do
    case "${1}" in

@@ -324,7 +324,7 @@ function validate_cfgs() {
 
   if [[ -n "${cfg_warning}" ]]; then
 
-    if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
+    if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == 1 ]]; then
 
       cfg_warning+='This error occurred because there is invalid data in the hard-coded defaults.'$'\n';
       cfg_warning+='Please remove the `--use-defaults` flag and try again.'$'\n';
@@ -356,7 +356,7 @@ function cfgs_wizard() {
   local _cfg_package_options _cfg_package_option;
   local _cfg_response; # All used below.
 
-  if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == --use-defaults ]]; then
+  if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == 1 ]]; then
 
     # Fill, clean, sanitize.
 
