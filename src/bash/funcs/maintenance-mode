@@ -30,6 +30,5 @@ function auto-warn-about-app-maintenance-mode-on-error() {
   set +o xtrace; # Disable; i.e., turn off comand printing.
   echo '----------------------------------------------------------------------';
   echo 'WARNING: The app may still be in maintenance mode due to an error.';
-  echo '----------------------------------------------------------------------';
   stack-trace "$@";
 };
