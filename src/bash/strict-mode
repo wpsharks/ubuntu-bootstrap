@@ -16,7 +16,7 @@ shopt -s failglob;
 
 # Stack trace handler.
 
-function stack_trace() {
+function stack-trace() {
   local last_command_status_code=$?;
   set +o xtrace; # See: <http://jas.xyz/1my00XN>
   local exit_status_code="${1:-1}";
@@ -32,4 +32,4 @@ function stack_trace() {
     done;
   fi;
   echo 'Exiting w/ status `'"${exit_status_code}"'`.'; exit "${exit_status_code}";
-}; trap stack_trace ERR;
+}; trap stack-trace ERR;

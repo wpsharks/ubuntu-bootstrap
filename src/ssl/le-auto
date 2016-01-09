@@ -26,7 +26,7 @@ function restore_web_servers_and_firewall() {
 # Trap errors and recover gracefully.
 
 function auto_restore_web_servers_and_firewall_on_error() {
-  restore_web_servers_and_firewall; stack_trace "$@";
+  restore_web_servers_and_firewall; stack-trace "$@";
 }; trap auto_restore_web_servers_and_firewall_on_error ERR;
 
 # Acquire and/or renew official SSL certificates.

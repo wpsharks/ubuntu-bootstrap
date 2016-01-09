@@ -17,11 +17,11 @@ function disable-app-maintenance-mode() {
 # Auto-warn user about maintenance mode on error.
 
 function auto-warn-about-app-maintenance-mode-on-error() {
-  echo 'WARNING: The app may still be in maintenance mode due to an error.'; stack_trace "$@";
+  echo 'WARNING: The app may still be in maintenance mode due to an error.'; stack-trace "$@";
 }; # e.g., `trap auto-warn-about-app-maintenance-mode-on-error ERR;`
 
 # Auto-disable maintenance mode on error.
 
 function auto-disable-app-maintenance-mode-on-error() {
-  disable-app-maintenance-mode; stack_trace "$@";
+  disable-app-maintenance-mode; stack-trace "$@";
 }; # e.g., `trap auto-disable-app-maintenance-mode-on-error ERR;`
