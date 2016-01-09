@@ -14,14 +14,22 @@ function disable-app-maintenance-mode() {
   return 0; # In case last test fails.
 };
 
-# Auto-warn user about maintenance mode on error.
-
-function auto-warn-about-app-maintenance-mode-on-error() {
-  echo 'WARNING: The app may still be in maintenance mode due to an error.'; stack-trace "$@";
-}; # e.g., `trap auto-warn-about-app-maintenance-mode-on-error ERR;`
-
 # Auto-disable maintenance mode on error.
+# e.g., `trap auto-disable-app-maintenance-mode-on-error ERR;`
 
 function auto-disable-app-maintenance-mode-on-error() {
-  disable-app-maintenance-mode; stack-trace "$@";
-}; # e.g., `trap auto-disable-app-maintenance-mode-on-error ERR;`
+  set +o xtrace; # Disable.
+  disable-app-maintenance-mode;
+  stack-trace "$@";
+};
+
+# Auto-warn user about maintenance mode on error.
+# e.g., `trap auto-warn-about-app-maintenance-mode-on-error ERR;`
+
+function auto-warn-about-app-maintenance-mode-on-error() {
+  set +o xtrace; # Disable; i.e., turn off comand printing.
+  echo '----------------------------------------------------------------------';
+  echo 'WARNING: The app may still be in maintenance mode due to an error.';
+  echo '----------------------------------------------------------------------';
+  stack-trace "$@";
+};
