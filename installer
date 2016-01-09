@@ -12,11 +12,37 @@ elif [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
+# Initialize options.
+
+cfg_use_defaults=0;
+
+# Parse installation options.
+
+local cfg_short_options='';
+local cfg_long_options='use-defaults';
+local cfg_options; cfg_options="$(getopt --options "${cfg_short_options}" --longoptions "${cfg_long_options}" -- "${@}")";
+
+eval set -- "${cfg_options}"; while true; do
+   case "${1}" in
+      --use-defaults)
+        cfg_use_defaults=1;
+        shift 1;
+        ;;
+      --) shift 1; break;
+        ;;
+      *) echo 'Internal error.'; exit 1;
+        ;;
+   esac;
+done;
+
 # Maybe run setup routines; i.e., once only.
 
-if [[ ! -f /etc/bootstrap/.completed ]]; then
+if [[ ! -f /etc/bootstrap/.installed ]]; then
 
-  export CFG_USE_DEFAULTS; CFG_USE_DEFAULTS="${1:-}";
+  export CFG_IS_INSTALLER=1;
+  export CFG_IS_UPDATER=0;
+
+  export CFG_USE_DEFAULTS="${cfg_use_defaults}";
   . /bootstrap/src/setups/config;
 
   set -o xtrace; # Print each command that is run.
@@ -68,6 +94,9 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   if [[ -f /bootstrap-app/post-install ]]; then
     . /bootstrap-app/post-install; fi;
 
+  . /bootstrap/version; # Update version.
+  echo "${CFG_VERSION}" > /etc/bootstrap/.installed;
+
   . /bootstrap/src/setups/cleanup;
 
   set +o xtrace; # Turn off comand printing.
@@ -75,9 +104,5 @@ if [[ ! -f /etc/bootstrap/.completed ]]; then
   . /bootstrap/src/setups/finale;
 
 else # Provide details about why we are not running again.
-  echo 'Installation complete. Can only be run once!';
-fi; # End `.is-complete` check.
-
-# Mark setup as being complete now.
-
-echo "$(date +%s)" > /etc/bootstrap/.completed;
+  echo 'Installation complete. Can only be run once!'; exit 1;
+fi; # End `.installed` check.

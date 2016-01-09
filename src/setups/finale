@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
 
-# Grand finale.
+if [[ "${CFG_IS_INSTALLER}" == 1 ]]; then
 
-echo '---------------------------------------------------------------';
-echo '-- Bootstrap installation complete. ---------------------------';
-echo '---------------------------------------------------------------';
-echo '  Log out & back in again to reload shell.';
+  # Grand finale; installation complete.
+
+  echo '---------------------------------------------------------------';
+  echo '-- Bootstrap installation complete. ---------------------------';
+  echo '---------------------------------------------------------------';
+  echo '  Log out & back in again to reload shell.';
+
+elif [[ "${CFG_IS_UPDATER}" == 1 ]]; then
+
+  # Grand finale; update complete.
+
+  echo '---------------------------------------------------------------';
+  echo '-- Bootstrap update complete. ---------------------------------';
+  echo '---------------------------------------------------------------';
+  echo '  Log out & back in again to reload shell.';
+
+fi;

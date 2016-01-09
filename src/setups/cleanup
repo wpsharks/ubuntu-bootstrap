@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-# Cleanup archives.
+if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
 
-if ! is-vagrant; then
-  apt-get clean --yes;
+  # Cleanup archives.
+
+  if ! is-vagrant; then
+    apt-get clean --yes;
+  fi;
+
+  # Remove root SSH key (security).
+
+  rm --force /root/.ssh/id_rsa;
+  rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;
+
 fi;
-
-# Remove root SSH key (security).
-
-rm --force /root/.ssh/id_rsa;
-rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;

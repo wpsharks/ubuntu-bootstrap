@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Update bootstrap repo.
+
+cd /bootstrap; # Move to repo.
+
+# Initialize; collect current branch.
+
+installation_branch="$(git-current-branch)";
+
+# Make sure we have an installation branch.
+
+if [[ "${installation_branch}" == 'master' ]]; then
+  git checkout -b "$(hostname --long)"; installation_branch="$(hostname --long)"; fi;
+
+# Save changes in the installation branch.
+
+git add --all; # Stage any changed files in this branch.
+git commit --message='Saving before update.' --no-edit || true;
+
+# Move to master branch & merge latest changes.
+
+git checkout master;
+git pull;
+
+# Move to installation branch & merge master in.
+
+git checkout "${installation_branch}";
+git merge master;
+
+# Housekeeping.
+
+unset installation_branch;

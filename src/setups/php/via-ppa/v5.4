@@ -30,8 +30,6 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" == 5.4 ]]; then
 
   perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask0002/u' /etc/init/php5-fpm.conf;
 
-fastcgi: /var/run/php5-fpm.sock
-
   # Restart service.
 
   service php5-fpm restart;
