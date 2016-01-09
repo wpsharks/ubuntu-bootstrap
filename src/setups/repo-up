@@ -30,7 +30,7 @@ git fetch origin master;
 
 # Merge changes from master.
 
-git merge master;
+git merge origin/master;
 
 # Housekeeping.
 
