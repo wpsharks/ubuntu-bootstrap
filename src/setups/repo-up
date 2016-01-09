@@ -10,7 +10,7 @@ installation_branch="$(git-current-branch)";
 
 # Make sure we have an installation branch.
 
-if [[ "${installation_branch}" == 'master' || "${installation_branch}" == '000000-dev' ]]; then
+if [[ "${installation_branch}" == '000000-dev' || "${installation_branch}" == 'master' ]]; then
   git checkout -b "$(hostname --long)"; installation_branch="$(hostname --long)";
 fi;
 # Save changes in the installation branch.
