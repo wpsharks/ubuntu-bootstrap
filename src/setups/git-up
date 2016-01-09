@@ -2,7 +2,7 @@
 
 # Download from LFS.
 
-cd "$(repo-dir)";
+cd /bootstrap;
 git lfs pull;
 
 # Git-Crypt app key permissions.

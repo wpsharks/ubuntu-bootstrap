@@ -4,7 +4,7 @@
 
 mkdir --parents /usr/local/src/keybase;
 
-curl https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb \
+curl https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb --location \
    --output /usr/local/src/keybase/latest-amd64.deb;
 
 dpkg --install /usr/local/src/keybase/latest-amd64.deb;

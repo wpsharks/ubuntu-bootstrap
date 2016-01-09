@@ -32,8 +32,8 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
     if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
 
       # See: <https://www.cloudflare.com/ips/>
-      _ips_v4="$(curl https://www.cloudflare.com/ips-v4)";
-      _ips_v6="$(curl https://www.cloudflare.com/ips-v6)";
+      _ips_v4="$(curl https://www.cloudflare.com/ips-v4 --location)";
+      _ips_v6="$(curl https://www.cloudflare.com/ips-v6 --location)";
 
       while read -ra _ip; do
         _ip="$(trim "${_ip}")";

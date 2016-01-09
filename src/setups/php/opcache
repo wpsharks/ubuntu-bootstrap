@@ -10,9 +10,7 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; t
 
   ## Install cachetool utility for stats/reset, etc.
 
-  curl http://gordalina.github.io/cachetool/downloads/cachetool.phar \
-    --output /usr/bin/cachetool; # Save as binary.
-
+  curl http://gordalina.github.io/cachetool/downloads/cachetool.phar --location --output /usr/bin/cachetool;
   chmod +x /usr/bin/cachetool; # Make it executable.
 
   echo 'adapter: fastcgi' > /etc/cachetool.yml;

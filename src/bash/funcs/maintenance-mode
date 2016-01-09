@@ -14,6 +14,12 @@ function disable-app-maintenance-mode() {
   return 0; # In case last test fails.
 };
 
+# Auto-warn user about maintenance mode on error.
+
+function auto-warn-about-app-maintenance-mode-on-error() {
+  echo 'WARNING: The app may still be in maintenance mode due to an error.'; stack_trace "$@";
+}; # e.g., `trap auto-warn-about-app-maintenance-mode-on-error ERR;`
+
 # Auto-disable maintenance mode on error.
 
 function auto-disable-app-maintenance-mode-on-error() {

@@ -13,7 +13,7 @@ apt-get install git --yes;
 
 # Install the Hub tool from GitHub.
 
-curl https://github.com/github/hub/releases/download/v2.2.2/hub-linux-amd64-2.2.2.tgz --output /tmp/hub.tgz --location;
+curl https://github.com/github/hub/releases/download/v2.2.2/hub-linux-amd64-2.2.2.tgz --location --output /tmp/hub.tgz;
 
 mkdir --parents /usr/local/src/hub; # Live in this directory.
 tar --extract --ungzip --verbose --strip-components=1 --file=/tmp/hub.tgz -C /usr/local/src/hub;
@@ -23,7 +23,7 @@ chmod +x /usr/bin/hub; # Make `hub` executable now.
 
 # Install Git LFS for large file storage.
 
-curl https://packagecloud.io/gpg.key | sudo apt-key add -;
+curl https://packagecloud.io/gpg.key --location | sudo apt-key add -;
 apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main' --yes;
 apt-get update;
 apt-get install git-lfs --yes;

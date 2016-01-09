@@ -12,9 +12,15 @@ elif [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
+# Trap errors & warn the user if an error occurs.
+
+trap auto-warn-about-app-maintenance-mode-on-error ERR;
+
 # Maybe run update routines; i.e., if installed already.
 
 if [[ -f /etc/bootstrap/.installed ]]; then
+
+  enable-app-maintenance-mode;
 
   export CFG_IS_INSTALLER=0;
   export CFG_IS_UPDATER=1;
@@ -39,6 +45,8 @@ if [[ -f /etc/bootstrap/.installed ]]; then
   set +o xtrace; # Turn off comand printing.
 
   . /bootstrap/src/setups/finale;
+
+  disable-app-maintenance-mode;
 
 else # Provide details about why we are not updating.
   echo 'Not installed yet. Run the installer first please!'; exit 1;

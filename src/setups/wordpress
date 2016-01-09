@@ -4,8 +4,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
   # Clone the WordPress master branch.
 
-  curl http://wordpress.org/latest.zip \
-     --output /tmp/wordpress-latest.zip --location;
+  curl http://wordpress.org/latest.zip --location --output /tmp/wordpress-latest.zip;
   unzip -qq -d /tmp/wordpress-latest /tmp/wordpress-latest.zip;
   cp --force --recursive /tmp/wordpress-latest/wordpress/. /app/src;
 
@@ -72,9 +71,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
   # Install WP-CLI now also.
 
-  curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    --output /usr/bin/wp; # Save as binary.
-
+  curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar --location --output /usr/bin/wp;
   chmod +x /usr/bin/wp; # Make it executable.
 
 else echo 'Skipping WordPress installation.'; fi;

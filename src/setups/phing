@@ -4,9 +4,7 @@ if can-run php; then
 
   # Install Phing for PHP.
 
-  curl http://www.phing.info/get/phing-latest.phar \
-    --output /usr/bin/phing; # Save as binary.
-
+  curl http://www.phing.info/get/phing-latest.phar --location --output /usr/bin/phing;
   chmod +x /usr/bin/phing; # Make it executable.
 
 else echo 'Skipping Phing installation.'; fi;

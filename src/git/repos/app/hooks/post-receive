@@ -5,9 +5,9 @@
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Trap errors and recover gracefully.
+# Trap errors & warn the user if an error occurs.
 
-trap auto-disable-app-maintenance-mode-on-error ERR;
+trap auto-warn-about-app-maintenance-mode-on-error ERR;
 
 # Deploy app when master branch is pushed to repo.
 
