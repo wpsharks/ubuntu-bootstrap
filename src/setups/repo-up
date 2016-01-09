@@ -29,8 +29,10 @@ fi;
 git fetch origin master;
 
 # Merge changes from master.
+# If any conflict exist, this will fail.
+# Admin must resolve conflicts and run the updater again.
 
-git merge origin/master;
+git merge origin/master --no-edit;
 
 # Housekeeping.
 
