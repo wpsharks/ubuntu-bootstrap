@@ -14,6 +14,8 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
 
   if ! is-vagrant; then
     rm --force /root/.ssh/id_rsa;
+    rm --force /root/.ssh/ws-bot-np;
     rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;
+    rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/ws-bot-np;
   fi;
 fi;

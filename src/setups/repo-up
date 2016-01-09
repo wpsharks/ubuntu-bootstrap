@@ -18,7 +18,14 @@ if [[ "${installation_branch}" == 'master' ]]; then
 git add --all; # Stage any changed files in this branch.
 git commit --message='Saving before update.' --no-edit || true;
 
-# Move to master branch & merge latest changes.
+# On a VM, use an `https://` remote so that an SSH key is not required to pull changes.
+
+if is-vagrant; then
+  git remote remove origin || true;
+  git remote add origin https://github.com/websharks/ubuntu-bootstrap;
+  git branch --set-upstream-to=origin/master master;
+fi;
+# Move to master branch & pull latest changes.
 
 git checkout master; git pull;
 
