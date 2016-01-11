@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Remove broken symlinks.
+
+function rm-broken-lns() {
+  local dir="${1:-}";
+  if [[ -n "${dir}" && -d "${dir}" ]]; then
+    find -L "${dir}" -type l -delete;
+  fi;
+};

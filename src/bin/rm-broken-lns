@@ -5,6 +5,6 @@
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Copy to clipboard; OS X style.
+# Remove broken symlinks.
 
-pbcopy "${@}";
+rm-broken-lns "${@}";
