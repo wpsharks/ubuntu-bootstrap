@@ -21,12 +21,16 @@ while read -r _oldrev _newrev _refname; do
     enable-app-maintenance-mode; # Temporarily.
 
     cd /app; # Move to `/app` directory.
-    GIT_DIR=/repos/app.git; GIT_WORK_TREE=/app;
 
-    git checkout --force; # Throw away local changes.
+    export GIT_DIR=/repos/app.git;
+    export GIT_WORK_TREE=/app;
+
+    git checkout --force;
+    # Throw away local changes.
     echo 'Deployed master branch to `/app` directory.';
 
-    git submodule init; git submodule update;
+    git submodule init;
+    git submodule update;
     echo 'Updated submodules in the `/app` directory.';
 
     if [[ -f /etc/git-crypt.app.key ]] && can-run git-crypt; then
@@ -35,7 +39,7 @@ while read -r _oldrev _newrev _refname; do
 
     if [[ -f ./build.xml ]] && can-run phing; then
       phing post-receive-build; # Runs the build routine.
-      echo 'Ran `phing build` in the `/app` directory.'; fi;
+      echo 'Ran `phing post-receive-build` in the `/app` directory.'; fi;
 
     if [[ -x ./post-receive ]]; then
       ./post-receive; # Custom post-receive hook.
