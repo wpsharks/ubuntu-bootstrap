@@ -94,7 +94,10 @@ if is-vagrant; then
   CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
 fi;
 
-CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
+CFG_ADMIN_NAME='';
+if is-vagrant; then
+  CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
+fi;
 
 CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com';
 if is-vagrant; then
