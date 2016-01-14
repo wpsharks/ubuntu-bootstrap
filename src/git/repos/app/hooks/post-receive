@@ -26,13 +26,10 @@ while read -r _oldrev _newrev _refname; do
     export GIT_WORK_TREE=/app;
 
     git checkout --force;
-    # Throw away local changes.
     echo 'Deployed master branch to `/app` directory.';
 
-    git submodule init; git submodule update;
+    git submodule update --recursive --force --init;
     echo 'Updated submodules in the `/app` directory.';
-
-    git status; # Print git status after update for review.
 
     if [[ -f /etc/git-crypt.app.key ]] && can-run git-crypt; then
       git crypt unlock /etc/git-crypt.app.key;
