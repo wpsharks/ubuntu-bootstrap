@@ -31,11 +31,13 @@ while read -r _oldrev _newrev _refname; do
     git submodule update --recursive --force --init;
     echo 'Updated submodules in the `/app` directory.';
 
-    if [[ -f /etc/git-crypt.app.key ]] && can-run git-crypt; then
+    if [[ -f /etc/git-crypt.app.key ]]; then
       git crypt unlock /etc/git-crypt.app.key;
       echo 'Ran `git-crypt unlock` in the `/app` directory.'; fi;
 
-    if [[ -f ./build.xml ]] && can-run phing; then
+    unset GIT_DIR; unset GIT_WORK_TREE; # Housekeeping.
+
+    if [[ -f ./build.xml ]]; then
       phing post-receive-build; # Runs the build routine.
       echo 'Ran `phing post-receive-build` in the `/app` directory.'; fi;
 
