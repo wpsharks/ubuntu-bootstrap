@@ -82,9 +82,9 @@ function setup-user() {
   ## Home directory customization.
 
   cp --force --recursive --preserve=mode /bootstrap/src/tpl.home/. "${home_dir}";
+  find "${home_dir}" -type d ! -name '.ssh' ! -name '.cache' -exec chmod g+w {} \;
+  find "${home_dir}" -type f ! -name '.ssh/*' ! -name '.cache/*' -exec chmod g+w {} \;
   chown --recursive "${user}":"${user}" "${home_dir}";
-  find "${home_dir}" -type d -exec chmod g+w {} \;
-  find "${home_dir}" -type f -exec chmod g+w {} \;
 
   ## Setup authorized SSH keys in home directory.
 
