@@ -17,5 +17,5 @@ $cfg['Servers'][1]['port'] = $_SERVER['CFG_MYSQL_DB_PORT'];
 $cfg['blowfish_secret']       = $_SERVER['CFG_TOOLS_PMA_BLOWFISH_KEY'];
 $cfg['Servers'][1]['hide_db'] = '(?:(?:performance|information)_schema|phpmyadmin|mysql|innodb)';
 
-$cfg['PmaAbsoluteUri'] = 'https://'.$_SERVER['HTTP_HOST'].'/tools/pma/';
+$cfg['PmaAbsoluteUri'] = 'https://'.$_SERVER['HTTP_HOST'].'/---tools/pma/';
 $cfg['ForceSSL']       = true;

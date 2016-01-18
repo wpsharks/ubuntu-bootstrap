@@ -85,14 +85,14 @@ A username/password is required to access each of these tools. It is always the 
 
 Available Tools (Using Any of These is Optional):
 
-- <https://my.vm/tools/pma> PhpMyAdmin
+- <https://my.vm/---tools/pma> PhpMyAdmin
   DB name: `admin`, DB username: `admin`, DB password: `admin`
-- <https://my.vm/tools/opcache.php> PHP OPcache extension status dump.
-- <https://my.vm/tools/info.php> `phpinfo()` output page.
-- <https://my.vm/tools/fpm-status.php> PHP-FPM status page.
-- <https://my.vm/tools/status.nginx> NGINX status page (if Nginx was installed).
-- <https://my.vm/tools/apache-status> Apache status page (if Apache was installed).
-- <https://my.vm/tools/apache-info> Apache page (if Apache was installed).
+- <https://my.vm/---tools/opcache.php> PHP OPcache extension status dump.
+- <https://my.vm/---tools/info.php> `phpinfo()` output page.
+- <https://my.vm/---tools/fpm-status.php> PHP-FPM status page.
+- <https://my.vm/---tools/status.nginx> NGINX status page (if Nginx was installed).
+- <https://my.vm/---tools/apache-status> Apache status page (if Apache was installed).
+- <https://my.vm/---tools/apache-info> Apache page (if Apache was installed).
 
 #### Step 9: Tear it Down and Customize
 
