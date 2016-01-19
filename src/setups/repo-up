@@ -2,38 +2,7 @@
 
 # Update bootstrap repo.
 
-cd /bootstrap; # Move to repo.
-
-# Initialize; collect current branch.
-
-installation_branch="$(git-current-branch)";
-
-# Make sure we have an installation branch.
-
-if [[ "${installation_branch}" != "$(hostname --long)" ]]; then
-  git checkout -b "$(hostname --long)"; installation_branch="$(hostname --long)";
-fi;
-# Save changes in the installation branch.
-
-git add --all; # Stage any changed files in this branch.
-git commit --message='Saving before update.' --no-edit || true;
-
-# On a VM, use an `https://` remote so that an SSH key is not required to pull changes.
-
-if is-vagrant; then
-  git remote remove origin || true;
-  git remote add origin https://github.com/websharks/ubuntu-bootstrap;
-fi;
-# Fetch latest changes from the origin.
-
-git fetch origin master;
-
-# Merge changes from master.
-# If any conflict exist, this will fail.
-# Admin must resolve conflicts & run the updater again.
-
-git merge origin/master --no-edit;
-
-# Housekeeping.
-
-unset installation_branch;
+bootstrap-repo-update \
+  /bootstrap \
+  https://github.com/websharks/ubuntu-bootstrap \
+  master;

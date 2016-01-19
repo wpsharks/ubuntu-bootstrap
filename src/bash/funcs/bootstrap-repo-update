@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Update a bootstrap repo.
+
+function bootstrap-repo-update() {
+  local repo_dir="${1:-}";
+  local remote_origin="${2:-}";
+  local remote_branch="${3:-}";
+  local installation_branch='';
+
+  # Validate arguments.
+
+  if [[ ! -d "${repo_dir}" ]]; then
+    exit 1; fi; # Failure.
+
+  if [[ -z "${remote_origin}" ]]; then
+    exit 1; fi; # Failure.
+
+  if [[ -z "${remote_branch}" ]]; then
+    exit 1; fi; # Failure.
+
+  # Update bootstrap repo.
+
+  cd "${repo_dir}";
+
+  # Initialize; collect current branch.
+
+  installation_branch="$(git-current-branch)";
+
+  # Make sure we have an installation branch.
+
+  if [[ "${installation_branch}" != "$(hostname --long)" ]]; then
+    git checkout -b "$(hostname --long)"; installation_branch="$(hostname --long)";
+  fi;
+  # Save changes in the installation branch.
+
+  git add --all; # Stage any changed files in this branch.
+  git commit --message='Saving before update.' --no-edit || true;
+
+  # On a VM, use an `https://` remote so that an SSH key is not required to pull changes.
+
+  if is-vagrant; then
+    git remote remove origin || true;
+    git remote add origin "${remote_origin}";
+  fi;
+  # Fetch latest changes from the origin.
+
+  git fetch origin "${remote_branch}";
+
+  # Merge changes from master.
+  # If any conflicts exist, this will fail!
+  # Admin must resolve conflicts & run the updater again.
+
+  git merge origin/"${remote_branch}" --no-edit;
+};
