@@ -11,7 +11,7 @@ function dirname() {
     times=1; fi; # Must be >= `1`.
 
   if [[ "${realpath}" == '--realpath' ]]; then
-    dirname="$(readlink "${dirname}")"; fi;
+    dirname="$(realpath "${dirname}")"; fi;
 
   while [[ "${times}" -gt 0 ]]; do
     dirname="$(command dirname "${dirname}")";

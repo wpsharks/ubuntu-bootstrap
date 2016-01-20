@@ -13,13 +13,6 @@ chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;
 find /app -type f -exec chmod 664 {} \;
 
-# App logs directory.
-
-mkdir --parents /var/log/app;
-chown --recursive nobody:app /var/log/app;
-find /var/log/app -type d -exec chmod 2775 {} \;
-find /var/log/app -type f -exec chmod 664 {} \;
-
 # App repo directory for downloads.
 
 mkdir --parents /repos/app.dls;
@@ -34,6 +27,13 @@ mkdir --parents /repos/app.git;
 chown --recursive nobody:app /repos/app.git;
 find /repos/app.git -type d -exec chmod 2775 {} \;
 find /repos/app.git -type f -exec chmod 664 {} \;
+
+# App logs directory.
+
+mkdir --parents /var/log/app;
+chown --recursive www-data:adm /var/log/app;
+find /var/log/app -type d -exec chmod 2775 {} \;
+find /var/log/app -type f -exec chmod 664 {} \;
 
 # Systematics.
 
