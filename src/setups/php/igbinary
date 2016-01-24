@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${CFG_INSTALL_PHP_VERSION}" =~ ^@TODO_custom ]]; then
 
-  ## Enable the igbinary extension.
+  ## Enable the igbinary extension. @TODO Once it supports PHP7.
 
-  ## @TODO Once it supports PHP7.
-  #echo 'extension=igbinary.so' > /etc/php/conf.d/igbinary.ini;
-  #ln --symbolic /etc/php/conf.d/igbinary.ini /etc/php/cli/conf.d/igbinary.ini;
-  #ln --symbolic /etc/php/conf.d/igbinary.ini /etc/php/fpm/conf.d/igbinary.ini;
+  echo 'extension=igbinary.so' > /etc/php/conf.d/igbinary.ini;
 
-  # Restart service.
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    ln --symbolic /etc/php/conf.d/igbinary.ini /etc/php/cli/conf.d/igbinary.ini; fi;
 
-  service php-fpm restart;
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    ln --symbolic /etc/php/conf.d/igbinary.ini /etc/php/fpm/conf.d/igbinary.ini;
+    service php-fpm restart; # Restart service.
+  fi;
 
 else echo 'Skipping igBinary extension for custom PHP.'; fi;

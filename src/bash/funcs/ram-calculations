@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Calculate RAM (in MB) as a percentage.
+
+function ram-mb-percentage() {
+  local ram=0;
+  local percent="${1:-100}";
+
+  ram="$(free -m | grep --perl-regexp '^Mem\:' | awk '{ print int($2); }')";
+  percentage-of "${percent}" "${ram}" down;
+};
+
+# Calculate RAM (in MB) divided by X.
+
+function ram-mb-divided-by() {
+  divisor="${1:-1}"; # Defaults to `1` (100%).
+  free -m | grep --perl-regexp '^Mem\:' | awk '{ print int($2/'"${divisor}"'); }';
+};

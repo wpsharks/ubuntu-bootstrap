@@ -56,7 +56,8 @@ export CFG_INSTALL_MYSQL; cfgs+=('CFG_INSTALL_MYSQL');
 export CFG_INSTALL_MYSQL_DB_IMPORT_FILE; cfgs+=('CFG_INSTALL_MYSQL_DB_IMPORT_FILE');
 export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
 export CFG_INSTALL_MEMCACHE; cfgs+=('CFG_INSTALL_MEMCACHE');
-export CFG_INSTALL_PHP; cfgs+=('CFG_INSTALL_PHP');
+export CFG_INSTALL_PHP_CLI; cfgs+=('CFG_INSTALL_PHP_CLI');
+export CFG_INSTALL_PHP_FPM; cfgs+=('CFG_INSTALL_PHP_FPM');
 export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
 export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
 export CFG_INSTALL_WORDPRESS; cfgs+=('CFG_INSTALL_WORDPRESS');
@@ -140,9 +141,6 @@ if is-vagrant; then
 fi;
 
 CFG_INSTALL_SWAP='1';
-if is-vagrant; then
-  CFG_INSTALL_SWAP='0';
-fi;
 
 CFG_INSTALL_WS_CA_FILES='1';
 if is-vagrant; then
@@ -161,7 +159,8 @@ CFG_INSTALL_MYSQL='1';
 CFG_INSTALL_MYSQL_DB_IMPORT_FILE='';
 CFG_INSTALL_RAMDISK='1';
 CFG_INSTALL_MEMCACHE='1';
-CFG_INSTALL_PHP='1';
+CFG_INSTALL_PHP_CLI='1';
+CFG_INSTALL_PHP_FPM='1';
 CFG_INSTALL_PHP_VERSION='custom';
 # `custom` or `custom-src` (i.e., from source).
 # Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`, `5.4`.
@@ -309,6 +308,12 @@ function validate_cfgs() {
     cfg_warning+='Please choose Nginx or Apache (not both). These run on the same ports.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
+  elif [[ ( "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 ) && "${CFG_INSTALL_PHP_FPM}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Nginx or Apache you must also install PHP-FPM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
   elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vagrant; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
@@ -417,7 +422,8 @@ function cfgs_wizard() {
         'CFG_INSTALL_MYSQL' 'Install?' "$([[ "${CFG_INSTALL_MYSQL}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_RAMDISK' 'Install?' "$([[ "${CFG_INSTALL_RAMDISK}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_MEMCACHE' 'Install?' "$([[ "${CFG_INSTALL_MEMCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_PHP' 'Install?' "$([[ "${CFG_INSTALL_PHP}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHP_CLI' 'Install?' "$([[ "${CFG_INSTALL_PHP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHP_FPM' 'Install?' "$([[ "${CFG_INSTALL_PHP_FPM}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -436,7 +442,8 @@ function cfgs_wizard() {
       CFG_INSTALL_MYSQL='0';
       CFG_INSTALL_RAMDISK='0';
       CFG_INSTALL_MEMCACHE='0';
-      CFG_INSTALL_PHP='0';
+      CFG_INSTALL_PHP_CLI='0';
+      CFG_INSTALL_PHP_FPM='0';
       CFG_INSTALL_APP_REPO='0';
       CFG_INSTALL_WORDPRESS='0';
       CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';

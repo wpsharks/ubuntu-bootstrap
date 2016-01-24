@@ -1,23 +1,24 @@
 #!/usr/bin/env bash
 
-if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
 
   ## Enable the OPcache extension.
 
   echo 'zend_extension=opcache.so' > /etc/php/conf.d/opcache.ini;
-  ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/cli/conf.d/opcache.ini;
-  ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/fpm/conf.d/opcache.ini;
 
-  ## Install cachetool utility for stats/reset, etc.
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/cli/conf.d/opcache.ini; fi;
 
-  curl http://gordalina.github.io/cachetool/downloads/cachetool.phar --location --output /usr/bin/cachetool;
-  chmod +x /usr/bin/cachetool; # Make it executable.
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/fpm/conf.d/opcache.ini;
 
-  echo 'adapter: fastcgi' > /etc/cachetool.yml;
-  echo 'fastcgi: /var/run/php-fpm.sock' >> /etc/cachetool.yml;
+    curl http://gordalina.github.io/cachetool/downloads/cachetool.phar --location --output /usr/bin/cachetool;
+    chmod +x /usr/bin/cachetool; # Make it executable.
 
-  # Restart service.
+    echo 'adapter: fastcgi' > /etc/cachetool.yml;
+    echo 'fastcgi: /var/run/php-fpm.sock' >> /etc/cachetool.yml;
 
-  service php-fpm restart;
+    service php-fpm restart; # Restart service.
+  fi;
 
 else echo 'Skipping OPcache extension for custom PHP.'; fi;

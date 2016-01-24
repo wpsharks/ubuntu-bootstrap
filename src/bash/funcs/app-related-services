@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# Define app-related services.
+
+declare -A ___app_related_services;
+
+# Keys = binaries; values = services.
+
+___app_related_services[mysql]=mysql;
+___app_related_services[postfix]=postfix;
+___app_related_services[memcached]=memcached;
+___app_related_services[php-fpm]=php-fpm;
+___app_related_services[php5-fpm]=php5-fpm;
+___app_related_services[php-fpm7.0]=php7.0-fpm;
+___app_related_services[nginx]=nginx;
+___app_related_services[apache2]=apache2;
+___app_related_services[ssh]=ssh;
+___app_related_services[ufw]=ufw;
+___app_related_services[fail2ban-client]=fail2ban;
+
+# Stop app-related services.
+
+function stop-app-related-services() {
+  local _binary _service; # Initialize.
+
+  for _binary in "${!___app_related_services[@]}"; do
+    _service="${___app_related_services[$_binary]}";
+
+    if can-run "${_binary}"; then
+      service "${_service}" stop &>/dev/null || true;
+    fi;
+  done;
+};
+
+# Start app-related services.
+
+function start-app-related-services() {
+  local _binary _service; # Initialize.
+
+  for _binary in "${!___app_related_services[@]}"; do
+    _service="${___app_related_services[$_binary]}";
+
+    if can-run "${_binary}"; then
+      service "${_service}" start &>/dev/null;
+    fi;
+  done;
+};
+
+# Restart app-related services.
+
+function restart-app-related-services() {
+  local _binary _service; # Initialize.
+
+  for _binary in "${!___app_related_services[@]}"; do
+    _service="${___app_related_services[$_binary]}";
+
+    if can-run "${_binary}"; then
+      service "${_service}" restart &>/dev/null;
+    fi;
+  done;
+};
+
+# Auto-restart app-related services on error.
+# e.g., `trap auto-restart-app-related-services-on-error ERR;`
+
+function auto-restart-app-related-services-on-error() {
+  set +o xtrace; # Disable.
+  restart-app-related-services;
+  stack-trace "$@";
+};
+
+# Auto-warn user about app-related services on error.
+# e.g., `trap auto-warn-about-app-related-services-on-error ERR;`
+
+function auto-warn-about-app-related-services-on-error() {
+  set +o xtrace; # Disable; i.e., turn off comand printing.
+  echo '----------------------------------------------------------------------';
+  echo 'WARNING: App-related services may still be in a stopped state, due to an error.';
+  stack-trace "$@";
+};

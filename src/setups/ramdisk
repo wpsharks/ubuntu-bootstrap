@@ -5,7 +5,7 @@ if [[ "${CFG_INSTALL_RAMDISK}" == 1 ]]; then
   # Mount a RAM disk partition.
 
   mkdir --parents /ram/app;
-  echo 'tmpfs /ram/app tmpfs defaults,size=33%,uid=nobody,gid=www-data,mode=2775 0 0' >> /etc/fstab;
-  mount -a; # Mount the new partition.
+  echo 'tmpfs /ram/app tmpfs defaults,size=12m,uid=nobody,gid=www-data,mode=2775 0 0' >> /etc/fstab;
+  mount /ram/app; # Mount the new partition.
 
 else echo 'Skipping RAM disk installation.'; fi;

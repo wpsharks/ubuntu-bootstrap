@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Round to integer.
+
+function int-round() {
+  local int="${1:-0}";
+  local round="${2:-up}";
+
+  if [[ "${round}" == down ]]; then
+    awk 'BEGIN { print int('"${int}"'); }';
+  else
+    awk 'BEGIN { print int('"${int}"'+0.5); }';
+  fi;
+};

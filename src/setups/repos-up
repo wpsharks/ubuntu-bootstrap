@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Update bootstrap repo.
+
+bootstrap-repo-update \
+  /bootstrap \
+  https://github.com/websharks/ubuntu-bootstrap \
+  master;
+
+# Update the websharks/core repo.
+
+if can-run php && can-run composer && [[ -d /usr/local/src/wsc ]]; then
+  cd /usr/local/src/wsc;
+
+  git pull; # Merge latest changes.
+  rm --recursive --force ./src/vendor;
+  composer install; # Install dependencies.
+fi;

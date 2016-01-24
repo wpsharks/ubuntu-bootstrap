@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Calculate a% of b.
+
+function percentage-of() {
+  local percent="${1:-100}";
+  local of="${2:-100}";
+  local round="${3:-up}";
+
+  if [[ "${round}" == down ]]; then
+    awk 'BEGIN { p=('"${percent}"'/100)*'"${of}"'; print int(p); }';
+  else
+    awk 'BEGIN { p=('"${percent}"'/100)*'"${of}"'; print int(p+0.5); }';
+  fi;
+};

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
+if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
 
   # Install from Ondrej's PPA.
   # See: <https://launchpad.net/~ondrej/+archive/ubuntu/php5>
@@ -8,8 +8,11 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
   add-apt-repository ppa:ondrej/php5 --yes;
   apt-get update; # Update after adding PPA.
 
-  apt-get install php5-cli --yes;
-  apt-get install php5-fpm --yes;
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    apt-get install php5-cli --yes; fi;
+
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    apt-get install php5-fpm --yes; fi;
 
   apt-get install php5-mysql --yes;
   apt-get install php5-curl --yes;
@@ -20,18 +23,22 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
   apt-get install php5-mcrypt --yes;
   apt-get install php5-memcached --yes;
 
-  ## Create PHP config file symlinks.
+  ## Create PHP config file symlink.
 
-  ln --symbolic /bootstrap/src/php/.ini /etc/php5/cli/conf.d/z90.ini;
-  ln --symbolic /bootstrap/src/php/.ini /etc/php5/fpm/conf.d/z90.ini;
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    ln --symbolic /bootstrap/src/php/.ini /etc/php5/cli/conf.d/z90.ini; fi;
 
-  mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf~;
-  ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php5/fpm/pool.d/z90.conf;
+  ## Create PHP config file symlinks & restart service.
 
-  perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask 0002/u' /etc/init/php5-fpm.conf;
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    ln --symbolic /bootstrap/src/php/.ini /etc/php5/fpm/conf.d/z90.ini;
 
-  # Restart service.
+    mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf~;
+    ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php5/fpm/pool.d/z90.conf;
 
-  service php5-fpm restart;
+    perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask 0002/u' /etc/init/php5-fpm.conf;
+
+    service php5-fpm restart; # Restart service; PHP process manager.
+  fi;
 
 else echo 'Skipping PHP v5.5 installation.'; fi;

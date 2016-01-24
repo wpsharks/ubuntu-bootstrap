@@ -27,7 +27,6 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
   mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
 
   ln --symbolic /bootstrap/src/mysql/.cnf /etc/mysql/conf.d/z90.cnf;
-  perl -i -wpe 's/^\s*;?\s*innodb_buffer_pool_size\s*\=.*$/innodb_buffer_pool_size = '"$(ram-mb-divided-by 3)"'M/u' /bootstrap/src/mysql/.cnf;
   echo '/bootstrap/src/mysql/.cnf r,' >> /etc/apparmor.d/local/usr.sbin.mysqld;
 
   # Install phpMyAdmin for MySQL administration.

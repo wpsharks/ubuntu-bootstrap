@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# Update bootstrap repo.
-
-bootstrap-repo-update \
-  /bootstrap \
-  https://github.com/websharks/ubuntu-bootstrap \
-  master;

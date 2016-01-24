@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
 
   # Install PHP and process manager.
 
@@ -30,18 +30,24 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; t
 
   ln --symbolic /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h;
 
+  ## Directories.
+
   mkdir --parents /usr/local/php;
-
   mkdir --parents /etc/php/conf.d;
-  mkdir --parents /etc/php/cli/conf.d;
-  mkdir --parents /etc/php/fpm/conf.d;
 
-  mkdir --parents --mode=750 /var/log/php;
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    mkdir --parents /etc/php/cli/conf.d; fi;
+
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    mkdir --parents /etc/php/fpm/conf.d; fi;
+
+  mkdir --parents /var/log/php;
+  chmod 750 /var/log/php;
   chown www-data:adm /var/log/php;
 
   ## Compile PHP & any additional extensions.
 
-  ### If we have a GZ file we can use it to save time!
+  ### If we have a GZ file we can use it to save a lot of time!
 
   if [[ "${CFG_INSTALL_PHP_VERSION}" != custom-src && -f /bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz ]]; then
 
@@ -100,11 +106,16 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; t
       --enable-mbstring \
       --enable-calendar \
     ";
+    #### Note that we always "compile" both of these.
+
+    #### Compile PHP for CLI usage.
+
     ./configure ${_php_configure_args} \
       --with-config-file-path=/etc/php/cli \
       --with-config-file-scan-dir=/etc/php/cli/conf.d;
-
     make; make install; make clean;
+
+    #### Compile PHP process manager.
 
     ./configure ${_php_configure_args} \
       --disable-cli --enable-fpm \
@@ -112,41 +123,35 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; t
       --with-fpm-group=www-data \
       --with-config-file-path=/etc/php/fpm \
       --with-config-file-scan-dir=/etc/php/fpm/conf.d;
-
     make; make install; make clean;
 
-    ### Compile the igbinary extension.
+    #### Compile the igbinary extension. @TODO Once it supports PHP7.
 
-    # @TODO Once it supports PHP7.
-    #git clone xxx /usr/local/src/igbinary --branch=master --depth=1;
+    if [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^@TODO_custom ]]; then
+      git clone '[@TODO]' /usr/local/src/igbinary --branch=master --depth=1;
 
-    #cd /usr/local/src/igbinary;
+      cd /usr/local/src/igbinary;
+      /usr/local/php/bin/phpize; # Does not require PEAR.
 
-    #phpize; # Does not require PEAR.
-
-    #./configure \
-    #CFLAGS='-O2 -g' --enable-igbinary \
-    #--with-php-config=/usr/local/php/bin/php-config;
-
-    #make;
-    #make install;
-
-    ### Compile memcached extension.
+      ./configure \
+        CFLAGS='-O2 -g' --enable-igbinary \
+        --with-php-config=/usr/local/php/bin/php-config;
+      make; make install; make clean;
+    fi;
+    #### Compile memcached extension.
 
     git clone https://github.com/php-memcached-dev/php-memcached /usr/local/src/php-memcached --branch=php7 --depth=1;
 
     cd /usr/local/src/php-memcached;
-
     /usr/local/php/bin/phpize; # Does not require PEAR.
 
     ./configure \
     --disable-memcached-sasl \
     --with-php-config=/usr/local/php/bin/php-config;
     # @TODO Once it supports PHP7 use `--enable-memcached-igbinary`.
+    make; make install; make clean;
 
-    make; make install;
-
-    ### Tar & GZ the PHP build (w/ extensions too).
+    #### Tar & GZ the PHP build (w/ extensions too).
 
     rm --force /bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz;
 
@@ -154,43 +159,52 @@ if [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; t
       --file=/bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz \
       /usr/local/php;
   fi;
-
   ## Create binary symlinks.
 
-  ln --symbolic /usr/local/php/bin/php /usr/bin/php;
   ln --symbolic /usr/local/php/bin/phpize /usr/bin/phpize;
-  ln --symbolic /usr/local/php/sbin/php-fpm /usr/sbin/php-fpm;
-  ln --symbolic /bootstrap/src/php/fpm/test-config /usr/sbin/php-fpm-test-config;
 
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    ln --symbolic /usr/local/php/bin/php /usr/bin/php; fi;
+
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    ln --symbolic /usr/local/php/sbin/php-fpm /usr/sbin/php-fpm;
+    ln --symbolic /bootstrap/src/php/fpm/test-config /usr/sbin/php-fpm-test-config;
+  fi;
   ## Create PHP config file symlinks.
 
   ln --symbolic /bootstrap/src/php/.ini /etc/php/conf.d/z90.ini;
-  ln --symbolic /etc/php/conf.d/z90.ini /etc/php/cli/conf.d/z90.ini;
-  ln --symbolic /etc/php/conf.d/z90.ini /etc/php/fpm/conf.d/z90.ini;
-  ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php/fpm/fpm.conf;
 
+  if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
+    ln --symbolic /etc/php/conf.d/z90.ini /etc/php/cli/conf.d/z90.ini; fi;
+
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    ln --symbolic /etc/php/conf.d/z90.ini /etc/php/fpm/conf.d/z90.ini;
+    ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php/fpm/fpm.conf;
+  fi;
   ## Create the upstart configuration file for PHP-FPM.
   ## Note: this cannot be a symlink. That results in an error.
 
-  cp /bootstrap/src/php/fpm/upstart.tpl.conf /etc/init/php-fpm.conf;
-
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    cp /bootstrap/src/php/fpm/upstart.tpl.conf /etc/init/php-fpm.conf;
+  fi;
   ## Setup log rotation for PHP-related log files.
   ## Note that app-specific log files can be placed here also.
 
   ln --symbolic /bootstrap/src/php/logrotate /etc/logrotate.d/php;
 
-  # Enable other extensions (based on config).
+  ## Enable other extensions (based on config).
 
   . /bootstrap/src/setups/php/igbinary;
   . /bootstrap/src/setups/php/memcache;
   . /bootstrap/src/setups/php/opcache;
 
-  # Restart service.
+  ## Restart PHP process manager.
 
-  service php-fpm restart;
+  if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+    service php-fpm restart; fi;
 
-  # Housekeeping.
+  ## Housekeeping; unset temporary vars.
 
   unset _custom_php_version; unset _php_configure_args;
 
-else echo 'Skipping custom PHP installation.'; fi;
+else echo 'Skipping custom PHP installation.'; fi; # i.e., Not installing, or installing via PPA.

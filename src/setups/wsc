@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php && can-run composer \
-  && [[ "${CFG_INSTALL_PHP}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+if can-run php && can-run composer && [[ "${CFG_INSTALL_PHP_CLI}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
 
   # Install websharks/core library.
 
@@ -9,7 +8,8 @@ if can-run php && can-run composer \
 
   # Satisfy websharks/core dependencies.
 
-  cd /usr/local/src/wsc; composer install;
+  cd /usr/local/src/wsc;
+  composer install; # Install dependencies.
 
   # Configure websharks/core CRON jobs.
 

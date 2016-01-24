@@ -91,6 +91,8 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/firewall;
   . /bootstrap/src/setups/fail2ban;
 
+  . /bootstrap/src/setups/resources;
+
   if [[ -f /bootstrap-app/post-install ]]; then
     . /bootstrap-app/post-install; fi;
 

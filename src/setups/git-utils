@@ -34,5 +34,4 @@ mkdir --parents /usr/local/src/git-crypt;
 git clone https://github.com/AGWA/git-crypt /usr/local/src/git-crypt --branch=master --depth=1;
 
 cd /usr/local/src/git-crypt;
-make;
-make install;
+make; make install; make clean;

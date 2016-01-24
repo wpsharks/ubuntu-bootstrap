@@ -1,0 +1,291 @@
+#!/usr/bin/env bash
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Sanity checks. Running as sudo?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Trap errors & warn the user if an error occurs.
+
+trap auto-warn-about-app-related-services-on-error ERR;
+
+# Stop app-related services.
+
+stop-app-related-services;
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Calculate total RAM available.
+
+available_ram="$(ram-mb-percentage 100)";
+
+# Validate RAM available (minimum requirements).
+#   * 512M = 490M "usable" RAM in Ubuntu.
+
+if [[ "${available_ram}" -lt 475 ]]; then
+  # 475M = leeway in case of minor differences.
+  # We are actually looking for 490M of usable RAM.
+  echo 'Need at least 475M of usable RAM please.'; exit 1;
+fi;
+# Reserve RAM for the OS itself; i.e., deduct from both.
+#   * e.g., 490-256 = 234 remaining.
+
+available_ram=$((available_ram-256));
+# See: <http://jas.xyz/1JsC3eT>; about 200M minimum.
+[[ "${available_ram}" -lt 234 ]] && available_ram=234;
+
+remaining_ram="${available_ram}";
+
+# Display total RAM available.
+
+echo '----------------------------------------------------------------------';
+echo 'Total unallocated RAM available: '"${available_ram}"'M';
+echo '----------------------------------------------------------------------';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Spread RAM based on the type of stack this box is running.
+#   * Note: 490-256 = 234; 27.5% of 234 = 64M.
+
+nginx_ram=0; apache_ram=0; mysql_ram=0; php_fpm_ram=0; memcached_ram=0; ramdisk_ram=0;
+
+if is-nginx-mysql-php-fpm-memcached-stack; then
+
+  nginx_ram="$(percentage-of 10 "${available_ram}")";
+  mysql_ram="$(percentage-of 27.5 "${available_ram}")";
+  php_fpm_ram="$(percentage-of 50 "${available_ram}")";
+  memcached_ram="$(percentage-of 10 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: nginx, mysql, php-fpm, memcached.';
+  echo '----------------------------------------------------------------------';
+
+elif is-apache-mysql-php-fpm-memcached-stack; then
+
+  apache_ram="$(percentage-of 10 "${available_ram}")";
+  mysql_ram="$(percentage-of 27.5 "${available_ram}")";
+  php_fpm_ram="$(percentage-of 50 "${available_ram}")";
+  memcached_ram="$(percentage-of 10 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: apache, mysql, php-fpm ,memcached.';
+  echo '----------------------------------------------------------------------';
+
+elif is-nginx-mysql-php-fpm-stack; then
+
+  nginx_ram="$(percentage-of 10 "${available_ram}")";
+  mysql_ram="$(percentage-of 32.5 "${available_ram}")";
+  php_fpm_ram="$(percentage-of 55 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: nginx, mysql, php-fpm.';
+  echo '----------------------------------------------------------------------';
+
+elif is-apache-mysql-php-fpm-stack; then
+
+  apache_ram="$(percentage-of 10 "${available_ram}")";
+  mysql_ram="$(percentage-of 32.5 "${available_ram}")";
+  php_fpm_ram="$(percentage-of 55 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: apache, mysql, php-fpm.';
+  echo '----------------------------------------------------------------------';
+
+elif is-nginx-php-fpm-stack; then
+
+  nginx_ram="$(percentage-of 10 "${available_ram}")";
+  php_fpm_ram="$(percentage-of 87.5 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: nginx, php-fpm.';
+  echo '----------------------------------------------------------------------';
+
+elif is-apache-php-fpm-stack; then
+
+  apache_ram="$(percentage-of 10 "${available_ram}")";
+  php_fpm_ram="$(percentage-of 87.5 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: apache, php-fpm.';
+  echo '----------------------------------------------------------------------';
+
+elif is-mysql-stack; then
+
+  mysql_ram="$(percentage-of 97.5 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: mysql stand-alone.';
+  echo '----------------------------------------------------------------------';
+
+elif is-memcached-stack; then
+
+  memcached_ram="$(percentage-of 97.5 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: memcached stand-alone.';
+  echo '----------------------------------------------------------------------';
+
+else # Unknown stack type; use minimums.
+
+  echo 'Stack: unknown/custom (using minimums).';
+  echo '----------------------------------------------------------------------';
+
+fi; # A custom stack will simply use minimums seen in the routines below.
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Set Nginx resource limits.
+
+if can-run nginx; then
+  allowing_nginx_ram="${nginx_ram}";
+  [[ "${allowing_nginx_ram}" -lt 64 ]] && allowing_nginx_ram=64;
+  remaining_ram=$((remaining_ram-allowing_nginx_ram));
+
+  nginx_worker_connections="$(percentage-of 75 "$(ulimit -n)")";
+
+  echo 'Nginx RAM calculation: '"${nginx_ram}"'M';
+  echo 'Nginx RAM allowance: '"${allowing_nginx_ram}"'M';
+  echo 'Nginx worker_connections: '"${nginx_worker_connections}";
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*)worker_connections\s+.*$/$1worker_connections '"${nginx_worker_connections}"';/u' /bootstrap/src/nginx/.conf;
+fi;
+
+# Set Apache resource limits.
+
+if can-run apache2; then
+  allowing_apache_ram="${apache_ram}";
+  [[ "${allowing_apache_ram}" -lt 64 ]] && allowing_apache_ram=64;
+  remaining_ram=$((remaining_ram-allowing_apache_ram));
+
+  apache_threads_per_child=25; # Assume `25`.
+  apache_start_servers=2; # Hard-coded defaults.
+
+  apache_max_request_workers="$(percentage-of 75 "$(ulimit -n)")";
+
+  apache_server_limit="$(int-round "$((apache_max_request_workers/apache_threads_per_child))")";
+  [[ "${apache_server_limit}" -lt "${apache_start_servers}" ]] && apache_server_limit="${apache_start_servers}";
+  # `apache_server_limit` must be >= `apache_start_servers`.
+
+  echo 'Apache RAM calculation: '"${apache_ram}"'M';
+  echo 'Apache RAM allowance: '"${allowing_apache_ram}"'M';
+  echo 'Apache StartServers: '"${apache_start_servers}";
+  echo 'Apache ServerLimit: '"${apache_server_limit}";
+  echo 'Apache MaxRequestWorkers: '"${apache_max_request_workers}";
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*)StartServers\s+.*$/$1StartServers '"${apache_start_servers}"'/u' /bootstrap/src/apache/.conf;
+  perl -i -wpe 's/^(\s*)ServerLimit\s+.*$/$1ServerLimit '"${apache_server_limit}"'/u' /bootstrap/src/apache/.conf;
+  perl -i -wpe 's/^(\s*)MaxRequestWorkers\s+.*$/$1MaxRequestWorkers '"${apache_max_request_workers}"'/u' /bootstrap/src/apache/.conf;
+fi;
+
+# Set MySQL resource limits.
+
+if can-run mysql; then
+  allowing_mysql_ram="${mysql_ram}";
+  [[ "${allowing_mysql_ram}" -lt 64 ]] && allowing_mysql_ram=64;
+  remaining_ram=$((remaining_ram-allowing_mysql_ram));
+
+  echo 'MySQL RAM calculation: '"${mysql_ram}"'M';
+  echo 'MySQL RAM allowance: '"${allowing_mysql_ram}"'M';
+  echo 'MySQL innodb_buffer_pool_size: '"${mysql_ram}"'M';
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*)innodb_buffer_pool_size\s*\=.*$/$1innodb_buffer_pool_size = '"${allowing_mysql_ram}"'M/u' /bootstrap/src/mysql/.cnf;
+fi;
+
+# Set PHP process manager resource limits.
+
+if can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0; then
+  allowing_php_fpm_ram="${php_fpm_ram}";
+  [[ "${allowing_php_fpm_ram}" -lt 128 ]] && allowing_php_fpm_ram=128;
+  remaining_ram=$((remaining_ram-allowing_php_fpm_ram));
+
+  php_memory_limit="${allowing_php_fpm_ram}";
+  if [[ "${php_memory_limit}" -gt 512 ]]; then
+    php_memory_limit=512; fi; # Cap this.
+
+  php_opcache_memory_consumption="$(percentage-of 50 "${php_memory_limit}")";
+
+  php_average_php_fpm_process_ram=32; # Assuming an average of about 32M.
+  php_fpm_start_servers=2; php_fpm_min_spare_servers=2; # Hard-coded defaults.
+
+  php_fpm_max_children="$(int-round "$((allowing_php_fpm_ram/php_average_php_fpm_process_ram))")";
+  [[ "${php_fpm_max_children}" -lt "${php_fpm_start_servers}" ]] && php_fpm_max_children="${php_fpm_start_servers}";
+  [[ "${php_fpm_max_children}" -lt "${php_fpm_min_spare_servers}" ]] && php_fpm_max_children="${php_fpm_min_spare_servers}";
+  # `php_fpm_max_children` must be >= `php_fpm_start_servers` & >= `php_fpm_min_spare_servers`.
+
+  php_fpm_max_spare_servers="$(int-round "$((php_fpm_max_children/4))")";
+  [[ "${php_fpm_max_spare_servers}" -lt "${php_fpm_start_servers}" ]] && php_fpm_max_spare_servers="${php_fpm_start_servers}";
+  [[ "${php_fpm_max_spare_servers}" -lt "${php_fpm_min_spare_servers}" ]] && php_fpm_max_spare_servers="${php_fpm_min_spare_servers}";
+  # `php_fpm_max_spare_servers` must be >= `php_fpm_start_servers` & >= `php_fpm_min_spare_servers`.
+
+  echo 'PHP-FPM RAM calculation: '"${php_fpm_ram}"'M';
+  echo 'PHP-FPM RAM allowance: '"${allowing_php_fpm_ram}"'M';
+  echo '----------------------------------------------------------------------';
+
+  echo 'PHP memory_limit: '"${php_memory_limit}"'M';
+  echo 'PHP opcache.memory_consumption: '"${php_opcache_memory_consumption}"'M';
+  echo '----------------------------------------------------------------------';
+
+  echo 'PHP-FPM pm.start_servers: '"${php_fpm_start_servers}";
+  echo 'PHP-FPM pm.min_spare_servers: '"${php_fpm_min_spare_servers}";
+  echo 'PHP-FPM pm.max_spare_servers: '"${php_fpm_max_spare_servers}";
+  echo 'PHP-FPM pm.max_children: '"${php_fpm_max_children}";
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*)memory_limit\s*\=.*$/$1memory_limit = '"${php_memory_limit}"'M/u' /bootstrap/src/php/.ini;
+  perl -i -wpe 's/^(\s*)opcache\.memory_consumption\s*\=.*$/$1opcache.memory_consumption = '"${php_opcache_memory_consumption}"'/u' /bootstrap/src/php/.ini;
+
+  perl -i -wpe 's/^(\s*)pm\.start_servers\s*\=.*$/$1pm.start_servers = '"${php_fpm_start_servers}"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.min_spare_servers\s*\=.*$/$1pm.min_spare_servers = '"${php_fpm_min_spare_servers}"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.max_spare_servers\s*\=.*$/$1pm.max_spare_servers = '"${php_fpm_max_spare_servers}"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.max_children\s*\=.*$/$1pm.max_children = '"${php_fpm_max_children}"'/u' /bootstrap/src/php/fpm/.conf;
+fi;
+
+# Set Memcached resource limits.
+
+if can-run memcached; then
+  allowing_memcached_ram="${memcached_ram}";
+  [[ "${allowing_memcached_ram}" -lt 32 ]] && allowing_memcached_ram=32;
+  remaining_ram=$((remaining_ram-allowing_memcached_ram));
+
+  echo 'Memcached RAM calculation: '"${memcached_ram}"'M';
+  echo 'Memcached RAM allowance: '"${allowing_memcached_ram}"'M';
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"${allowing_memcached_ram}"'/u' /bootstrap/src/memcache/.conf;
+fi;
+
+# Set RAMdisk resource limits.
+
+if [[ -d /ram/app ]]; then
+  allowing_ramdisk_ram="${ramdisk_ram}";
+  [[ "${allowing_ramdisk_ram}" -lt 12 ]] && allowing_ramdisk_ram=12;
+  remaining_ram=$((remaining_ram-allowing_ramdisk_ram));
+
+  echo 'RAMdisk size calculation: '"${ramdisk_ram}"'M';
+  echo 'RAMdisk size allowance: '"${allowing_ramdisk_ram}"'M';
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*tmpfs\s+\/ram\/app\s+.*?,)(?:size\=[^,]+)(.*)$/$1size='"${allowing_ramdisk_ram}"'m$2/u' /etc/fstab;
+  mount --options=remount /ram/app;
+fi;
+
+# Display remaining RAM after all calculations.
+
+echo 'RAM Remaining: '"${remaining_ram}"'M';
+echo 'If this is negative, swap might be necessary at times.';
+echo 'If positive, unallocated resources might be going to waste.';
+echo '----------------------------------------------------------------------';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Start app-related services.
+
+start-app-related-services;

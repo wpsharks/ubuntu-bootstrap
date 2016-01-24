@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Setup resource limits.
+
+/bootstrap/src/bin/set-resource-limits;
