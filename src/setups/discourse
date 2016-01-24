@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then # @TODO - this is incomplete.
+# @TODO Add conflict checks in `/bootstrap/src/setups/config` also.
 
   # Install Discourse.
 

@@ -47,25 +47,37 @@ export CFG_MYSQL_DB_USERNAME; cfgs+=('CFG_MYSQL_DB_USERNAME');
 export CFG_MYSQL_DB_PASSWORD; cfgs+=('CFG_MYSQL_DB_PASSWORD');
 
 export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
+
 export CFG_INSTALL_WS_CA_FILES; cfgs+=('CFG_INSTALL_WS_CA_FILES');
 export CFG_INSTALL_CRTS_VIA_LE; cfgs+=('CFG_INSTALL_CRTS_VIA_LE');
+
 export CFG_INSTALL_POSTFIX; cfgs+=('CFG_INSTALL_POSTFIX');
+
 export CFG_INSTALL_NGINX; cfgs+=('CFG_INSTALL_NGINX');
 export CFG_INSTALL_APACHE; cfgs+=('CFG_INSTALL_APACHE');
+
 export CFG_INSTALL_MYSQL; cfgs+=('CFG_INSTALL_MYSQL');
 export CFG_INSTALL_MYSQL_DB_IMPORT_FILE; cfgs+=('CFG_INSTALL_MYSQL_DB_IMPORT_FILE');
-export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
+
 export CFG_INSTALL_MEMCACHE; cfgs+=('CFG_INSTALL_MEMCACHE');
+export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
+
 export CFG_INSTALL_PHP_CLI; cfgs+=('CFG_INSTALL_PHP_CLI');
 export CFG_INSTALL_PHP_FPM; cfgs+=('CFG_INSTALL_PHP_FPM');
 export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
+
 export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
+
+export CFG_INSTALL_DISCOURSE; cfgs+=('CFG_INSTALL_DISCOURSE');
+
 export CFG_INSTALL_WORDPRESS; cfgs+=('CFG_INSTALL_WORDPRESS');
 export CFG_INSTALL_WORDPRESS_VM_SYMLINKS; cfgs+=('CFG_INSTALL_WORDPRESS_VM_SYMLINKS');
+
 export CFG_INSTALL_FIREWALL; cfgs+=('CFG_INSTALL_FIREWALL');
 export CFG_INSTALL_FAIL2BAN; cfgs+=('CFG_INSTALL_FAIL2BAN');
 export CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN; cfgs+=('CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN');
 export CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443; cfgs+=('CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443');
+
 export CFG_INSTALL_UNATTENDED_UPGRADES; cfgs+=('CFG_INSTALL_UNATTENDED_UPGRADES');
 
 export CFG_CONFIG_FILE; cfgs+=('CFG_CONFIG_FILE');
@@ -153,12 +165,16 @@ if is-vagrant; then
 fi;
 
 CFG_INSTALL_POSTFIX='1';
+
 CFG_INSTALL_NGINX='1';
 CFG_INSTALL_APACHE='0';
+
 CFG_INSTALL_MYSQL='1';
 CFG_INSTALL_MYSQL_DB_IMPORT_FILE='';
-CFG_INSTALL_RAMDISK='1';
+
 CFG_INSTALL_MEMCACHE='1';
+CFG_INSTALL_RAMDISK='1';
+
 CFG_INSTALL_PHP_CLI='1';
 CFG_INSTALL_PHP_FPM='1';
 CFG_INSTALL_PHP_VERSION='custom';
@@ -166,8 +182,10 @@ CFG_INSTALL_PHP_VERSION='custom';
 # Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`, `5.4`.
 
 CFG_INSTALL_APP_REPO='1';
-CFG_INSTALL_WORDPRESS='1';
 
+CFG_INSTALL_DISCOURSE='0';
+
+CFG_INSTALL_WORDPRESS='1';
 CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
 if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
@@ -414,41 +432,65 @@ function cfgs_wizard() {
         --separate-output --checklist 'Use space bar to toggle these.' 25 75 25 \
         \
         'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_MYSQL' 'Install?' "$([[ "${CFG_INSTALL_MYSQL}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_RAMDISK' 'Install?' "$([[ "${CFG_INSTALL_RAMDISK}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_MEMCACHE' 'Install?' "$([[ "${CFG_INSTALL_MEMCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_RAMDISK' 'Install?' "$([[ "${CFG_INSTALL_RAMDISK}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_PHP_CLI' 'Install?' "$([[ "${CFG_INSTALL_PHP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHP_FPM' 'Install?' "$([[ "${CFG_INSTALL_PHP_FPM}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_DISCOURSE' 'Install?' "$([[ "${CFG_INSTALL_DISCOURSE}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_FIREWALL' 'Install?' "$([[ "${CFG_INSTALL_FIREWALL}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_FAIL2BAN' 'Install?' "$([[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_UNATTENDED_UPGRADES' 'Install?' "$([[ "${CFG_INSTALL_UNATTENDED_UPGRADES}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         3>&1 1>&2 2>&3)"; # Output collection occurs here.
 
       CFG_INSTALL_SWAP='0';
+
       CFG_INSTALL_WS_CA_FILES='0';
       CFG_INSTALL_CRTS_VIA_LE='0';
+
       CFG_INSTALL_POSTFIX='0';
+
       CFG_INSTALL_NGINX='0';
       CFG_INSTALL_APACHE='0';
+
       CFG_INSTALL_MYSQL='0';
-      CFG_INSTALL_RAMDISK='0';
+
       CFG_INSTALL_MEMCACHE='0';
+      CFG_INSTALL_RAMDISK='0';
+
       CFG_INSTALL_PHP_CLI='0';
       CFG_INSTALL_PHP_FPM='0';
+
       CFG_INSTALL_APP_REPO='0';
+
+      CFG_INSTALL_DISCOURSE='0';
+
       CFG_INSTALL_WORDPRESS='0';
       CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
+
       CFG_INSTALL_FIREWALL='0';
       CFG_INSTALL_FAIL2BAN='0';
+
       CFG_INSTALL_UNATTENDED_UPGRADES='0';
 
       for _cfg_package_option in $_cfg_package_options; do
@@ -488,7 +530,9 @@ function cfgs_wizard() {
             'CFG_MYSQL_DB_PASSWORD' \
             \
             'CFG_INSTALL_PHP_VERSION' \
+            \
             'CFG_INSTALL_MYSQL_DB_IMPORT_FILE' \
+            \
             'CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN' \
             'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' \
             \
