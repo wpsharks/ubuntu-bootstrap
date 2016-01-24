@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then # @TODO - this is incomplete.
+
+  # Install Discourse.
+
+  apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D;
+  apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-trusty main' --yes;
+  apt-get update;
+
+  apt-get install linux-image-extra-"$(uname -r)" --yes;
+  apt-get install docker-engine --yes;
+
+  perl -i -wpe 's/^(\s*)DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
+
+  git clone https://github.com/discourse/discourse_docker.git /var/discourse --branch=master --depth=1;
+
+  cd /var/discourse;
+  cp samples/standalone.yml containers/app.yml;
+
+  # @TODO Make edits to `app.yml` via bootstrap.
+
+  ./launcher bootstrap app;
+  ./launcher start app;
+
+else echo 'Skipping Discourse installation.'; fi;
