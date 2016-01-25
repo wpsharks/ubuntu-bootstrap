@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php && can-run composer && [[ "${CFG_INSTALL_PHP_CLI}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
+if can-run php && can-run phing && can-run composer && [[ "${CFG_INSTALL_PHP_CLI}" == 1 && "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
 
   # Install websharks/core library.
 
@@ -9,7 +9,8 @@ if can-run php && can-run composer && [[ "${CFG_INSTALL_PHP_CLI}" == 1 && "${CFG
   # Satisfy websharks/core dependencies.
 
   cd /usr/local/src/wsc;
-  composer install; # Install dependencies.
+  git submodule update --recursive --force --init;
+  phing post-receive-build;
 
   # Configure websharks/core CRON jobs.
 
