@@ -26,6 +26,9 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['ro'];
   end;
 
+  # Allow SSH keys that the user has to be used on the VM w/o copying them to the VM.
+  config.ssh.forward_agent = true;
+
   # Configure DNS automatically?
   if Vagrant.has_plugin?('landrush')
     config.landrush.enabled = true; # Enable landrush plugin.
