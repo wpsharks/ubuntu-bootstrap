@@ -51,6 +51,8 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
   fi;
   # Restart firewall now; i.e., apply changes.
 
+  ufw --force enable; # Apply firewall changes.
+
   service ufw restart; # Via upstart.
 
 else echo 'Skipping firewall installation.'; fi;
