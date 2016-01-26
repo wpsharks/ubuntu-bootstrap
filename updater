@@ -42,7 +42,7 @@ if [[ -f /etc/bootstrap/.installed ]]; then
 
   . /bootstrap/src/setups/cleanup;
 
-  start-app-related-services;
+  restart-app-related-services;
 
   set +o xtrace; # Turn off comand printing.
 

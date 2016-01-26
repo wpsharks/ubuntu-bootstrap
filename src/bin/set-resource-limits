@@ -293,7 +293,12 @@ if can-run docker && [[ -d /discourse ]]; then
   perl -i -wpe 's/^(\s*)UNICORN_WORKERS\:.*$/$1UNICORN_WORKERS: '"$(esc-regex-rv "${discourse_unicorn_workers}")"'/u' /bootstrap/src/discourse/.yml;
   perl -i -wpe 's/^(\s*)db_work_mem\:.*$/$1db_work_mem: '"$(esc-regex-rv "'${discourse_db_work_mem}MB'")"'/u' /bootstrap/src/discourse/.yml;
   perl -i -wpe 's/^(\s*)db_shared_buffers\:.*$/$1db_shared_buffers: '"$(esc-regex-rv "'${discourse_db_shared_buffers}MB'")"'/u' /bootstrap/src/discourse/.yml;
+
+  service docker restart; # Must have docker up and running for this.
   /discourse/launcher rebuild app; # Must rebuild the app now.
+
+  /discourse/launcher stop app; # Shut them back down.
+  service docker stop; # Docker also.
 fi;
 
 # Set RAMdisk resource limits.
@@ -320,6 +325,6 @@ echo '----------------------------------------------------------------------';
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Start app-related services.
+# Restart app-related services.
 
-start-app-related-services;
+restart-app-related-services;

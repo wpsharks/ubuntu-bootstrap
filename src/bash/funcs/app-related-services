@@ -1,35 +1,38 @@
 #!/usr/bin/env bash
 
-# Define app-related services.
-
-declare -A ___app_related_services;
-
-# Keys = binaries; values = services.
-
-___app_related_services[apache2]=apache2;
-___app_related_services[discourse]=discourse;
-___app_related_services[fail2ban-client]=fail2ban;
-___app_related_services[memcached]=memcached;
-___app_related_services[mysql]=mysql;
-___app_related_services[nginx]=nginx;
-___app_related_services[php-fpm7.0]=php7.0-fpm;
-___app_related_services[php-fpm]=php-fpm;
-___app_related_services[php5-fpm]=php5-fpm;
-___app_related_services[postfix]=postfix;
-___app_related_services[ssh]=ssh;
-___app_related_services[ufw]=ufw;
-
 # Stop app-related services.
 
 function stop-app-related-services() {
-  local _binary _service; # Initialize.
+  local _binary _service;
+  declare -A services;
 
-  for _binary in "${!___app_related_services[@]}"; do
-    _service="${___app_related_services[$_binary]}";
+  services[nginx]=nginx;
+  services[apache2]=apache2;
+
+  services[php-fpm]=php-fpm;
+  services[php5-fpm]=php5-fpm;
+  services[php-fpm7.0]=php7.0-fpm;
+
+  services[mysql]=mysql;
+
+  services[memcached]=memcached;
+
+  services[discourse]=discourse;
+  services[docker]=docker;
+
+  services[fail2ban-client]=fail2ban;
+  services[ufw]=ufw;
+
+  services[postfix]=postfix;
+
+  services[ssh]=ssh;
+
+  for _binary in "${!services[@]}"; do
+    _service="${services[$_binary]}";
 
     if [[ "${_binary}" == 'discourse' ]]; then
       if [[ -x /discourse/launcher ]]; then
-        /discourse/launcher stop app;
+        /discourse/launcher stop app || true;
       fi;
     elif can-run "${_binary}"; then
       service "${_service}" stop &>/dev/null || true;
@@ -37,31 +40,35 @@ function stop-app-related-services() {
   done;
 };
 
-# Start app-related services.
-
-function start-app-related-services() {
-  local _binary _service; # Initialize.
-
-  for _binary in "${!___app_related_services[@]}"; do
-    _service="${___app_related_services[$_binary]}";
-
-    if [[ "${_binary}" == 'discourse' ]]; then
-      if [[ -x /discourse/launcher ]]; then
-        /discourse/launcher start app;
-      fi;
-    elif can-run "${_binary}"; then
-      service "${_service}" start &>/dev/null;
-    fi;
-  done;
-};
-
-# Restart app-related services.
+# Start (or restart) app-related services.
 
 function restart-app-related-services() {
-  local _binary _service; # Initialize.
+  local _binary _service;
+  declare -A services;
 
-  for _binary in "${!___app_related_services[@]}"; do
-    _service="${___app_related_services[$_binary]}";
+  services[ssh]=ssh;
+
+  services[postfix]=postfix;
+
+  services[ufw]=ufw;
+  services[fail2ban-client]=fail2ban;
+
+  services[docker]=docker;
+  services[discourse]=discourse;
+
+  services[memcached]=memcached;
+
+  services[mysql]=mysql;
+
+  services[php-fpm7.0]=php7.0-fpm;
+  services[php5-fpm]=php5-fpm;
+  services[php-fpm]=php-fpm;
+
+  services[apache2]=apache2;
+  services[nginx]=nginx;
+
+  for _binary in "${!services[@]}"; do
+    _service="${services[$_binary]}";
 
     if [[ "${_binary}" == 'discourse' ]]; then
       if [[ -x /discourse/launcher ]]; then

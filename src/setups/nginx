@@ -12,6 +12,9 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
 
   rm --force /etc/nginx/nginx.conf;
   rm --force /etc/nginx/sites-enabled/default;
+
+  mkdir --parents /etc/nginx/conf.d/http;
+  mkdir --parents /etc/nginx/conf.d/server;
   ln --symbolic /bootstrap/src/nginx/.conf /etc/nginx/nginx.conf;
 
   if is-vagrant; then # Disable sendfile on vagrant VMs.
@@ -20,6 +23,23 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
 
   perl -i -0wpe 's/%%cookie_maintenance_bypass_value%%/'"${CFG_MAINTENANCE_BYPASS_KEY}"'/ug' /bootstrap/src/nginx/.conf;
 
+  if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+    # See: <https://www.cloudflare.com/ips/>
+    _ips_v4="$(curl https://www.cloudflare.com/ips-v4 --location)";
+    _ips_v6="$(curl https://www.cloudflare.com/ips-v6 --location)";
+
+    : > /bootstrap/src/nginx/conf.d/server/cf-real-ip.conf;
+
+    while read -ra _ip; do
+      _ip="$(trim "${_ip}")";
+      if [[ -n "${_ip}" ]]; then
+        echo 'set_real_ip_from '"${_ip}"';' >> /bootstrap/src/nginx/conf.d/server/cf-real-ip.conf;
+      fi;
+    done <<< "${_ips_v4}"$'\n'"${_ips_v6}"; unset _ips_v4; unset _ips_v6; unset _ip;
+    echo 'real_ip_header cf-connecting-ip;' >> /bootstrap/src/nginx/conf.d/server/cf-real-ip.conf;
+
+    ln --symbolic /bootstrap/src/nginx/conf.d/server/cf-real-ip.conf /etc/nginx/conf.d/server/cf-real-ip.conf;
+  fi;
   # Put live sites into maintenance mode by default.
 
   if ! is-vagrant; then

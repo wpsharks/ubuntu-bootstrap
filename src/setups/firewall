@@ -41,9 +41,7 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
           sudo ufw allow from "${_ip}" to any port 80;
           sudo ufw allow from "${_ip}" to any port 443;
         fi;
-      done <<< "${_ips_v4}"$'\n'"${_ips_v6}";
-
-      unset _ips_v4; unset _ips_v6; unset _ip;
+      done <<< "${_ips_v4}"$'\n'"${_ips_v6}"; unset _ips_v4; unset _ips_v6; unset _ip;
 
     else # Wide open w/o any DDoS protection whatsoever.
       ufw allow 80/tcp; ufw allow 443/tcp;

@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
   end;
 
   # Allow SSH keys that the user has to be used on the VM w/o copying them to the VM.
-  config.ssh.forward_agent = true;
+  config.ssh.forward_agent = true; # Does not work in scripts; shell only.
 
   # Configure DNS automatically?
   if Vagrant.has_plugin?('landrush')
