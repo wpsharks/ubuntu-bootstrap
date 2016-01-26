@@ -85,6 +85,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/wsc;
 
   . /bootstrap/src/setups/app-repo;
+  . /bootstrap/src/setups/discourse;
   . /bootstrap/src/setups/wordpress;
 
   . /bootstrap/src/setups/ssh-config;

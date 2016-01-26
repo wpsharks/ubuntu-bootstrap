@@ -6,17 +6,18 @@ declare -A ___app_related_services;
 
 # Keys = binaries; values = services.
 
-___app_related_services[mysql]=mysql;
-___app_related_services[postfix]=postfix;
+___app_related_services[apache2]=apache2;
+___app_related_services[discourse]=discourse;
+___app_related_services[fail2ban-client]=fail2ban;
 ___app_related_services[memcached]=memcached;
+___app_related_services[mysql]=mysql;
+___app_related_services[nginx]=nginx;
+___app_related_services[php-fpm7.0]=php7.0-fpm;
 ___app_related_services[php-fpm]=php-fpm;
 ___app_related_services[php5-fpm]=php5-fpm;
-___app_related_services[php-fpm7.0]=php7.0-fpm;
-___app_related_services[nginx]=nginx;
-___app_related_services[apache2]=apache2;
+___app_related_services[postfix]=postfix;
 ___app_related_services[ssh]=ssh;
 ___app_related_services[ufw]=ufw;
-___app_related_services[fail2ban-client]=fail2ban;
 
 # Stop app-related services.
 
@@ -26,7 +27,11 @@ function stop-app-related-services() {
   for _binary in "${!___app_related_services[@]}"; do
     _service="${___app_related_services[$_binary]}";
 
-    if can-run "${_binary}"; then
+    if [[ "${_binary}" == 'discourse' ]]; then
+      if [[ -x /discourse/launcher ]]; then
+        /discourse/launcher stop app;
+      fi;
+    elif can-run "${_binary}"; then
       service "${_service}" stop &>/dev/null || true;
     fi;
   done;
@@ -40,7 +45,11 @@ function start-app-related-services() {
   for _binary in "${!___app_related_services[@]}"; do
     _service="${___app_related_services[$_binary]}";
 
-    if can-run "${_binary}"; then
+    if [[ "${_binary}" == 'discourse' ]]; then
+      if [[ -x /discourse/launcher ]]; then
+        /discourse/launcher start app;
+      fi;
+    elif can-run "${_binary}"; then
       service "${_service}" start &>/dev/null;
     fi;
   done;
@@ -54,7 +63,11 @@ function restart-app-related-services() {
   for _binary in "${!___app_related_services[@]}"; do
     _service="${___app_related_services[$_binary]}";
 
-    if can-run "${_binary}"; then
+    if [[ "${_binary}" == 'discourse' ]]; then
+      if [[ -x /discourse/launcher ]]; then
+        /discourse/launcher restart app;
+      fi;
+    elif can-run "${_binary}"; then
       service "${_service}" restart &>/dev/null;
     fi;
   done;

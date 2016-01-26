@@ -1,0 +1,60 @@
+expose:
+  - '80:80'
+  - '443:443'
+
+templates:
+  - 'templates/postgres.template.yml'
+  - 'templates/redis.template.yml'
+  - 'templates/web.template.yml'
+  - 'templates/web.ratelimited.template.yml'
+  - 'templates/web.ssl.template.yml'
+#  - 'templates/cloudflare.template.yml'
+# This is conditionally uncommented during setup.
+
+env:
+  LANG: en_US.UTF-8
+  DISCOURSE_DEFAULT_LOCALE: en
+
+  UNICORN_WORKERS: 2
+  # See also: <http://jas.xyz/1QxG6b1>
+  # Note: Approximately 2 workers for each GB of RAM.
+  # This is altered dynamically by the bootstrap/installer.
+  # See: `/bootstrap/src/bin/set-resource-limits`.
+
+  DISCOURSE_HOSTNAME: '%%host%%'
+  DISCOURSE_DEVELOPER_EMAILS: '%%admin_email%%'
+
+  DISCOURSE_SMTP_ENABLE_START_TLS: true
+  DISCOURSE_SMTP_ADDRESS: '%%discourse_smtp_host%%'
+  DISCOURSE_SMTP_PORT: '%%discourse_smtp_port%%'
+  DISCOURSE_SMTP_AUTHENTICATION: '%%discourse_smtp_auth_type%%'
+  DISCOURSE_SMTP_USER_NAME: '%%discourse_smtp_username%%'
+  DISCOURSE_SMTP_PASSWORD: '%%discourse_smtp_password%%'
+
+params:
+  db_work_mem: '12MB'
+  db_shared_buffers: '192MB'
+  # See also: <http://jas.xyz/1QxG6b1>
+  # Note: db_work_mem should be approx. 1.5% of available RAM.
+  # Note: db_shared_buffers should be approx. 20-25% of available RAM.
+  # These are altered dynamically by the bootstrap/installer.
+  # See: `/bootstrap/src/bin/set-resource-limits`.
+  db_default_text_search_config: 'pg_catalog.english'
+
+volumes:
+  - volume:
+      host: /discourse/shared/standalone
+      guest: /shared
+  - volume:
+      host: /discourse/shared/standalone/log/var-log
+      guest: /var/log
+
+hooks:
+  after_code:
+    - exec:
+        cd: $home/plugins
+        cmd:
+          - git clone https://github.com/discourse/docker_manager.git
+
+run:
+  - exec: rails r "SiteSetting.notification_email='%%admin_public_email%%'"

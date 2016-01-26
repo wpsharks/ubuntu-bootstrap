@@ -52,7 +52,7 @@ echo '----------------------------------------------------------------------';
 # Spread RAM based on the type of stack this box is running.
 #   * Note: 490-256 = 234; 27.5% of 234 = 64M.
 
-nginx_ram=0; apache_ram=0; mysql_ram=0; php_fpm_ram=0; memcached_ram=0; ramdisk_ram=0;
+nginx_ram=0; apache_ram=0; mysql_ram=0; php_fpm_ram=0; memcached_ram=0; discourse_ram=0; ramdisk_ram=0;
 
 if is-nginx-mysql-php-fpm-memcached-stack; then
 
@@ -62,7 +62,7 @@ if is-nginx-mysql-php-fpm-memcached-stack; then
   memcached_ram="$(percentage-of 10 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: nginx, mysql, php-fpm, memcached.';
+  echo 'Stack: Nginx, MySQL, PHP-FPM, Memcached.';
   echo '----------------------------------------------------------------------';
 
 elif is-apache-mysql-php-fpm-memcached-stack; then
@@ -73,7 +73,7 @@ elif is-apache-mysql-php-fpm-memcached-stack; then
   memcached_ram="$(percentage-of 10 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: apache, mysql, php-fpm ,memcached.';
+  echo 'Stack: Apache, MySQL, PHP-FPM, Memcached.';
   echo '----------------------------------------------------------------------';
 
 elif is-nginx-mysql-php-fpm-stack; then
@@ -83,7 +83,7 @@ elif is-nginx-mysql-php-fpm-stack; then
   php_fpm_ram="$(percentage-of 55 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: nginx, mysql, php-fpm.';
+  echo 'Stack: Nginx, MySQL, PHP-FPM.';
   echo '----------------------------------------------------------------------';
 
 elif is-apache-mysql-php-fpm-stack; then
@@ -93,7 +93,7 @@ elif is-apache-mysql-php-fpm-stack; then
   php_fpm_ram="$(percentage-of 55 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: apache, mysql, php-fpm.';
+  echo 'Stack: Apache, MySQL, PHP-FPM.';
   echo '----------------------------------------------------------------------';
 
 elif is-nginx-php-fpm-stack; then
@@ -102,7 +102,7 @@ elif is-nginx-php-fpm-stack; then
   php_fpm_ram="$(percentage-of 87.5 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: nginx, php-fpm.';
+  echo 'Stack: Nginx, PHP-FPM.';
   echo '----------------------------------------------------------------------';
 
 elif is-apache-php-fpm-stack; then
@@ -111,7 +111,7 @@ elif is-apache-php-fpm-stack; then
   php_fpm_ram="$(percentage-of 87.5 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: apache, php-fpm.';
+  echo 'Stack: Apache, PHP-FPM.';
   echo '----------------------------------------------------------------------';
 
 elif is-mysql-stack; then
@@ -119,7 +119,7 @@ elif is-mysql-stack; then
   mysql_ram="$(percentage-of 97.5 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: mysql stand-alone.';
+  echo 'Stack: MySQL stand-alone.';
   echo '----------------------------------------------------------------------';
 
 elif is-memcached-stack; then
@@ -127,12 +127,20 @@ elif is-memcached-stack; then
   memcached_ram="$(percentage-of 97.5 "${available_ram}")";
   ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
 
-  echo 'Stack: memcached stand-alone.';
+  echo 'Stack: Memcached stand-alone.';
+  echo '----------------------------------------------------------------------';
+
+elif is-discourse-stack; then
+
+  discourse_ram="$(percentage-of 97.5 "${available_ram}")";
+  ramdisk_ram="$(percentage-of 2.5 "${available_ram}")";
+
+  echo 'Stack: Discourse stand-alone.';
   echo '----------------------------------------------------------------------';
 
 else # Unknown stack type; use minimums.
 
-  echo 'Stack: unknown/custom (using minimums).';
+  echo 'Stack: Custom (using minimums).';
   echo '----------------------------------------------------------------------';
 
 fi; # A custom stack will simply use minimums seen in the routines below.
@@ -260,6 +268,32 @@ if can-run memcached; then
   echo '----------------------------------------------------------------------';
 
   perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"${allowing_memcached_ram}"'/u' /bootstrap/src/memcache/.conf;
+fi;
+
+# Set Discourse resource limits.
+# Note: Discourse should run on a server w/ 1GB+ of RAM.
+#   If less than 2GB of RAM, swap is necessary.
+
+if can-run docker && [[ -d /discourse ]]; then
+  allowing_discourse_ram="${discourse_ram}";
+  [[ "${allowing_discourse_ram}" -lt 768 ]] && allowing_discourse_ram=768;
+  remaining_ram=$((remaining_ram-allowing_discourse_ram));
+
+  discourse_unicorn_workers="$(int-round "$(((allowing_discourse_ram/768)*2))")";
+  discourse_db_work_mem="$(percentage-of 1.5 "${allowing_discourse_ram}")";
+  discourse_db_shared_buffers="$(percentage-of 25 "${allowing_discourse_ram}")";
+
+  echo 'Discourse RAM calculation: '"${discourse_ram}"'M';
+  echo 'Discourse RAM allowance: '"${allowing_discourse_ram}"'M';
+  echo 'Discourse UNICORN_WORKERS: '"${discourse_unicorn_workers}";
+  echo 'Discourse db_work_mem: '"${discourse_db_work_mem}"'MB';
+  echo 'Discourse db_shared_buffers: '"${discourse_db_shared_buffers}"'MB';
+  echo '----------------------------------------------------------------------';
+
+  perl -i -wpe 's/^(\s*)UNICORN_WORKERS\:.*$/$1UNICORN_WORKERS: '"${discourse_unicorn_workers}"'/u' /bootstrap/src/discourse/.yml;
+  perl -i -wpe 's/^(\s*)db_work_mem\:.*$/$1db_work_mem: '"'${discourse_db_work_mem}MB'"'/u' /bootstrap/src/discourse/.yml;
+  perl -i -wpe 's/^(\s*)db_shared_buffers\:.*$/$1db_shared_buffers: '"'${discourse_db_shared_buffers}MB'"'/u' /bootstrap/src/discourse/.yml;
+  /discourse/launcher rebuild app; # Must rebuild the app now.
 fi;
 
 # Set RAMdisk resource limits.

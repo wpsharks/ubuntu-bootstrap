@@ -69,6 +69,11 @@ export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
 export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
 
 export CFG_INSTALL_DISCOURSE; cfgs+=('CFG_INSTALL_DISCOURSE');
+export CFG_DISCOURSE_SMTP_HOST; cfgs+=('CFG_DISCOURSE_SMTP_HOST');
+export CFG_DISCOURSE_SMTP_PORT; cfgs+=('CFG_DISCOURSE_SMTP_PORT');
+export CFG_DISCOURSE_SMTP_AUTH_TYPE; cfgs+=('CFG_DISCOURSE_SMTP_AUTH_TYPE');
+export CFG_DISCOURSE_SMTP_USERNAME; cfgs+=('CFG_DISCOURSE_SMTP_USERNAME');
+export CFG_DISCOURSE_SMTP_PASSWORD; cfgs+=('CFG_DISCOURSE_SMTP_PASSWORD');
 
 export CFG_INSTALL_WORDPRESS; cfgs+=('CFG_INSTALL_WORDPRESS');
 export CFG_INSTALL_WORDPRESS_VM_SYMLINKS; cfgs+=('CFG_INSTALL_WORDPRESS_VM_SYMLINKS');
@@ -184,6 +189,11 @@ CFG_INSTALL_PHP_VERSION='custom';
 CFG_INSTALL_APP_REPO='1';
 
 CFG_INSTALL_DISCOURSE='0';
+CFG_DISCOURSE_SMTP_HOST='email-smtp.us-east-1.amazonaws.com';
+CFG_DISCOURSE_SMTP_PORT='587';
+CFG_DISCOURSE_SMTP_AUTH_TYPE='login';
+CFG_DISCOURSE_SMTP_USERNAME='';
+CFG_DISCOURSE_SMTP_PASSWORD='';
 
 CFG_INSTALL_WORDPRESS='1';
 CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
@@ -255,6 +265,9 @@ function fill_clean_sanitize_cfgs() {
   CFG_MYSQL_DB_COLLATE="${CFG_MYSQL_DB_COLLATE,,}";
   CFG_MYSQL_DB_NAME="${CFG_MYSQL_DB_NAME,,}";
   CFG_MYSQL_DB_USERNAME="${CFG_MYSQL_DB_USERNAME,,}";
+
+  CFG_DISCOURSE_SMTP_HOST="${CFG_DISCOURSE_SMTP_HOST,,}";
+  CFG_DISCOURSE_SMTP_AUTH_TYPE="${CFG_DISCOURSE_SMTP_AUTH_TYPE,,}";
 };
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -284,14 +297,6 @@ function validate_cfgs() {
     'CFG_TOOLS_PMA_BLOWFISH_KEY' \
     \
     'CFG_MAINTENANCE_BYPASS_KEY' \
-    \
-    'CFG_MYSQL_DB_HOST' \
-    'CFG_MYSQL_DB_PORT' \
-    'CFG_MYSQL_DB_CHARSET' \
-    'CFG_MYSQL_DB_COLLATE' \
-    'CFG_MYSQL_DB_NAME' \
-    'CFG_MYSQL_DB_USERNAME' \
-    'CFG_MYSQL_DB_PASSWORD' \
     ; do # None of these can be empty.
 
       if [[ -z "${!_cfg_key}" ]]; then
@@ -299,6 +304,40 @@ function validate_cfgs() {
         break; # Stop here.
       fi;
   done;
+
+  if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
+    for _cfg_key in \
+      'CFG_MYSQL_DB_HOST' \
+      'CFG_MYSQL_DB_PORT' \
+      'CFG_MYSQL_DB_CHARSET' \
+      'CFG_MYSQL_DB_COLLATE' \
+      'CFG_MYSQL_DB_NAME' \
+      'CFG_MYSQL_DB_USERNAME' \
+      'CFG_MYSQL_DB_PASSWORD' \
+      ; do # None of these can be empty.
+
+        if [[ -z "${!_cfg_key}" ]]; then
+          cfg_key_empty="${_cfg_key}";
+          break; # Stop here.
+        fi;
+    done;
+  fi;
+
+  if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
+    for _cfg_key in \
+      'CFG_DISCOURSE_SMTP_HOST' \
+      'CFG_DISCOURSE_SMTP_PORT' \
+      'CFG_DISCOURSE_SMTP_AUTH_TYPE' \
+      'CFG_DISCOURSE_SMTP_USERNAME' \
+      'CFG_DISCOURSE_SMTP_PASSWORD' \
+      ; do # None of these can be empty.
+
+        if [[ -z "${!_cfg_key}" ]]; then
+          cfg_key_empty="${_cfg_key}";
+          break; # Stop here.
+        fi;
+    done;
+  fi;
 
   ## Validation; any problems?
 
@@ -330,6 +369,15 @@ function validate_cfgs() {
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='If you install Nginx or Apache you must also install PHP-FPM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && ( "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 \
+    || "${CFG_INSTALL_MYSQL}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 || "${CFG_INSTALL_MEMCACHE}" == 1 \
+    || "${CFG_INSTALL_APP_REPO}" == 1 || "${CFG_INSTALL_WORDPRESS}" == 1 ) ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Discourse, services like Nginx, Apache, MySQL, PHP-FPM, and WordPress';
+    cfg_warning+=' should be excluded. Discourse is almost entirely self-contained—via Docker.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vagrant; then
@@ -532,6 +580,12 @@ function cfgs_wizard() {
             'CFG_INSTALL_PHP_VERSION' \
             \
             'CFG_INSTALL_MYSQL_DB_IMPORT_FILE' \
+            \
+            'CFG_DISCOURSE_SMTP_HOST' \
+            'CFG_DISCOURSE_SMTP_PORT' \
+            'CFG_DISCOURSE_SMTP_AUTH_TYPE' \
+            'CFG_DISCOURSE_SMTP_USERNAME' \
+            'CFG_DISCOURSE_SMTP_PASSWORD' \
             \
             'CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN' \
             'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' \

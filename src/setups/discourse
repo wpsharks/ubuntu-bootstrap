@@ -1,27 +1,47 @@
 #!/usr/bin/env bash
 
-if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then # @TODO - this is incomplete.
-# @TODO Add conflict checks in `/bootstrap/src/setups/config` also.
+if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
 
-  # Install Discourse.
+  # Install Docker.
 
   apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D;
   apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-trusty main' --yes;
-  apt-get update;
 
+  apt-get update; # Update APT & install now.
   apt-get install linux-image-extra-"$(uname -r)" --yes;
   apt-get install docker-engine --yes;
 
-  perl -i -wpe 's/^(\s*)DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
+  perl -i -wpe 's/^(\s*)DOCKER_OPTS\s*\=.*$/$1DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"/u' /etc/default/docker;
 
-  git clone https://github.com/discourse/discourse_docker.git /var/discourse --branch=master --depth=1;
+  service docker restart; # Restart docker.
 
-  cd /var/discourse;
-  cp samples/standalone.yml containers/app.yml;
+  # Configure Discourse.
 
-  # @TODO Make edits to `app.yml` via bootstrap.
+  mkdir /discourse; # Top-level directory for Discourse.
+  git clone https://github.com/discourse/discourse_docker.git /discourse --branch=master --depth=1;
 
-  ./launcher bootstrap app;
-  ./launcher start app;
+  perl -i -0wpe 's/%%host%%/'"${CFG_HOST}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%admin_email%%/'"${CFG_ADMIN_EMAIL}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%admin_public_email%%/'"${CFG_ADMIN_PUBLIC_EMAIL}"'/ug' /bootstrap/src/discourse/.yml;
+
+  perl -i -0wpe 's/%%discourse_smtp_host%%/'"${CFG_DISCOURSE_SMTP_HOST}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_port%%/'"${CFG_DISCOURSE_SMTP_PORT}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_auth_type%%/'"${CFG_DISCOURSE_SMTP_AUTH_TYPE}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_username%%/'"${CFG_DISCOURSE_SMTP_USERNAME}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_password%%/'"${CFG_DISCOURSE_SMTP_PASSWORD}"'/ug' /bootstrap/src/discourse/.yml;
+
+  mkdir --parents /discourse/shared/standalone; # Just in case it doesn't exist yet.
+  ln --symbolic /etc/bootstrap/ssl/official-private-key.pem /discourse/shared/standalone/ssl/ssl.key;
+  ln --symbolic /etc/bootstrap/ssl/official-fullchain.pem /discourse/shared/standalone/ssl/ssl.crt;
+
+  if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+    perl -i -wpe 's/^(\s*)#(.*?templates\/cloudflare\.template\.yml.*)$/$1$2/u' /bootstrap/src/discourse/.yml;
+  fi;
+  ln --symbolic /bootstrap/src/discourse/.yml /discourse/containers/app.yml;
+
+  # Bootstrap and start Discourse application.
+
+  /discourse/launcher bootstrap app;
+  /discourse/launcher start app;
 
 else echo 'Skipping Discourse installation.'; fi;
