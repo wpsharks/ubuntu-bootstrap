@@ -20,17 +20,17 @@ if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
   mkdir /discourse; # Top-level directory for Discourse.
   git clone https://github.com/discourse/discourse_docker.git /discourse --branch=master --depth=1;
 
-  perl -i -0wpe 's/%%host%%/'"${CFG_HOST}"'/ug' /bootstrap/src/discourse/.yml;
-  perl -i -0wpe 's/%%admin_email%%/'"${CFG_ADMIN_EMAIL}"'/ug' /bootstrap/src/discourse/.yml;
-  perl -i -0wpe 's/%%admin_public_email%%/'"${CFG_ADMIN_PUBLIC_EMAIL}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%admin_email%%/'"$(esc-regex-rv "${CFG_ADMIN_EMAIL}")"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%admin_public_email%%/'"$(esc-regex-rv "${CFG_ADMIN_PUBLIC_EMAIL}")"'/ug' /bootstrap/src/discourse/.yml;
 
-  perl -i -0wpe 's/%%discourse_smtp_host%%/'"${CFG_DISCOURSE_SMTP_HOST}"'/ug' /bootstrap/src/discourse/.yml;
-  perl -i -0wpe 's/%%discourse_smtp_port%%/'"${CFG_DISCOURSE_SMTP_PORT}"'/ug' /bootstrap/src/discourse/.yml;
-  perl -i -0wpe 's/%%discourse_smtp_auth_type%%/'"${CFG_DISCOURSE_SMTP_AUTH_TYPE}"'/ug' /bootstrap/src/discourse/.yml;
-  perl -i -0wpe 's/%%discourse_smtp_username%%/'"${CFG_DISCOURSE_SMTP_USERNAME}"'/ug' /bootstrap/src/discourse/.yml;
-  perl -i -0wpe 's/%%discourse_smtp_password%%/'"${CFG_DISCOURSE_SMTP_PASSWORD}"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_host%%/'"$(esc-regex-rv "${CFG_DISCOURSE_SMTP_HOST}")"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_port%%/'"$(esc-regex-rv "${CFG_DISCOURSE_SMTP_PORT}")"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_auth_type%%/'"$(esc-regex-rv "${CFG_DISCOURSE_SMTP_AUTH_TYPE}")"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_username%%/'"$(esc-regex-rv "${CFG_DISCOURSE_SMTP_USERNAME}")"'/ug' /bootstrap/src/discourse/.yml;
+  perl -i -0wpe 's/%%discourse_smtp_password%%/'"$(esc-regex-rv "${CFG_DISCOURSE_SMTP_PASSWORD}")"'/ug' /bootstrap/src/discourse/.yml;
 
-  mkdir --parents /discourse/shared/standalone; # Just in case it doesn't exist yet.
+  mkdir --parents /discourse/shared/standalone/ssl; # Just in case it doesn't exist yet.
   ln --symbolic /etc/bootstrap/ssl/official-private-key.pem /discourse/shared/standalone/ssl/ssl.key;
   ln --symbolic /etc/bootstrap/ssl/official-fullchain.pem /discourse/shared/standalone/ssl/ssl.crt;
 
