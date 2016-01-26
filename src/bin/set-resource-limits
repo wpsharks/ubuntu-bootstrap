@@ -161,7 +161,7 @@ if can-run nginx; then
   echo 'Nginx worker_connections: '"${nginx_worker_connections}";
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)worker_connections\s+.*$/$1worker_connections '"${nginx_worker_connections}"';/u' /bootstrap/src/nginx/.conf;
+  perl -i -wpe 's/^(\s*)worker_connections\s+.*$/$1worker_connections '"$(esc-regex-rv "${nginx_worker_connections}")"';/u' /bootstrap/src/nginx/.conf;
 fi;
 
 # Set Apache resource limits.
@@ -187,9 +187,9 @@ if can-run apache2; then
   echo 'Apache MaxRequestWorkers: '"${apache_max_request_workers}";
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)StartServers\s+.*$/$1StartServers '"${apache_start_servers}"'/u' /bootstrap/src/apache/.conf;
-  perl -i -wpe 's/^(\s*)ServerLimit\s+.*$/$1ServerLimit '"${apache_server_limit}"'/u' /bootstrap/src/apache/.conf;
-  perl -i -wpe 's/^(\s*)MaxRequestWorkers\s+.*$/$1MaxRequestWorkers '"${apache_max_request_workers}"'/u' /bootstrap/src/apache/.conf;
+  perl -i -wpe 's/^(\s*)StartServers\s+.*$/$1StartServers '"$(esc-regex-rv "${apache_start_servers}")"'/u' /bootstrap/src/apache/.conf;
+  perl -i -wpe 's/^(\s*)ServerLimit\s+.*$/$1ServerLimit '"$(esc-regex-rv "${apache_server_limit}")"'/u' /bootstrap/src/apache/.conf;
+  perl -i -wpe 's/^(\s*)MaxRequestWorkers\s+.*$/$1MaxRequestWorkers '"$(esc-regex-rv "${apache_max_request_workers}")"'/u' /bootstrap/src/apache/.conf;
 fi;
 
 # Set MySQL resource limits.
@@ -204,7 +204,7 @@ if can-run mysql; then
   echo 'MySQL innodb_buffer_pool_size: '"${mysql_ram}"'M';
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)innodb_buffer_pool_size\s*\=.*$/$1innodb_buffer_pool_size = '"${allowing_mysql_ram}"'M/u' /bootstrap/src/mysql/.cnf;
+  perl -i -wpe 's/^(\s*)innodb_buffer_pool_size\s*\=.*$/$1innodb_buffer_pool_size = '"$(esc-regex-rv "${allowing_mysql_ram}")"'M/u' /bootstrap/src/mysql/.cnf;
 fi;
 
 # Set PHP process manager resource limits.
@@ -247,13 +247,13 @@ if can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0; then
   echo 'PHP-FPM pm.max_children: '"${php_fpm_max_children}";
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)memory_limit\s*\=.*$/$1memory_limit = '"${php_memory_limit}"'M/u' /bootstrap/src/php/.ini;
-  perl -i -wpe 's/^(\s*)opcache\.memory_consumption\s*\=.*$/$1opcache.memory_consumption = '"${php_opcache_memory_consumption}"'/u' /bootstrap/src/php/.ini;
+  perl -i -wpe 's/^(\s*)memory_limit\s*\=.*$/$1memory_limit = '"$(esc-regex-rv "${php_memory_limit}")"'M/u' /bootstrap/src/php/.ini;
+  perl -i -wpe 's/^(\s*)opcache\.memory_consumption\s*\=.*$/$1opcache.memory_consumption = '"$(esc-regex-rv "${php_opcache_memory_consumption}")"'/u' /bootstrap/src/php/.ini;
 
-  perl -i -wpe 's/^(\s*)pm\.start_servers\s*\=.*$/$1pm.start_servers = '"${php_fpm_start_servers}"'/u' /bootstrap/src/php/fpm/.conf;
-  perl -i -wpe 's/^(\s*)pm\.min_spare_servers\s*\=.*$/$1pm.min_spare_servers = '"${php_fpm_min_spare_servers}"'/u' /bootstrap/src/php/fpm/.conf;
-  perl -i -wpe 's/^(\s*)pm\.max_spare_servers\s*\=.*$/$1pm.max_spare_servers = '"${php_fpm_max_spare_servers}"'/u' /bootstrap/src/php/fpm/.conf;
-  perl -i -wpe 's/^(\s*)pm\.max_children\s*\=.*$/$1pm.max_children = '"${php_fpm_max_children}"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.start_servers\s*\=.*$/$1pm.start_servers = '"$(esc-regex-rv "${php_fpm_start_servers}")"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.min_spare_servers\s*\=.*$/$1pm.min_spare_servers = '"$(esc-regex-rv "${php_fpm_min_spare_servers}")"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.max_spare_servers\s*\=.*$/$1pm.max_spare_servers = '"$(esc-regex-rv "${php_fpm_max_spare_servers}")"'/u' /bootstrap/src/php/fpm/.conf;
+  perl -i -wpe 's/^(\s*)pm\.max_children\s*\=.*$/$1pm.max_children = '"$(esc-regex-rv "${php_fpm_max_children}")"'/u' /bootstrap/src/php/fpm/.conf;
 fi;
 
 # Set Memcached resource limits.
@@ -267,7 +267,7 @@ if can-run memcached; then
   echo 'Memcached RAM allowance: '"${allowing_memcached_ram}"'M';
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"${allowing_memcached_ram}"'/u' /bootstrap/src/memcache/.conf;
+  perl -i -wpe 's/^(\s*)\-m\s+.*$/$1-m '"$(esc-regex-rv "${allowing_memcached_ram}")"'/u' /bootstrap/src/memcache/.conf;
 fi;
 
 # Set Discourse resource limits.
@@ -290,9 +290,9 @@ if can-run docker && [[ -d /discourse ]]; then
   echo 'Discourse db_shared_buffers: '"${discourse_db_shared_buffers}"'MB';
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)UNICORN_WORKERS\:.*$/$1UNICORN_WORKERS: '"${discourse_unicorn_workers}"'/u' /bootstrap/src/discourse/.yml;
-  perl -i -wpe 's/^(\s*)db_work_mem\:.*$/$1db_work_mem: '"'${discourse_db_work_mem}MB'"'/u' /bootstrap/src/discourse/.yml;
-  perl -i -wpe 's/^(\s*)db_shared_buffers\:.*$/$1db_shared_buffers: '"'${discourse_db_shared_buffers}MB'"'/u' /bootstrap/src/discourse/.yml;
+  perl -i -wpe 's/^(\s*)UNICORN_WORKERS\:.*$/$1UNICORN_WORKERS: '"$(esc-regex-rv "${discourse_unicorn_workers}")"'/u' /bootstrap/src/discourse/.yml;
+  perl -i -wpe 's/^(\s*)db_work_mem\:.*$/$1db_work_mem: '"$(esc-regex-rv "'${discourse_db_work_mem}MB'")"'/u' /bootstrap/src/discourse/.yml;
+  perl -i -wpe 's/^(\s*)db_shared_buffers\:.*$/$1db_shared_buffers: '"$(esc-regex-rv "'${discourse_db_shared_buffers}MB'")"'/u' /bootstrap/src/discourse/.yml;
   /discourse/launcher rebuild app; # Must rebuild the app now.
 fi;
 
@@ -307,7 +307,7 @@ if [[ -d /ram/app ]]; then
   echo 'RAMdisk size allowance: '"${allowing_ramdisk_ram}"'M';
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*tmpfs\s+\/ram\/app\s+.*?,)(?:size\=[^,]+)(.*)$/$1size='"${allowing_ramdisk_ram}"'m$2/u' /etc/fstab;
+  perl -i -wpe 's/^(\s*tmpfs\s+\/ram\/app\s+.*?,)(?:size\=[^,]+)(.*)$/$1size='"$(esc-regex-rv "${allowing_ramdisk_ram}")"'m$2/u' /etc/fstab;
   mount --options=remount /ram/app;
 fi;
 
