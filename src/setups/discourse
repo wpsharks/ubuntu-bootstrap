@@ -31,8 +31,8 @@ if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
   perl -i -0wpe 's/%%discourse_smtp_password%%/'"$(esc-regex-rv "${CFG_DISCOURSE_SMTP_PASSWORD}")"'/ug' /bootstrap/src/discourse/.yml;
 
   mkdir --parents /discourse/shared/standalone/ssl; # Just in case it doesn't exist yet.
-  ln --symbolic /etc/bootstrap/ssl/official-private-key.pem /discourse/shared/standalone/ssl/ssl.key;
-  ln --symbolic /etc/bootstrap/ssl/official-fullchain.pem /discourse/shared/standalone/ssl/ssl.crt;
+  cp /etc/bootstrap/ssl/official-private-key.pem /discourse/shared/standalone/ssl/ssl.key;
+  cp /etc/bootstrap/ssl/official-fullchain.pem /discourse/shared/standalone/ssl/ssl.crt;
 
   if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
     perl -i -wpe 's/^(\s*)#(.*?templates\/cloudflare\.template\.yml.*)$/$1$2/u' /bootstrap/src/discourse/.yml;
