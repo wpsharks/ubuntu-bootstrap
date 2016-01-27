@@ -1,34 +1,41 @@
 #!/usr/bin/env bash
 
+# Define app-related services.
+
+declare -A ___app_related_services;
+declare -a ___app_related_services_order;
+
+# Listed in restart order; stopped in reverse order.
+
+___app_related_services[ssh]=ssh; ___app_related_services_order+=('ssh');
+
+___app_related_services[postfix]=postfix; ___app_related_services_order+=('postfix');
+
+___app_related_services[ufw]=ufw; ___app_related_services_order+=('ufw');
+___app_related_services[fail2ban-client]=fail2ban; ___app_related_services_order+=('fail2ban-client');
+
+___app_related_services[docker]=docker; ___app_related_services_order+=('docker');
+___app_related_services[discourse]=discourse; ___app_related_services_order+=('discourse');
+
+___app_related_services[memcached]=memcached; ___app_related_services_order+=('memcached');
+
+___app_related_services[mysql]=mysql; ___app_related_services_order+=('mysql');
+
+___app_related_services[php-fpm]=php-fpm; ___app_related_services_order+=('php-fpm');
+___app_related_services[php5-fpm]=php5-fpm; ___app_related_services_order+=('php5-fpm');
+___app_related_services[php-fpm7.0]=php7.0-fpm; ___app_related_services_order+=('php-fpm7.0');
+
+___app_related_services[nginx]=nginx; ___app_related_services_order+=('nginx');
+___app_related_services[apache2]=apache2; ___app_related_services_order+=('apache2');
+
 # Stop app-related services.
 
 function stop-app-related-services() {
-  local _binary _service;
-  declare -A services;
+  local _i _binary _service;
 
-  services[nginx]=nginx;
-  services[apache2]=apache2;
-
-  services[php-fpm]=php-fpm;
-  services[php5-fpm]=php5-fpm;
-  services[php-fpm7.0]=php7.0-fpm;
-
-  services[mysql]=mysql;
-
-  services[memcached]=memcached;
-
-  services[discourse]=discourse;
-  services[docker]=docker;
-
-  services[fail2ban-client]=fail2ban;
-  services[ufw]=ufw;
-
-  services[postfix]=postfix;
-
-  services[ssh]=ssh;
-
-  for _binary in "${!services[@]}"; do
-    _service="${services[$_binary]}";
+  for ((_i=${#___app_related_services_order[@]}-1; _i >= 0; _i--)); do
+    _binary="${___app_related_services_order[$_i]}";
+    _service="${___app_related_services[$_binary]}";
 
     if [[ "${_binary}" == 'discourse' ]]; then
       if [[ -x /discourse/launcher ]]; then
@@ -43,32 +50,11 @@ function stop-app-related-services() {
 # Start (or restart) app-related services.
 
 function restart-app-related-services() {
-  local _binary _service;
-  declare -A services;
+  local _i _binary _service;
 
-  services[ssh]=ssh;
-
-  services[postfix]=postfix;
-
-  services[ufw]=ufw;
-  services[fail2ban-client]=fail2ban;
-
-  services[docker]=docker;
-  services[discourse]=discourse;
-
-  services[memcached]=memcached;
-
-  services[mysql]=mysql;
-
-  services[php-fpm7.0]=php7.0-fpm;
-  services[php5-fpm]=php5-fpm;
-  services[php-fpm]=php-fpm;
-
-  services[apache2]=apache2;
-  services[nginx]=nginx;
-
-  for _binary in "${!services[@]}"; do
-    _service="${services[$_binary]}";
+  for ((_i=0; _i < ${#___app_related_services_order[@]}; _i++)); do
+    _binary="${___app_related_services_order[$_i]}";
+    _service="${___app_related_services[$_binary]}";
 
     if [[ "${_binary}" == 'discourse' ]]; then
       if [[ -x /discourse/launcher ]]; then
