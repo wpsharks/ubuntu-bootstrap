@@ -13,8 +13,8 @@ $App = $GLOBALS[App::class]; // App instance.
 if (is_file($php_error_log = '/var/log/php/errors.log')) {
     c\email(
         $App->Config->contacts['admin']['email'],
-        'PHP Errors @ '.$App->server_name,
-        'PHP Errors @ '.$App->server_name,
+        'PHP Errors @ '.$App->Config->urls['hosts']['app'],
+        'PHP Errors @ '.$App->Config->urls['hosts']['app'],
         [$php_error_log]
     );
     file_put_contents($php_error_log, '');
