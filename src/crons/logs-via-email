@@ -10,7 +10,7 @@ require_once '/usr/local/src/wsc/src/includes/app-stub.php';
 
 $App = $GLOBALS[App::class]; // App instance.
 
-if (is_file($php_error_log = '/var/log/php/errors.log')) {
+if (is_file($php_error_log = '/var/log/php/errors.log') && filesize($php_error_log)) {
     c\email(
         $App->Config->contacts['admin']['email'],
         'PHP Errors @ '.$App->Config->urls['hosts']['app'],
