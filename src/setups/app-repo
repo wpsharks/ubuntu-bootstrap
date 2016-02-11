@@ -10,6 +10,7 @@ if [[ "${CFG_INSTALL_APP_REPO}" == 1 ]]; then
 
   ln --symbolic --force /bootstrap/src/git/repos/app/hooks/pre-receive /repos/app.git/hooks/pre-receive;
   ln --symbolic --force /bootstrap/src/git/repos/app/hooks/post-receive /repos/app.git/hooks/post-receive;
+  echo '%app ALL=(ALL) NOPASSWD: /bootstrap/src/git/repos/app/hooks/post-receive-permissions' > /etc/sudoers.d/app-repo;
 
   # Set permissions for files in the repo directory.
 

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Sanity check. Running as sudo?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Trap errors & warn the user if an error occurs.
+
+find /repos/app.git -type d -exec chmod 2775 {} \;
+find /repos/app.git -type f -exec chmod 664 {} \;
