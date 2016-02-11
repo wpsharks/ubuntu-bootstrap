@@ -45,6 +45,10 @@ while read -r _oldrev _newrev _refname; do
       ./post-receive; # Custom post-receive hook.
       echo 'Ran `post-receive` in the `/app` directory.'; fi;
 
+    # Update permissions to ensure consistency.
+    find /repos/app.git -type d -exec chmod 2775 {} \;
+    find /repos/app.git -type f -exec chmod 664 {} \;
+
     disable-app-maintenance-mode; # Restore.
   fi;
 
