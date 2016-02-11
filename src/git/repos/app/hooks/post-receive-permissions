@@ -14,3 +14,8 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 find /repos/app.git -type d -exec chmod 2775 {} \;
 find /repos/app.git -type f -exec chmod 664 {} \;
+
+if [[ -d /app/src/vendor ]]; then
+  find /app/src/vendor -type d -exec chmod 2775 {} \;
+  find /app/src/vendor -type f -exec chmod 664 {} \;
+fi;
