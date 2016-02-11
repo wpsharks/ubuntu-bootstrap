@@ -48,6 +48,7 @@ while read -r _oldrev _newrev _refname; do
     # Update permissions to ensure consistency.
     find /repos/app.git -type d -exec chmod 2775 {} \;
     find /repos/app.git -type f -exec chmod 664 {} \;
+    echo 'Permissions updated in the `/repos/app.git` directory.'; fi;
 
     disable-app-maintenance-mode; # Restore.
   fi;
