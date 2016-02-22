@@ -8,13 +8,15 @@ use WebSharks\Core\Functions as c;
 
 require_once '/usr/local/src/wsc/src/includes/app-stub.php';
 
-$App = $GLOBALS[App::class]; // App instance.
+$App           = $GLOBALS[App::class];
+$Config        = $GLOBALS[App::class]->Config;
+$php_error_log = '/var/log/php/errors.log';
 
-if (is_file($php_error_log = '/var/log/php/errors.log') && filesize($php_error_log)) {
+if (is_file($php_error_log) && filesize($php_error_log)) {
     c\email(
-        $App->Config->contacts['admin']['email'],
-        'PHP Errors @ '.$App->Config->urls['hosts']['app'],
-        'PHP Errors @ '.$App->Config->urls['hosts']['app'],
+        $Config->contacts['admin']['email'],
+        'PHP Errors @ '.$Config->urls['hosts']['app'],
+        'PHP Errors @ '.$Config->urls['hosts']['app'],
         [$php_error_log]
     );
     file_put_contents($php_error_log, '');

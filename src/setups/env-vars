@@ -10,8 +10,9 @@ mkdir --parents /etc/apache2;
 for _cfg_key in \
   'CFG_HOST' \
   'CFG_ROOT_HOST' \
-  'CFG_SLUG' \
   'CFG_OTHER_HOSTS' \
+  'CFG_SLUG' \
+  'CFG_VAR' \
   \
   'CFG_ADMIN_USERNAME' \
   'CFG_ADMIN_NAME' \

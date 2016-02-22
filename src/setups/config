@@ -20,8 +20,9 @@ cfgs=(); # Initialize.
 
 export CFG_HOST; cfgs+=('CFG_HOST');
 export CFG_ROOT_HOST; cfgs+=('CFG_ROOT_HOST');
-export CFG_SLUG; cfgs+=('CFG_SLUG');
 export CFG_OTHER_HOSTS; cfgs+=('CFG_OTHER_HOSTS');
+export CFG_SLUG; cfgs+=('CFG_SLUG');
+export CFG_VAR; cfgs+=('CFG_VAR');
 
 export CFG_ADMIN_USERNAME; cfgs+=('CFG_ADMIN_USERNAME');
 export CFG_ADMIN_PASSWORD; cfgs+=('CFG_ADMIN_PASSWORD');
@@ -98,9 +99,10 @@ if [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]]; then
    CFG_ROOT_HOST="${CFG_HOST}";
 fi;
 
-CFG_SLUG="$(hostname --short)";
-
 CFG_OTHER_HOSTS='';
+
+CFG_SLUG="$(hostname --short)";
+CFG_VAR="${CFG_SLUG//-/_}";
 
 CFG_ADMIN_USERNAME='';
 if is-vagrant; then
@@ -250,9 +252,10 @@ function fill_clean_sanitize_cfgs() {
 
   CFG_HOST="${CFG_HOST,,}";
   CFG_ROOT_HOST="${CFG_ROOT_HOST,,}";
-  CFG_SLUG="${CFG_SLUG,,}";
   CFG_OTHER_HOSTS="${CFG_OTHER_HOSTS,,}";
   CFG_OTHER_HOSTS="$(echo "${CFG_OTHER_HOSTS}" | tr ',' ' ')";
+  CFG_SLUG="${CFG_SLUG,,}";
+  CFG_VAR="${CFG_VAR,,}";
 
   CFG_ADMIN_USERNAME="${CFG_ADMIN_USERNAME,,}";
   CFG_ADMIN_EMAIL="${CFG_ADMIN_EMAIL,,}";
@@ -285,6 +288,7 @@ function validate_cfgs() {
     'CFG_HOST' \
     'CFG_ROOT_HOST' \
     'CFG_SLUG' \
+    'CFG_VAR' \
     \
     'CFG_ADMIN_USERNAME' \
     'CFG_ADMIN_PASSWORD' \
