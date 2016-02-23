@@ -3,17 +3,16 @@
 declare (strict_types = 1);
 namespace WebSharks\Ubuntu\Bootstrap\Crons;
 
-use WebSharks\Core\Classes\App;
-use WebSharks\Core\Functions as c;
+use WebSharks\Core\Classes\AppFacades as a;
 
 require_once '/usr/local/src/wsc/src/includes/app-stub.php';
 
-$App           = $GLOBALS[App::class];
-$Config        = $GLOBALS[App::class]->Config;
+$App           = a::app();
+$Config        = $App->Config;
 $php_error_log = '/var/log/php/errors.log';
 
 if (is_file($php_error_log) && filesize($php_error_log)) {
-    c\email(
+    a::email(
         $Config->contacts['admin']['email'],
         'PHP Errors @ '.$Config->urls['hosts']['app'],
         'PHP Errors @ '.$Config->urls['hosts']['app'],
