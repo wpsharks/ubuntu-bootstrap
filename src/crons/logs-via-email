@@ -7,8 +7,7 @@ use WebSharks\Core\Classes\AppFacades as a;
 
 require_once '/usr/local/src/wsc/src/includes/app-stub.php';
 
-$App           = a::app();
-$Config        = $App->Config;
+$Config        = a::app()->Config;
 $php_error_log = '/var/log/php/errors.log';
 
 if (is_file($php_error_log) && filesize($php_error_log)) {
