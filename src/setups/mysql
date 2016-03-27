@@ -4,7 +4,8 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
 
   # Install MariaDB (i.e., MySQL).
 
-  mkdir --parents --mode=777 /var/log/mysql;
+  mkdir --parents /var/log/mysql;
+  chmod 0777 /var/log/mysql;
 
   apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db;
   add-apt-repository 'deb http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.0/ubuntu trusty main';
@@ -14,17 +15,17 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
   echo 'mariadb-server mysql-server/root_password_again password '"${CFG_MYSQL_DB_PASSWORD}" | debconf-set-selections;
   apt-get install mariadb-server --yes; # Install w/ the above options.
 
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;";
 
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
 
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = '';";
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = 'root' AND \`Host\` NOT IN ('localhost', '127.0.0.1', '::1');";
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`test\`; DELETE FROM \`mysql\`.\`db\` WHERE \`Db\` = 'test' OR \`Db\` LIKE 'test\\_%';";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = '';";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = 'root' AND \`Host\` NOT IN ('localhost', '127.0.0.1', '::1');";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`test\`; DELETE FROM \`mysql\`.\`db\` WHERE \`Db\` = 'test' OR \`Db\` LIKE 'test\\_%';";
 
-  mysql --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
 
   ln --symbolic /bootstrap/src/mysql/.cnf /etc/mysql/conf.d/z90.cnf;
   echo '/bootstrap/src/mysql/.cnf r,' >> /etc/apparmor.d/local/usr.sbin.mysqld;

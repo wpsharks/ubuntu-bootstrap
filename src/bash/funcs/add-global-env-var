@@ -9,23 +9,37 @@ function add-global-env-var() {
   if [[ -z "${key}" ]]; then
     return 1; fi; # Must have.
 
+  ## In real-time; export now.
+
+  export "${key}"="${value}";
+
   ## System-wide; including CRON jobs.
 
   echo "${key}='${value}'" >> /etc/environment;
 
   ## Adds PHP-FPM environment variables.
 
-  if [[ "${value}" == '' ]]; then # FPM chokes on empty strings.
-   # Single spaces are handled by /bootstrap/src/php/ap.php automatically.
-    echo "env[${key}] = ' '" >> /etc/php/fpm/env.conf; # Use a single space.
-  else echo "env[${key}] = '${value}'" >> /etc/php/fpm/env.conf; fi;
-
+  if [[ -d /etc/php/fpm ]]; then
+    if [[ -f /etc/php/fpm/env.conf ]]; then
+      if [[ "${value}" == '' ]]; then # FPM chokes on empty strings.
+       # Single spaces are handled by /bootstrap/src/php/ap.php automatically.
+        echo "env[${key}] = ' '" >> /etc/php/fpm/env.conf; # Use a single space.
+      else echo "env[${key}] = '${value}'" >> /etc/php/fpm/env.conf; fi;
+    else # Adds a file that our PHP-FPM installer can read from.
+      if [[ "${value}" == '' ]]; then # FPM chokes on empty strings.
+       # Single spaces are handled by /bootstrap/src/php/ap.php automatically.
+        echo "env[${key}] = ' '" >> /etc/php/fpm/~env.conf; # Use a single space.
+      else echo "env[${key}] = '${value}'" >> /etc/php/fpm/~env.conf; fi;
+    fi;
+  fi;
   ## Adds environment variables for Apache also.
 
-  if [[ -f /etc/apache2/envvars ]]; then
-    echo "export ${key}='${value}'" >> /etc/apache2/envvars;
-  else # Adds a file that our Apache installer can read from.
-    echo "export ${key}='${value}'" >> /etc/apache2/~envvars;
+  if [[ -d /etc/apache2 ]]; then
+    if [[ -f /etc/apache2/envvars ]]; then
+      echo "export ${key}='${value}'" >> /etc/apache2/envvars;
+    else # Adds a file that our Apache installer can read from.
+      echo "export ${key}='${value}'" >> /etc/apache2/~envvars;
+    fi;
   fi;
   ## Keep these environment variables when running `sudo`.
   ## Note that double quotes are required here.
