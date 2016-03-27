@@ -15,6 +15,7 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
     apt-get install php5-fpm --yes; fi;
 
   apt-get install php5-mysql --yes;
+  apt-get install php5-mysqlnd --yes;
   apt-get install php5-curl --yes;
   apt-get install php5-intl --yes;
   apt-get install php5-pspell --yes;
@@ -22,6 +23,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   apt-get install php5-gd --yes;
   apt-get install php5-mcrypt --yes;
   apt-get install php5-memcached --yes;
+
+  echo 'extension = mcrypt.so' >>/bootstrap/src/php/.ini;
 
   ## Create PHP config file symlink.
 
