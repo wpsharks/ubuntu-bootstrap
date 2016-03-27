@@ -13,9 +13,6 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
     . /bootstrap/src/setups/php/via-ppa/v5.5;
 
-  elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.4 ]]; then
-    . /bootstrap/src/setups/php/via-ppa/v5.4;
-
   elif [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
     . /bootstrap/src/setups/php/custom;
   fi;
