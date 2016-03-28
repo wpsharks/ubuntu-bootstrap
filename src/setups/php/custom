@@ -4,12 +4,13 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
   # Install PHP and process manager.
 
-  _custom_php_version=7.0.1;
+  _custom_php_version=7.0.4;
 
   ## Dependencies.
 
   apt-get install g++ --yes;
   apt-get install bison --yes;
+  apt-get install autoconf --yes;
   apt-get install libltdl-dev --yes;
   apt-get install libicu-dev --yes;
   apt-get install libbz2-dev --yes;

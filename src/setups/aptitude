@@ -2,7 +2,7 @@
 
 # Add multiverse repo.
 
-apt-add-repository multiverse;
+apt-add-repository multiverse --yes;
 
 # Update package repositories.
 
