@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Compare version strings.
+
+function version-compare() {
+  if can-run php; then
+    version-compare-php "${@}";
+
+  else # Use `dpkg` as a fallback.
+    local v1="${1:-}";
+    local v2="${2:-}";
+    local op="${3:-}";
+
+    v1="$(echo "${v1}" | perl -0wpe 's/([0-9\-])(dev|alpha|a|beta|b|rc|#|pl|p)/$1~$2/uig')";
+    v2="$(echo "${v2}" | perl -0wpe 's/([0-9\-])(dev|alpha|a|beta|b|rc|#|pl|p)/$1~$2/uig')";
+    # Note: This may fail to compare dev versions against each other.
+    # There is no support for logical comparison of development state.
+
+    dpkg --compare-versions "${v1}" "${op}" "${v2}";
+    # See: <http://jas.xyz/1PA7b8e>
+  fi;
+};
+function version-compare-php() {
+  local v1="'${1:-}'";
+  local v2="'${2:-}'";
+  local op="'${3:-}'";
+
+  if [[ "$(php -r 'echo (int)version_compare('"${v1}"', '"${v2}"', '"${op}"');')" == 1 ]];
+    then return 0; else return 1; fi;
+};
