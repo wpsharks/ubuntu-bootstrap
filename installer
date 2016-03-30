@@ -51,6 +51,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/aptitude;
   . /bootstrap/src/setups/timezone;
 
+  . /bootstrap/src/setups/apparmor;
   . /bootstrap/src/setups/utilities;
   . /bootstrap/src/setups/git-utils;
   . /bootstrap/src/setups/keybase;
@@ -67,6 +68,8 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/env-vars;
   . /bootstrap/src/setups/ssl-certs;
   . /bootstrap/src/setups/htpasswd;
+
+  . /bootstrap/src/setups/docker;
 
   . /bootstrap/src/setups/postfix;
 

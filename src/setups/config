@@ -52,6 +52,8 @@ export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
 export CFG_INSTALL_WS_CA_FILES; cfgs+=('CFG_INSTALL_WS_CA_FILES');
 export CFG_INSTALL_CRTS_VIA_LE; cfgs+=('CFG_INSTALL_CRTS_VIA_LE');
 
+export CFG_INSTALL_DOCKER; cfgs+=('CFG_INSTALL_DOCKER');
+
 export CFG_INSTALL_POSTFIX; cfgs+=('CFG_INSTALL_POSTFIX');
 
 export CFG_INSTALL_NGINX; cfgs+=('CFG_INSTALL_NGINX');
@@ -98,7 +100,6 @@ CFG_ROOT_HOST="$(hostname --domain)";
 if [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]]; then
    CFG_ROOT_HOST="${CFG_HOST}";
 fi;
-
 CFG_OTHER_HOSTS='';
 
 CFG_SLUG="$(hostname --short)";
@@ -108,34 +109,28 @@ CFG_ADMIN_USERNAME='';
 if is-vagrant; then
   CFG_ADMIN_USERNAME='admin';
 fi;
-
 CFG_ADMIN_PASSWORD='';
 if is-vagrant; then
   CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
 fi;
-
 CFG_ADMIN_NAME='';
 if is-vagrant; then
   CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
 fi;
-
 CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com';
 if is-vagrant; then
   CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
 fi;
-
 CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
 if is-vagrant; then
   CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 fi;
-
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
 
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
 if ! is-vagrant && [[ -f /root/.ssh/authorized_keys ]]; then
   CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
 fi;
-
 CFG_TOOLS_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_TOOLS_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)";
@@ -153,24 +148,24 @@ CFG_MYSQL_DB_USERNAME='client';
 if is-vagrant; then
   CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
 fi;
-
 CFG_MYSQL_DB_PASSWORD="$(keygen 32)";
 if is-vagrant; then
   CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 fi;
-
 CFG_INSTALL_SWAP='1';
 
 CFG_INSTALL_WS_CA_FILES='1';
 if is-vagrant; then
   CFG_INSTALL_WS_CA_FILES='0';
 fi;
-
 CFG_INSTALL_CRTS_VIA_LE='0';
 if is-vagrant; then
   CFG_INSTALL_CRTS_VIA_LE='0';
 fi;
-
+CFG_INSTALL_DOCKER='0';
+if is-vagrant; then
+  CFG_INSTALL_DOCKER='1';
+fi;
 CFG_INSTALL_POSTFIX='1';
 
 CFG_INSTALL_NGINX='1';
@@ -202,7 +197,6 @@ CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
 if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
 fi;
-
 CFG_INSTALL_FIREWALL='1';
 CFG_INSTALL_FAIL2BAN='1';
 
@@ -210,12 +204,10 @@ CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0';
 if is-vagrant; then
   CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
 fi;
-
 CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1';
 if is-vagrant; then
   CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
 fi;
-
 CFG_INSTALL_UNATTENDED_UPGRADES='1';
 
 CFG_CONFIG_FILE='/app/.config.json';
@@ -375,6 +367,12 @@ function validate_cfgs() {
     cfg_warning+='If you install Nginx or Apache you must also install PHP-FPM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
+  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 || "${CFG_INSTALL_DOCKER}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Discourse you must also install Docker dependency.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
   elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && ( "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 \
     || "${CFG_INSTALL_MYSQL}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 || "${CFG_INSTALL_MEMCACHE}" == 1 \
     || "${CFG_INSTALL_APP_REPO}" == 1 || "${CFG_INSTALL_WORDPRESS}" == 1 ) ]]; then
@@ -488,6 +486,8 @@ function cfgs_wizard() {
         'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
         \
+        'CFG_INSTALL_DOCKER' 'Install?' "$([[ "${CFG_INSTALL_DOCKER}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -519,6 +519,8 @@ function cfgs_wizard() {
 
       CFG_INSTALL_WS_CA_FILES='0';
       CFG_INSTALL_CRTS_VIA_LE='0';
+
+      CFG_INSTALL_DOCKER='0';
 
       CFG_INSTALL_POSTFIX='0';
 
