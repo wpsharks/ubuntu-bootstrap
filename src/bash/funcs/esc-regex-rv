@@ -4,7 +4,7 @@
 
 function esc-regex-rv() {
   local rv="${1:-}";
-  rv="${rv//@/\@}";
+  rv="${rv//@/\\@}";
   rv="${rv//$/\\$}";
   rv="${rv//\//\\/}";
   echo "${rv}";
