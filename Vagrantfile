@@ -39,6 +39,7 @@ Vagrant.configure(2) do |config|
   # Configure box-specific caching.
   if Vagrant.has_plugin?('vagrant-cachier')
     config.cache.scope = :box;
+    config.cache.enable :apt;
   end;
 
   # Configure resource allocations.
