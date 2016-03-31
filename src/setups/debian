@@ -7,5 +7,5 @@ export DEBIAN_FRONTEND=noninteractive;
 # Avoid ERROR: invoke-rc.d: policy-rc.d denied execution of start.
 # See: <http://jas.xyz/1RzJdMD>
 
-echo "#!/bin/sh\nexit 0;" > /usr/sbin/policy-rc.d;
+echo -e '#!/bin/sh\nexit 0;' > /usr/sbin/policy-rc.d;
 chmod +x /usr/sbin/policy-rc.d;
