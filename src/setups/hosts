@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if is-ci; then
+if is-4ci; then
 
   # Resolve these additional host names.
 

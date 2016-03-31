@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-# Install APT add-ons.
+# Install APT dependencies.
 
 apt-get install software-properties-common --yes;
 apt-get install apt-transport-https --yes;
+apt-get install ca-certificates --yes;
 
 # Add multiverse repo.
 

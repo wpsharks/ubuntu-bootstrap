@@ -2,7 +2,7 @@
 
 # Sanity checks. Right location? Running as sudo?
 
-if [[ "${BASH_SOURCE[0]}" != '/bootstrap/installer-ci' ]]; then
+if [[ "${BASH_SOURCE[0]}" != '/bootstrap/installer-4ci' ]]; then
   echo 'I must live in the /bootstrap directory.'; exit 1;
 elif [[ "$(whoami)" != 'root' ]]; then
   echo 'Please run w/ `sudo`.'; exit 1; fi;
@@ -37,8 +37,7 @@ eval set -- "${options}"; while true; do
 done;
 
 bootstrap=$(cat <<'_'
-  export CI=true;
-  export DEBIAN_FRONTEND=noninteractive;
+  export _4CI=true;
 
   apt-get install git --yes;
   git clone https://github.com/websharks/ubuntu-bootstrap --branch=master --depth=1 /bootstrap;

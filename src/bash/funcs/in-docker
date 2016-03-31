@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# In a Docker container?
+
+function in-docker() {
+  if [[ -f /.dockerenv ]]; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};

@@ -4,7 +4,7 @@
 # Is virtual machine?
 
 function is-vm() {
-  if is-vagrant || is-ci; then
+  if is-vagrant; then
     return 0;
   elif [[ "${CFG_HOST}" =~ \.vm$ ]]; then
     return 0;

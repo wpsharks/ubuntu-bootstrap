@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Is CI server?
+# Is for CI a server?
 
-function is-ci() {
-  if [[ -n "${CI:-}" ]]; then
+function is-4ci() {
+  if [[ -n "${_4CI:-}" ]]; then
     return 0;
   else # 1 = false.
     return 1;

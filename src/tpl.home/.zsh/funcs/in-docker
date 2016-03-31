@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# Is CI server?
+# In a Docker container?
 
-function is-ci() {
-  if [[ -n "${CI:-}" ]]; then
+function in-docker() {
+  if [[ -f /.dockerenv ]]; then
     return 0;
   else # 1 = false.
     return 1;
