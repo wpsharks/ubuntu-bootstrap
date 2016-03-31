@@ -6,7 +6,7 @@ if [[ "${CFG_INSTALL_SWAP}" == 1 ]]; then
   # see <http://jas.xyz/1NFX0iw>
 
   if ! fallocate -l 4G /swap; then
-    dd if=/dev/zero of=/swap bs=1 count=0 seek=4G;
+    dd if=/dev/zero of=/swap bs=1024 count=$[1024*4000];
   fi; # Fallback on `dd`. See: <http://jas.xyz/25y9SCQ>
 
   chmod 600 /swap;
