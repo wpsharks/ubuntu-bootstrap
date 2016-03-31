@@ -8,3 +8,4 @@ export DEBIAN_FRONTEND=noninteractive;
 # See: <http://jas.xyz/1RzJdMD>
 
 echo "#!/bin/sh\nexit 0;" > /usr/sbin/policy-rc.d;
+chmod +x /usr/sbin/policy-rc.d;
