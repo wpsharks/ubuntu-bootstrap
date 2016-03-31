@@ -50,7 +50,7 @@ bootstrap+=$(cat <<_
   /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_INSTALL_PHP_VERSION="${php_version}";
 _
 );
-docker run --host=ci.vm ubuntu:14.04 /usr/bin/env bash -c "${bootstrap}";
+docker run --hostname=ci.vm ubuntu:14.04 /usr/bin/env bash -c "${bootstrap}";
 
 echo 'Run `$ docker images` to see a list w/ the new image.';
 echo 'Run `$ docker commit -m [message] -a [author] [image id] [repository:tag]` to save the image.';
