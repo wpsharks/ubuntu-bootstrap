@@ -69,9 +69,4 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
   else echo 'Skipping WP symlinks.'; fi;
 
-  # Install WP-CLI now also.
-
-  curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar --location --output /usr/bin/wp;
-  chmod +x /usr/bin/wp; # Make it executable.
-
 else echo 'Skipping WordPress installation.'; fi;
