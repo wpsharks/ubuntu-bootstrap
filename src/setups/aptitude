@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# Add support for the `apt-add-repository` command and others.
+# Install APT add-ons.
 
 apt-get install software-properties-common --yes;
+apt-get install apt-transport-https --yes;
 
 # Add multiverse repo.
 
