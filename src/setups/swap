@@ -5,11 +5,12 @@ if [[ "${CFG_INSTALL_SWAP}" == 1 ]]; then
   # Configure swap space.
   # see <http://jas.xyz/1NFX0iw>
 
-  fallocate -l 4G /swap;
-  chmod 600 /swap;
+  if ! fallocate -l 4G /swap; then
+    dd if=/dev/zero of=/swap bs=1 count=0 seek=4G;
+  fi; # Fallback on `dd`. See: <http://jas.xyz/25y9SCQ>
 
-  mkswap /swap;
-  swapon /swap;
+  chmod 600 /swap;
+  mkswap /swap; swapon /swap;
   echo '/swap none swap sw 0 0' >> /etc/fstab;
 
   echo '10' > /proc/sys/vm/swappiness;
