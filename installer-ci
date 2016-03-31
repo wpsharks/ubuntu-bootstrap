@@ -2,7 +2,7 @@
 
 # Sanity checks. Right location? Running as sudo?
 
-if [[ "${BASH_SOURCE[0]}" != '/bootstrap/ci-installer' ]]; then
+if [[ "${BASH_SOURCE[0]}" != '/bootstrap/installer-ci' ]]; then
   echo 'I must live in the /bootstrap directory.'; exit 1;
 elif [[ "$(whoami)" != 'root' ]]; then
   echo 'Please run w/ `sudo`.'; exit 1; fi;
