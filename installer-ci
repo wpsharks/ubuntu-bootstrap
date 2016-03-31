@@ -15,48 +15,43 @@ elif [[ "$(whoami)" != 'root' ]]; then
 # Maybe run setup routines; i.e., once only.
 
 if [[ ! -f /etc/bootstrap/.installed ]]; then
-
   /bootstrap/installer --CFG_USE_WIZARD=0;
+fi;
+# Build a CI image inside a Docker container now.
 
-  short_options='';
-  long_options='php-version:';
-  options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
+php_version='custom'; # Default value.
+short_options=''; long_options='php-version:';
+options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
-  php_version='custom'; # Default value.
+eval set -- "${options}"; while true; do
+   case "${1}" in
+      --php-version)
+        php_version="${2}";
+        shift 2;
+        ;;
+      --) shift 1; break;
+        ;;
+      *) echo 'Internal error.'; exit 1;
+        ;;
+   esac;
+done;
 
-  eval set -- "${options}"; while true; do
-     case "${1}" in
-        --php-version)
-          php_version="${2}";
-          shift 2;
-          ;;
-        --) shift 1; break;
-          ;;
-        *) echo 'Internal error.'; exit 1;
-          ;;
-     esac;
-  done;
+bootstrap=$(cat <<'_'
+  export CI=true;
 
-  bootstrap=$(cat <<'_'
-    export CI=true;
+  apt-get install git --yes;
+  git clone https://github.com/websharks/ubuntu-bootstrap --branch=master --depth=1 /bootstrap;
 
-    apt-get install git --yes;
-    git clone https://github.com/websharks/ubuntu-bootstrap --branch=master --depth=1 /bootstrap;
-
-    cd /bootstrap;
-    git checkout -b "$(hostname --long)";
+  cd /bootstrap;
+  git checkout -b "$(hostname --long)";
 _
-  );
-  bootstrap+=$(cat <<_
-    /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_INSTALL_PHP_VERSION="${php_version}";
+);
+bootstrap+=$(cat <<_
+  /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_INSTALL_PHP_VERSION="${php_version}";
 _
-  );
-  docker run --host=ci.vm ubuntu:14.04 /usr/bin/env bash -c "${bootstrap}";
+);
+docker run --host=ci.vm ubuntu:14.04 /usr/bin/env bash -c "${bootstrap}";
 
-  echo 'Run `$ docker images` to see a list w/ the new image.';
-  echo 'Run `$ docker commit -m [message] -a [author] [image id] [repository:tag]` to save the image.';
-  echo 'Run `$ docker login && docker push [repository:tag]` to upload the image.';
-
-else # Provide details about why we are not running again.
-  echo 'Installation complete. Can only be run once!'; exit 1;
-fi; # End `.installed` check.
+echo 'Run `$ docker images` to see a list w/ the new image.';
+echo 'Run `$ docker commit -m [message] -a [author] [image id] [repository:tag]` to save the image.';
+echo 'Run `$ docker login && docker push [repository:tag]` to upload the image.';
