@@ -21,7 +21,7 @@ fi;
 
 php_version='custom'; # Default value.
 short_options=''; long_options='php-version:';
-options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
+options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
 eval set -- "${options}"; while true; do
    case "${1}" in
