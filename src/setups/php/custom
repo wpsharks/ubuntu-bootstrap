@@ -50,10 +50,10 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
   ### If we have a GZ file we can use it to save a lot of time!
 
-  if [[ "${CFG_INSTALL_PHP_VERSION}" != custom-src && -f /bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz ]]; then
+  if [[ "${CFG_INSTALL_PHP_VERSION}" != custom-src && -f /bootstrap/assets/php/gzs/"${_custom_php_version}".tar.gz ]]; then
 
     tar --extract --ungzip --verbose --strip-components=3 \
-      --file=/bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz -C /usr/local/php;
+      --file=/bootstrap/assets/php/gzs/"${_custom_php_version}".tar.gz -C /usr/local/php;
 
   else ### Compile PHP & any additional extensions from source; i.e., `custom-src`.
 
@@ -65,8 +65,6 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
     _php_configure_args=" \
       --prefix=/usr/local/php \
-      \
-      --without-pear \
       \
       --with-bz2 \
       --with-zlib \
@@ -154,10 +152,11 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
     #### Tar & GZ the PHP build (w/ extensions too).
 
-    rm --force /bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz;
+    mkdir --parents /bootstrap/assets/php/gzs;
+    rm --force /bootstrap/assets/php/gzs/"${_custom_php_version}".tar.gz;
 
     tar --create --verbose --gzip \
-      --file=/bootstrap/src/php/gzs/"${_custom_php_version}".tar.gz \
+      --file=/bootstrap/assets/php/gzs/"${_custom_php_version}".tar.gz \
       /usr/local/php;
   fi;
   ## Create binary symlinks.

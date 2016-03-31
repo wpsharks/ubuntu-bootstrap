@@ -100,4 +100,8 @@ function setup-user() {
 
   perl -i -wpe 's/^(\s*)name\s*\=.*$/$1name = '"$(esc-regex-rv "${name}")"'/u' "${home_dir}"/.gitconfig;
   perl -i -wpe 's/^(\s*)email\s*\=.*$/$1email = '"$(esc-regex-rv "${email}")"'/u' "${home_dir}"/.gitconfig;
+
+  ## WP-CLI configuration for this user.
+
+  perl -i -wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/u' "${home_dir}"/.wp-cli/config.yml;
 };

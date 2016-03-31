@@ -16,7 +16,7 @@ export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
 
 # Config keys.
 
-cfgs=(); # Initialize.
+cfgs=(); # Configurable vars.
 
 export CFG_HOST; cfgs+=('CFG_HOST');
 export CFG_ROOT_HOST; cfgs+=('CFG_ROOT_HOST');
@@ -35,7 +35,6 @@ export CFG_ADMIN_AUTHORIZED_SSH_KEYS; cfgs+=('CFG_ADMIN_AUTHORIZED_SSH_KEYS');
 export CFG_TOOLS_USERNAME; cfgs+=('CFG_TOOLS_USERNAME');
 export CFG_TOOLS_PASSWORD; cfgs+=('CFG_TOOLS_PASSWORD');
 export CFG_TOOLS_PMA_BLOWFISH_KEY; cfgs+=('CFG_TOOLS_PMA_BLOWFISH_KEY');
-
 export CFG_MAINTENANCE_BYPASS_KEY; cfgs+=('CFG_MAINTENANCE_BYPASS_KEY');
 
 export CFG_MYSQL_DB_HOST; cfgs+=('CFG_MYSQL_DB_HOST');
@@ -50,7 +49,6 @@ export CFG_MYSQL_DB_PASSWORD; cfgs+=('CFG_MYSQL_DB_PASSWORD');
 export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
 
 export CFG_INSTALL_WS_CA_FILES; cfgs+=('CFG_INSTALL_WS_CA_FILES');
-export CFG_INSTALL_CRTS_VIA_LE; cfgs+=('CFG_INSTALL_CRTS_VIA_LE');
 
 export CFG_INSTALL_DOCKER; cfgs+=('CFG_INSTALL_DOCKER');
 
@@ -68,6 +66,12 @@ export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
 export CFG_INSTALL_PHP_CLI; cfgs+=('CFG_INSTALL_PHP_CLI');
 export CFG_INSTALL_PHP_FPM; cfgs+=('CFG_INSTALL_PHP_FPM');
 export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
+
+export CFG_INSTALL_PHPCS; cfgs+=('CFG_INSTALL_PHPCS');
+export CFG_INSTALL_PHING; cfgs+=('CFG_INSTALL_PHING');
+export CFG_INSTALL_PHPUNIT; cfgs+=('CFG_INSTALL_PHPUNIT');
+export CFG_INSTALL_CASPERJS; cfgs+=('CFG_INSTALL_CASPERJS');
+export CFG_INSTALL_COMPOSER; cfgs+=('CFG_INSTALL_COMPOSER');
 
 export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
 
@@ -90,51 +94,33 @@ export CFG_INSTALL_UNATTENDED_UPGRADES; cfgs+=('CFG_INSTALL_UNATTENDED_UPGRADES'
 
 export CFG_CONFIG_FILE; cfgs+=('CFG_CONFIG_FILE');
 
+export CFG_USE_WIZARD; cfgs+=('CFG_USE_WIZARD');
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Default config. values.
 
 CFG_HOST="$(hostname --fqdn)";
-
 CFG_ROOT_HOST="$(hostname --domain)";
-if [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]]; then
-   CFG_ROOT_HOST="${CFG_HOST}";
-fi;
-CFG_OTHER_HOSTS='';
+[[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]] && CFG_ROOT_HOST="${CFG_HOST}";
+CFG_OTHER_HOSTS=''; # None at this time.
 
 CFG_SLUG="$(hostname --short)";
 CFG_VAR="${CFG_SLUG//-/_}";
 
-CFG_ADMIN_USERNAME='';
-if is-vagrant; then
-  CFG_ADMIN_USERNAME='admin';
-fi;
-CFG_ADMIN_PASSWORD='';
-if is-vagrant; then
-  CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
-fi;
-CFG_ADMIN_NAME='';
-if is-vagrant; then
-  CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
-fi;
-CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com';
-if is-vagrant; then
-  CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
-fi;
-CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
-if is-vagrant; then
-  CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
-fi;
+CFG_ADMIN_USERNAME=''; is-vm && CFG_ADMIN_USERNAME='admin';
+CFG_ADMIN_PASSWORD=''; is-vm && CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
+CFG_ADMIN_NAME=''; is-vm && CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
+CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com'; is-vm && CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
+CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com'; is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
 
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
-if ! is-vagrant && [[ -f /root/.ssh/authorized_keys ]]; then
-  CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
-fi;
+! is-vm && [[ -f /root/.ssh/authorized_keys ]] && CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
+
 CFG_TOOLS_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_TOOLS_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)";
-
 CFG_MAINTENANCE_BYPASS_KEY="$(keygen 64)";
 
 CFG_MYSQL_DB_HOST='127.0.0.1';
@@ -143,29 +129,15 @@ CFG_MYSQL_SSL_ENABLE='1';
 CFG_MYSQL_DB_CHARSET='utf8mb4';
 CFG_MYSQL_DB_COLLATE='utf8mb4_unicode_ci';
 CFG_MYSQL_DB_NAME='db0';
+CFG_MYSQL_DB_USERNAME='client'; is-vm && CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
+CFG_MYSQL_DB_PASSWORD="$(keygen 32)"; is-vm && CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 
-CFG_MYSQL_DB_USERNAME='client';
-if is-vagrant; then
-  CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
-fi;
-CFG_MYSQL_DB_PASSWORD="$(keygen 32)";
-if is-vagrant; then
-  CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
-fi;
 CFG_INSTALL_SWAP='1';
 
-CFG_INSTALL_WS_CA_FILES='1';
-if is-vagrant; then
-  CFG_INSTALL_WS_CA_FILES='0';
-fi;
-CFG_INSTALL_CRTS_VIA_LE='0';
-if is-vagrant; then
-  CFG_INSTALL_CRTS_VIA_LE='0';
-fi;
-CFG_INSTALL_DOCKER='0';
-if is-vagrant; then
-  CFG_INSTALL_DOCKER='1';
-fi;
+CFG_INSTALL_WS_CA_FILES='1'; is-vm && CFG_INSTALL_WS_CA_FILES='0';
+
+CFG_INSTALL_DOCKER='0'; is-vm && CFG_INSTALL_DOCKER='1';
+
 CFG_INSTALL_POSTFIX='1';
 
 CFG_INSTALL_NGINX='1';
@@ -181,7 +153,13 @@ CFG_INSTALL_PHP_CLI='1';
 CFG_INSTALL_PHP_FPM='1';
 CFG_INSTALL_PHP_VERSION='custom';
 # `custom` or `custom-src` (i.e., from source).
-# Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`, `5.4`.
+# Or, via Ondřej Surý's PPA: `7.0`, `5.6`, `5.5`.
+
+CFG_INSTALL_PHPCS='1';
+CFG_INSTALL_PHING='1';
+CFG_INSTALL_PHPUNIT='1';
+CFG_INSTALL_CASPERJS='1';
+CFG_INSTALL_COMPOSER='1';
 
 CFG_INSTALL_APP_REPO='1';
 
@@ -192,31 +170,55 @@ CFG_DISCOURSE_SMTP_AUTH_TYPE='login';
 CFG_DISCOURSE_SMTP_USERNAME='';
 CFG_DISCOURSE_SMTP_PASSWORD='';
 
-CFG_INSTALL_WORDPRESS='1';
-CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
-if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
-  CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
-fi;
+CFG_INSTALL_WORDPRESS='1'; is-ci && CFG_INSTALL_WORDPRESS='0';
+CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0'; is-vagrant && CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
+
 CFG_INSTALL_FIREWALL='1';
 CFG_INSTALL_FAIL2BAN='1';
 
-CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0';
-if is-vagrant; then
-  CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
-fi;
-CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1';
-if is-vagrant; then
-  CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
-fi;
+CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
+CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1'; is-vm && CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
+
 CFG_INSTALL_UNATTENDED_UPGRADES='1';
 
 CFG_CONFIG_FILE='/app/.config.json';
+
+CFG_USE_WIZARD='1'; # Default behavior.
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Apply `CFG_` arguments to configuration.
+
+function apply-cfg-args() {
+  local cfg_long_options='';
+  local _cfg cfg_options;
+
+  for _cfg in "${cfgs[@]}"; do
+    if [[ -n "${cfg_long_options}" ]]; then
+      cfg_long_options+=,"${_cfg}":;
+    else cfg_long_options+="${_cfg}":; fi;
+  done;
+  cfg_options="$(getopt --options '' --longoptions "${cfg_long_options}" -- "${@}")";
+
+  eval set -- "${cfg_options}"; while true; do
+     case "${1}" in
+        --CFG_*)
+          export "${1#--}"="${2}";
+          shift 2;
+          ;;
+        --) shift 1; break;
+          ;;
+        *) echo 'Internal error.'; exit 1;
+          ;;
+     esac;
+  done;
+}; apply-cfg-args "${@}"; # Apply any `CFG_` arguments.
 
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Fills replacement codes.
 
-function fill_cfg_rcs() {
+function fill-cfg-rcs() {
   local _cfg_key;
   local _cfg_rc_key;
 
@@ -233,10 +235,10 @@ function fill_cfg_rcs() {
 
 # Fill, clean, sanitize.
 
-function fill_clean_sanitize_cfgs() {
+function fill-clean-sanitize-cfgs() {
   local _cfg_key;
 
-  fill_cfg_rcs; # All!
+  fill-cfg-rcs; # All!
 
   for _cfg_key in "${cfgs[@]}"; do
     export "${_cfg_key}"="$(trim "${!_cfg_key}")";
@@ -269,7 +271,7 @@ function fill_clean_sanitize_cfgs() {
 
 # Validate configuration variables.
 
-function validate_cfgs() {
+function validate-cfgs() {
   local _cfg_key;
   local cfg_key_empty='';
   local cfg_warning='';
@@ -343,16 +345,10 @@ function validate_cfgs() {
     cfg_warning+='The following configuration key is empty: `'"${cfg_key_empty}"'`'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && is-vagrant; then
+  elif [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && is-vm; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='The WebSharks SSL CA files require a production server.'$'\n';
-    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
-
-  elif [[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && is-vagrant; then
-
-    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='Cannot install SSL certificates via LetsEncrypt when running on a VM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif [[ "${CFG_INSTALL_NGINX}" == 1 && "${CFG_INSTALL_APACHE}" == 1 ]]; then
@@ -367,10 +363,23 @@ function validate_cfgs() {
     cfg_warning+='If you install Nginx or Apache you must also install PHP-FPM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 || "${CFG_INSTALL_DOCKER}" != 1 ]]; then
+  elif [[ "${CFG_INSTALL_APP_REPO}" == 1 && "${CFG_INSTALL_PHING}" != 1 ]]; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='If you install Discourse you must also install Docker dependency.'$'\n';
+    cfg_warning+='If you install an app repo you must also install Phing.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_PHING}" == 1 && ( "${CFG_INSTALL_PHPCS}" != 1 || "${CFG_INSTALL_PHPUNIT}" != 1 \
+    || "${CFG_INSTALL_CASPERJS}" != 1 || "${CFG_INSTALL_COMPOSER}" != 1 ) ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Phing requires PHPCS, PHPUnit, CasperJS, and Composer.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && "${CFG_INSTALL_DOCKER}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Discourse you must also install Docker.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && ( "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 \
@@ -382,13 +391,13 @@ function validate_cfgs() {
     cfg_warning+=' should be excluded. Discourse is almost entirely self-contained—via Docker.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vagrant; then
+  elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vm; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='The installation of VM symlinks applies only when running a VM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vagrant; then
+  elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vm; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='CloudFlare integration is not possible when running on a VM.'$'\n';
@@ -396,26 +405,16 @@ function validate_cfgs() {
 
   fi; # End conflicts/validation.
 
-  ## Start them over again? i.e., does a warning exist?
+  ## Should we fail here? i.e., does a warning exist?
 
   if [[ -n "${cfg_warning}" ]]; then
 
-    if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == 1 ]]; then
-
-      cfg_warning+='This error occurred because there is invalid data in the hard-coded defaults.'$'\n';
-      cfg_warning+='Please remove the `--use-defaults` flag and try again.'$'\n';
-      cfg_warning+='Also, please report this error to the developers.'$'\n';
-      cfg_warning+='Press any key to exit...'$'\n';
-
-      read -n1 -rsp "${cfg_warning}"; exit 1;
-
-    else # Allow them to start over; i.e., run the wizard again.
-
+    if [[ "${CFG_USE_WIZARD}" != 1 ]]; then
+      echo "${cfg_warning}"; exit 1;
+    else # Simply return a false response in this case.
       cfg_warning+='Press any key to start again w/ your existing options...'$'\n';
-
       read -n1 -rsp "${cfg_warning}"; return 1;
-
-    fi; # End `--use-defaults` check.
+    fi; # End conditional error handling.
 
   fi; # End validation and warning presentation.
 
@@ -426,21 +425,19 @@ function validate_cfgs() {
 
 # Configuration wizard via `dialog` utility.
 
-function cfgs_wizard() {
+function cfgs-wizard() {
   local cfgs_confirmed='0';
   local _cfg_key _i _cfg_value;
   local _cfg_package_options _cfg_package_option;
   local _cfg_response; # All used below.
 
-  if is-vagrant && [[ "${CFG_USE_DEFAULTS}" == 1 ]]; then
+  if [[ "${CFG_USE_WIZARD}" != 1 ]]; then
 
     # Fill, clean, sanitize.
-
-    fill_clean_sanitize_cfgs;
+    fill-clean-sanitize-cfgs;
 
     # Validate config values now.
-
-    validate_cfgs; # Failure results in exit w/ error.
+    validate-cfgs; # Failure results in exit w/ error.
 
   else # Begin wizard loop & continue until we get confirmation.
 
@@ -456,7 +453,7 @@ function cfgs_wizard() {
         'CFG_ADMIN_PUBLIC_EMAIL' \
         ; do _i=0; # Ask at least once.
 
-          fill_cfg_rcs "${_cfg_key}"; # Fill replacement codes.
+          fill-cfg-rcs "${_cfg_key}"; # Fill replacement codes.
 
           while [[ "${_i}" -lt 1 ]] || [[ -z "${!_cfg_key}" ]]; do _i=$((_i+1));
 
@@ -484,7 +481,6 @@ function cfgs_wizard() {
         'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_CRTS_VIA_LE' 'Install?' "$([[ "${CFG_INSTALL_CRTS_VIA_LE}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_DOCKER' 'Install?' "$([[ "${CFG_INSTALL_DOCKER}" == 1 ]] && echo 'on' || echo 'off')" \
         \
@@ -500,6 +496,12 @@ function cfgs_wizard() {
         \
         'CFG_INSTALL_PHP_CLI' 'Install?' "$([[ "${CFG_INSTALL_PHP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHP_FPM' 'Install?' "$([[ "${CFG_INSTALL_PHP_FPM}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHPUNIT' 'Install?' "$([[ "${CFG_INSTALL_PHPUNIT}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_COMPOSER' 'Install?' "$([[ "${CFG_INSTALL_COMPOSER}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
         \
@@ -518,7 +520,6 @@ function cfgs_wizard() {
       CFG_INSTALL_SWAP='0';
 
       CFG_INSTALL_WS_CA_FILES='0';
-      CFG_INSTALL_CRTS_VIA_LE='0';
 
       CFG_INSTALL_DOCKER='0';
 
@@ -534,6 +535,12 @@ function cfgs_wizard() {
 
       CFG_INSTALL_PHP_CLI='0';
       CFG_INSTALL_PHP_FPM='0';
+
+      CFG_INSTALL_PHPCS='0';
+      CFG_INSTALL_PHING='0';
+      CFG_INSTALL_PHPUNIT='0';
+      CFG_INSTALL_CASPERJS='0';
+      CFG_INSTALL_COMPOSER='0';
 
       CFG_INSTALL_APP_REPO='0';
 
@@ -598,7 +605,7 @@ function cfgs_wizard() {
             \
             'CFG_CONFIG_FILE' \
             ; do
-              fill_cfg_rcs "${_cfg_key}";
+              fill-cfg-rcs "${_cfg_key}";
 
               _cfg_value="$(dialog \
                 --backtitle 'Configuration' \
@@ -613,11 +620,11 @@ function cfgs_wizard() {
 
       # Fill, clean, sanitize.
 
-      fill_clean_sanitize_cfgs;
+      fill-clean-sanitize-cfgs;
 
       # Validate config values now.
 
-      if ! validate_cfgs; then
+      if ! validate-cfgs; then
         continue; fi; # Begin again.
 
       ## Sanitize & print list of all config vars now.
@@ -644,4 +651,4 @@ function cfgs_wizard() {
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-cfgs_wizard; unset cfgs; # Run wizard and do housekeeping.
+cfgs-wizard; unset cfgs; # Run wizard and do housekeeping.

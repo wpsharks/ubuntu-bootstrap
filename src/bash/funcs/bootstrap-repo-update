@@ -39,7 +39,7 @@ function bootstrap-repo-update() {
 
   # On a VM, use an `https://` remote so that an SSH key is not required to pull changes.
 
-  if is-vagrant; then
+  if is-vm; then
     git remote remove origin || true;
     git remote add origin "${remote_origin}";
   fi;

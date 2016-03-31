@@ -2,7 +2,7 @@
 
 # Maybe harden SSH security.
 
-if ! is-vagrant; then # If NOT on a vagrant box.
+if ! is-vm; then # On production servers only.
 
   perl -i -wpe 's/^(\s*)PermitRootLogin\s+.*$/$1PermitRootLogin no/ui' /etc/ssh/sshd_config;
   echo '# Allow Specific Groups Only' >> /etc/ssh/sshd_config;

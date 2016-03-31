@@ -4,7 +4,7 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
 
   # Cleanup archives.
 
-  if ! is-vagrant; then
+  if ! is-vm; then
     apt-get clean --yes;
   fi;
 
@@ -12,7 +12,7 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
   # Note that VMs don't generally require an SSH key.
   # If an administrator uploads them though, leave them there.
 
-  if ! is-vagrant; then
+  if ! is-vm; then
     rm --force /root/.ssh/id_rsa;
     rm --force /root/.ssh/ws-bot-np;
     rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php; then
+if can-run php && [[ "${CFG_INSTALL_PHING}" == 1 ]]; then
 
   # Install Phing for PHP.
 

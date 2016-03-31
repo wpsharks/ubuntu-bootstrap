@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Is vagrant?
+# Is Vagrant?
 
 function is-vagrant() {
   if id --user vagrant &>/dev/null; then

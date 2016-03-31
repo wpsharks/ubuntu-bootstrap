@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_CASPERJS}" == 1 ]]; then
+
+  # Install CasperJS.
+
+  # Dependencies.
+
+  apt-get install python --yes;
+  apt-get install chrpath --yes;
+  apt-get install libssl-dev --yes;
+  apt-get install libxft-dev --yes;
+  apt-get install build-essential --yes;
+  apt-get install libfreetype6 libfreetype6-dev --yes;
+  apt-get install libfontconfig1 libfontconfig1-dev --yes;
+
+  # Install PhantomJS first.
+
+  mkdir --parents /usr/local/src/phantomjs;
+
+  curl https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 --location --output /tmp/phantomjs.tar.bz2;
+  tar --extract --bzip2 --verbose --strip-components=1 --file=/tmp/phantomjs.tar.bz2 -C /usr/local/src/phantomjs;
+
+  ln --symbolic /usr/local/src/phantomjs/bin/phantomjs /usr/bin/phantomjs;
+  chmod +x /usr/bin/phantomjs; # Make executable.
+
+  rm /tmp/phantomjs.tar.bz2;
+
+  # Install CasperJS now.
+
+  git clone https://github.com/n1k0/casperjs /usr/local/src/casperjs --branch=master --depth=1;
+  ln --symbolic /usr/local/src/casperjs/bin/casperjs /usr/bin/casperjs;
+  chmod +x /usr/bin/casperjs; # Make executable.
+
+else echo 'Skipping CasperJS installation.'; fi;

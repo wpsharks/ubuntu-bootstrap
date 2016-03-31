@@ -9,7 +9,7 @@ bootstrap-repo-update \
 
 # Update the websharks/core repo.
 
-if can-run php && can-run phing && can-run composer && [[ -d /usr/local/src/wsc ]]; then
+if can-run php && can-run phing && [[ -d /usr/local/src/wsc ]]; then
   cd /usr/local/src/wsc;
 
   git pull; # Merge latest changes.

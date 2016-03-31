@@ -41,7 +41,7 @@ if [[ -f /tmp/ca-files/ws-ca-private-key.pem && -f /tmp/ca-files/ws-ca-crt.pem ]
   cp /tmp/ca-files/ws-ca-private-key.pem /etc/bootstrap/ssl/server-ca-private-key.pem;
   cp /tmp/ca-files/ws-ca-crt.pem /etc/bootstrap/ssl/server-ca-crt.pem;
 
-elif is-vagrant && [[ -f /bootstrap/src/ssl/vm-ca-private-key.pem && -f /bootstrap/src/ssl/vm-ca-crt.pem ]]; then
+elif is-vm && [[ -f /bootstrap/src/ssl/vm-ca-private-key.pem && -f /bootstrap/src/ssl/vm-ca-crt.pem ]]; then
 
   ln --symbolic /bootstrap/src/ssl/vm-ca-private-key.pem /etc/bootstrap/ssl/server-ca-private-key.pem;
   ln --symbolic /bootstrap/src/ssl/vm-ca-crt.pem /etc/bootstrap/ssl/server-ca-crt.pem;
@@ -149,32 +149,13 @@ openssl dhparam -dsaparam -out /etc/bootstrap/ssl/dhparam.pem 2048;
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Generate the official certificate files for this server.
+# Symlink the official certificate files for this server.
 
-if is-vagrant || [[ "${CFG_INSTALL_CRTS_VIA_LE}" != 1 ]]; then
+ln --symbolic /etc/bootstrap/ssl/server-private-key.pem /etc/bootstrap/ssl/official-private-key.pem;
+ln --symbolic /etc/bootstrap/ssl/server-crt.pem /etc/bootstrap/ssl/official-crt.pem;
+ln --symbolic /etc/bootstrap/ssl/server-ca-chain.pem /etc/bootstrap/ssl/official-chain.pem;
+ln --symbolic /etc/bootstrap/ssl/server-ca-fullchain.pem /etc/bootstrap/ssl/official-fullchain.pem;
 
-  ln --symbolic /etc/bootstrap/ssl/server-private-key.pem /etc/bootstrap/ssl/official-private-key.pem;
-  ln --symbolic /etc/bootstrap/ssl/server-crt.pem /etc/bootstrap/ssl/official-crt.pem;
-  ln --symbolic /etc/bootstrap/ssl/server-ca-chain.pem /etc/bootstrap/ssl/official-chain.pem;
-  ln --symbolic /etc/bootstrap/ssl/server-ca-fullchain.pem /etc/bootstrap/ssl/official-fullchain.pem;
-
-else ## Automatic CA generation for a production server.
-
-  # Install `letsencrypt-auto` command-line utility via github repo.
-
-  git clone https://github.com/letsencrypt/letsencrypt /usr/local/src/letsencrypt --branch=master --depth=1;
-  #ln --symbolic /usr/local/src/letsencrypt/letsencrypt-auto /usr/bin/letsencrypt-auto;
-  # @NOTE Symlink no worky. See: <https://github.com/letsencrypt/letsencrypt/issues/1698>
-
-  # Run `letsencrypt-auto` via wrapper: `le-auto` in the bootstrap.
-  # Temporarily disables firewall & web servers, then starts them back up.
-
-  /bootstrap/src/ssl/le-auto; # Automatically configured by this wrapper.
-
-  # Configure CRON job that will handle the automatic renewal of SSL certificates.
-
-  echo '@monthly root /bootstrap/src/ssl/le-auto >/dev/null 2>&1' >> /etc/crontab;
-fi;
 # ----------------------------------------------------------------------------------------------------------------------
 
 rm -rf /tmp/ca-files;

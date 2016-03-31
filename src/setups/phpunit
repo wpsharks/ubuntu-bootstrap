@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if can-run php && [[ "${CFG_INSTALL_PHPUNIT}" == 1 ]]; then
+
+  # Install PHPUnit for tests.
+
+  if [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]] || version-compare "${CFG_INSTALL_PHP_VERSION}" ge 5.6; then
+    _url=https://phar.phpunit.de/phpunit.phar;
+  else # Older version for older PHP installs.
+    _url=https://phar.phpunit.de/phpunit-old.phar;
+  fi;
+  curl "${_url}" --location --output /usr/bin/phpunit;
+  chmod +x /usr/bin/phpunit; # Make it executable.
+
+  unset _url; # Housekeeping.
+
+else echo 'Skipping PHPUnit installation.'; fi;

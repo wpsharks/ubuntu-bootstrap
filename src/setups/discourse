@@ -21,7 +21,7 @@ if can-run docker && [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
   cp /etc/bootstrap/ssl/official-private-key.pem /discourse/shared/standalone/ssl/ssl.key;
   cp /etc/bootstrap/ssl/official-fullchain.pem /discourse/shared/standalone/ssl/ssl.crt;
 
-  if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+  if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
     perl -i -wpe 's/^(\s*)#(.*?templates\/cloudflare\.template\.yml.*)$/$1$2/u' /bootstrap/src/discourse/.yml;
   fi;
   ln --symbolic /bootstrap/src/discourse/.yml /discourse/containers/app.yml;

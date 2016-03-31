@@ -2,10 +2,10 @@
 
 # Global environment variables.
 
+mkdir --parents /etc/apache2;
+
 mkdir --parents /etc/php/fpm;
 echo '[www]' > /etc/php/fpm/env.conf;
-
-mkdir --parents /etc/apache2;
 
 for _cfg_key in \
   'CFG_HOST' \

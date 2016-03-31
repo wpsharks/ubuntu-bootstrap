@@ -37,7 +37,7 @@ while read -r _oldrev _newrev _refname; do
 
     unset GIT_DIR; unset GIT_WORK_TREE; # Housekeeping.
 
-    if [[ -f ./build.xml ]]; then
+    if can-run phing && [[ -f ./build.xml ]]; then
       phing post-receive-build; # Runs the build routine.
       echo 'Ran `phing post-receive-build` in the `/app` directory.'; fi;
 

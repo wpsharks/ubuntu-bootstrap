@@ -12,37 +12,15 @@ elif [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Initialize options.
-
-cfg_use_defaults=0;
-
-# Parse installation options.
-
-cfg_short_options='';
-cfg_long_options='use-defaults';
-cfg_options="$(getopt --options "${cfg_short_options}" --longoptions "${cfg_long_options}" -- "${@}")";
-
-eval set -- "${cfg_options}"; while true; do
-   case "${1}" in
-      --use-defaults)
-        cfg_use_defaults=1;
-        shift 1;
-        ;;
-      --) shift 1; break;
-        ;;
-      *) echo 'Internal error.'; exit 1;
-        ;;
-   esac;
-done;
-
 # Maybe run setup routines; i.e., once only.
 
 if [[ ! -f /etc/bootstrap/.installed ]]; then
 
-  export CFG_IS_INSTALLER=1;
-  export CFG_IS_UPDATER=0;
+  export CFG_IS_INSTALLER='1';
+  export CFG_IS_UPDATER='0';
 
-  export CFG_USE_DEFAULTS="${cfg_use_defaults}";
+  export CFG_INSTALLED_VERSION='';
+
   . /bootstrap/src/setups/config;
 
   set -o xtrace; # Print each command that is run.
@@ -59,6 +37,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/swap;
 
   . /bootstrap/src/setups/zsh;
+  . /bootstrap/src/setups/hosts;
   . /bootstrap/src/setups/users;
   . /bootstrap/src/setups/mkdirs;
   . /bootstrap/src/setups/umask;
@@ -83,7 +62,10 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
 
   . /bootstrap/src/setups/php/_stub;
 
+  . /bootstrap/src/setups/phpcs;
   . /bootstrap/src/setups/phing;
+  . /bootstrap/src/setups/phpunit;
+  . /bootstrap/src/setups/casperjs;
   . /bootstrap/src/setups/composer;
   . /bootstrap/src/setups/wsc;
 
@@ -100,7 +82,8 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   if [[ -f /bootstrap-app/post-install ]]; then
     . /bootstrap-app/post-install; fi;
 
-  . /bootstrap/version; # Update version.
+  . /bootstrap/version; # Update.
+  CFG_INSTALLED_VERSION="${CFG_VERSION}";
   echo "${CFG_VERSION}" > /etc/bootstrap/.installed;
 
   . /bootstrap/src/setups/cleanup;

@@ -35,11 +35,11 @@ if is-vagrant; then
     --email="${CFG_ADMIN_EMAIL}" \
     --shell="${CFG_ADMIN_PREFERRED_SHELL}";
 
-usermod --append --groups=adm vagrant;
-usermod --append --groups=app vagrant;
-usermod --append --groups=sudo vagrant;
-usermod --append --groups=ssh-access vagrant;
-usermod --append --groups=www-data vagrant;
+  usermod --append --groups=adm vagrant;
+  usermod --append --groups=app vagrant;
+  usermod --append --groups=sudo vagrant;
+  usermod --append --groups=ssh-access vagrant;
+  usermod --append --groups=www-data vagrant;
 
 fi; # On vagrant boxes only.
 

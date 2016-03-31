@@ -46,7 +46,7 @@ $ vagrant up
 ```bash
 $ vagrant ssh
 $ sudo /bootstrap/installer # Presents a configuration dialog.
-# Tip: to bypass configuration, add `--use-defaults` argument to the installer.
+# Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
 #### Step 5: Confirm it is Working!

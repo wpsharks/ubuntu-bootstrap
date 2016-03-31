@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Is virtual machine?
+
+function is-vm() {
+  if is-vagrant || is-ci; then
+    return 0;
+  elif [[ "${CFG_HOST}" =~ \.vm$ ]]; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};

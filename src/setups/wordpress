@@ -19,7 +19,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
   # Setup the `/wp-config.php` file on VMs for quick access.
 
-  if is-vagrant; then # Only for VMs.
+  if is-vm; then # Only for VMs.
     ln --symbolic /bootstrap/src/wordpress/.wp-config.php /app/src/wp-config.php;
     perl -i -wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /bootstrap/src/wordpress/.wp-config.php;
     perl -i -wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /bootstrap/src/wordpress/.wp-config.php;
@@ -32,7 +32,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   fi;
   # Build symlinks to development files when run via Vagrant.
 
-  if is-vagrant && [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]]; then
+  if [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]]; then
 
     # Create theme/plugin symlinks if possible.
 

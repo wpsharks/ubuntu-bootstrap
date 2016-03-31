@@ -1,0 +1,3 @@
+user: admin;
+path: /app/src;
+url: https://%%host%%;

@@ -53,7 +53,7 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
   mkdir --parents /var/bootstrap/cgi-bin;
   ln --symbolic /bootstrap/src/apache/.conf /etc/apache2/conf-enabled/z90.conf;
 
-  if is-vagrant; then # Disable sendfile on vagrant VMs.
+  if is-vm; then # Disable sendfile on VMs.
     perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
@@ -62,7 +62,7 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   # Put live sites into maintenance mode by default.
 
-  if ! is-vagrant; then
+  if ! is-vm; then
     touch /app/.maintenance; fi;
 
   # Restart service.

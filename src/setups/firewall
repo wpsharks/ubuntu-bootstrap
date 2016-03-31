@@ -19,17 +19,17 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   # Open MySQL port 3306 to all VPN connections?
 
-  if can-run mysql && { is-vagrant || [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; }; then
-    if is-vagrant; then # On a local VM this has a slightly different meaning.
-      ufw allow 3306/tcp; # Wide open on a local Vagrant VM.
+  if can-run mysql && [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
+    if is-vm; then # On a VM this has a slightly different meaning.
+      ufw allow 3306/tcp; # Wide open on a VM.
     else # On the private network interface only.
       ufw allow in on eth1 to any port 3306;
     fi;
   fi;
   # Open up the HTTP/HTTPS port numbers `80` and `443`?
 
-  if can-run nginx || can-run apache2 || { can-run docker && [[ -d /discourse ]]; }; then
-    if ! is-vagrant && [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+  if can-run nginx || can-run apache2 || ( can-run docker && [[ -d /discourse ]] ); then
+    if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
 
       # See: <https://www.cloudflare.com/ips/>
       _ips_v4="$(curl https://www.cloudflare.com/ips-v4 --location)";

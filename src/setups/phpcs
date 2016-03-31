@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if can-run php && [[ "${CFG_INSTALL_PHPCS}" == 1 ]]; then
+
+  # Install PHP Code Sniffer.
+
+  curl https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar --location --output /usr/bin/phpcs;
+  chmod +x /usr/bin/phpcs; # Make it executable.
+
+else echo 'Skipping PHP Code Sniffer installation.'; fi;

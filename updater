@@ -20,8 +20,8 @@ trap auto-warn-about-app-related-services-on-error ERR;
 
 if [[ -f /etc/bootstrap/.installed ]]; then
 
-  export CFG_IS_INSTALLER=0;
-  export CFG_IS_UPDATER=1;
+  export CFG_IS_INSTALLER='0';
+  export CFG_IS_UPDATER='1';
 
   export CFG_INSTALLED_VERSION; # Read file.
   CFG_INSTALLED_VERSION="$(cat /etc/bootstrap/.installed)";

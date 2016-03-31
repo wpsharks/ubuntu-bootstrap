@@ -5,9 +5,9 @@
 mkdir --parents /app;
 mkdir --parents /app/src;
 
-if ! is-vagrant; then
-  cp --force --recursive --preserve=mode /bootstrap/app/. /app;
-fi; # In production we copy a skeleton directory.
+# @TODO On Vagrant, we should mount an `/app` directory.
+# i.e., it would be nice if this were sourced by the host.
+cp --force --recursive --preserve=mode /bootstrap/app/. /app;
 
 chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;

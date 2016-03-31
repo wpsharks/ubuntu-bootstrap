@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Is CI server?
+
+function is-ci() {
+  if [[ -n "${CI:-}" ]]; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};
