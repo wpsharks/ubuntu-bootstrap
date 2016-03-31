@@ -38,6 +38,7 @@ done;
 
 bootstrap=$(cat <<'_'
   export CI=true;
+  export DEBIAN_FRONTEND=noninteractive;
 
   apt-get install git --yes;
   git clone https://github.com/websharks/ubuntu-bootstrap --branch=master --depth=1 /bootstrap;
