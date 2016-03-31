@@ -52,4 +52,4 @@ _
 );
 docker run --hostname=ci.vm --name=websharks-ubuntu-bootstrap-ci-php-"${php_version}" ubuntu:14.04 /usr/bin/env bash -c "${bootstrap}";
 docker commit -m 'Creating image.' -a 'websharks-ubuntu-bootstrap' websharks-ubuntu-bootstrap-ci-php-"${php_version}" websharks/ubuntu-bootstrap-ci-php-"${php_version}";
-echo 'Run `$ docker login && docker push [repository:tag]` to upload the image.';
+echo 'Run `$ docker login` and then `$ docker push websharks/ubuntu-bootstrap-ci-php-'"${php_version}"'` to upload the container image that was just commited locally.';

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Add support for the `apt-add-repository` command and others.
+
+apt-get install software-properties-common --yes;
+
 # Add multiverse repo.
 
 apt-add-repository multiverse --yes;
