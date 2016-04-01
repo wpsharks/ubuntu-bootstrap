@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-if is-4ci; then
+if [[ -n "${CFG_OTHER_HOSTS}" ]]; then
 
   # Resolve these additional host names.
 
-  echo '127.0.0.1 sub.'"${CFG_HOST}" >> /etc/hosts;
-  echo '127.0.0.1 sub1.'"${CFG_HOST}" >> /etc/hosts;
-  echo '127.0.0.1 sub2.'"${CFG_HOST}" >> /etc/hosts;
+  for _host in ${CFG_OTHER_HOSTS}; do
+    echo '127.0.0.1 '"${_host}" >> /etc/hosts;
+  done; unset _host;
 
 else echo 'Skipping CI extra host names.'; fi;

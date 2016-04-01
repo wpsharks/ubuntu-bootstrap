@@ -219,7 +219,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_HOST=my.cool.vm` Host name.
 - `--CFG_ROOT_HOST=cool.vm` Root host name.
-- `--CFG_OTHER_HOSTS=` e.g., `a.vm,b.vm,c.vm`
+- `--CFG_OTHER_HOSTS=` e.g., `a.vm,b.vm,c.vm` Other hosts to resolve locally. These are only resolved inside the VM; i.e., these additional host names are added to `/etc/hosts` inside the VM so the VM will be capable of connecting to them. Mainly useful when building a base image for a CI server that is entirely self-contained.
 
 ---
 
