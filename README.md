@@ -199,3 +199,13 @@ export WP_PROJECTS_DIR=~/my-projects/wordpress;
 export WP_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
 export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 ```
+
+---
+
+### Bootstrapping Base Images for CI Servers
+
+```bash
+$ /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=7.0;
+$ /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.6;
+$ /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.5;
+```
