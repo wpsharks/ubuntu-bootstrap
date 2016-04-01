@@ -5,10 +5,10 @@
 mkdir --parents /app;
 mkdir --parents /app/src;
 
-# @TODO On Vagrant, we should mount an `/app` directory.
-# i.e., it would be nice if this were sourced by the host.
-cp --force --recursive --preserve=mode /bootstrap/app/. /app;
-
+if is-vm; then # Use symlink.
+  rm --force --recursive /app/src;
+  ln --symbolic /bootstrap/app/src /app/src;
+fi;
 chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;
 find /app -type f -exec chmod 664 {} \;
@@ -39,3 +39,10 @@ find /var/log/app -type f -exec chmod 664 {} \;
 
 mkdir --parents /usr/local/src;
 mkdir --parents /etc/bootstrap;
+
+# When packaging, don't rely upon shared folders.
+
+if is-vagrant && is-4pkg; then
+  rm --force --recursive /bootstrap;
+  cp --force --recursive --preserve=all /vagrant/. /bootstrap;
+fi;

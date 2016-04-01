@@ -14,96 +14,7 @@ export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Config keys.
-
-cfgs=(); # Configurable vars.
-
-export CFG_4CI; cfgs+=('CFG_4CI');
-
-export CFG_HOST; cfgs+=('CFG_HOST');
-export CFG_ROOT_HOST; cfgs+=('CFG_ROOT_HOST');
-export CFG_OTHER_HOSTS; cfgs+=('CFG_OTHER_HOSTS');
-export CFG_SLUG; cfgs+=('CFG_SLUG');
-export CFG_VAR; cfgs+=('CFG_VAR');
-
-export CFG_ADMIN_USERNAME; cfgs+=('CFG_ADMIN_USERNAME');
-export CFG_ADMIN_PASSWORD; cfgs+=('CFG_ADMIN_PASSWORD');
-export CFG_ADMIN_NAME; cfgs+=('CFG_ADMIN_NAME');
-export CFG_ADMIN_EMAIL; cfgs+=('CFG_ADMIN_EMAIL');
-export CFG_ADMIN_PUBLIC_EMAIL; cfgs+=('CFG_ADMIN_PUBLIC_EMAIL');
-export CFG_ADMIN_PREFERRED_SHELL; cfgs+=('CFG_ADMIN_PREFERRED_SHELL');
-export CFG_ADMIN_AUTHORIZED_SSH_KEYS; cfgs+=('CFG_ADMIN_AUTHORIZED_SSH_KEYS');
-
-export CFG_TOOLS_USERNAME; cfgs+=('CFG_TOOLS_USERNAME');
-export CFG_TOOLS_PASSWORD; cfgs+=('CFG_TOOLS_PASSWORD');
-export CFG_TOOLS_PMA_BLOWFISH_KEY; cfgs+=('CFG_TOOLS_PMA_BLOWFISH_KEY');
-export CFG_MAINTENANCE_BYPASS_KEY; cfgs+=('CFG_MAINTENANCE_BYPASS_KEY');
-
-export CFG_MYSQL_DB_HOST; cfgs+=('CFG_MYSQL_DB_HOST');
-export CFG_MYSQL_DB_PORT; cfgs+=('CFG_MYSQL_DB_PORT');
-export CFG_MYSQL_SSL_ENABLE; cfgs+=('CFG_MYSQL_SSL_ENABLE');
-export CFG_MYSQL_DB_CHARSET; cfgs+=('CFG_MYSQL_DB_CHARSET');
-export CFG_MYSQL_DB_COLLATE; cfgs+=('CFG_MYSQL_DB_COLLATE');
-export CFG_MYSQL_DB_NAME; cfgs+=('CFG_MYSQL_DB_NAME');
-export CFG_MYSQL_DB_USERNAME; cfgs+=('CFG_MYSQL_DB_USERNAME');
-export CFG_MYSQL_DB_PASSWORD; cfgs+=('CFG_MYSQL_DB_PASSWORD');
-
-export CFG_INSTALL_SWAP; cfgs+=('CFG_INSTALL_SWAP');
-
-export CFG_INSTALL_WS_CA_FILES; cfgs+=('CFG_INSTALL_WS_CA_FILES');
-
-export CFG_INSTALL_DOCKER; cfgs+=('CFG_INSTALL_DOCKER');
-
-export CFG_INSTALL_POSTFIX; cfgs+=('CFG_INSTALL_POSTFIX');
-
-export CFG_INSTALL_NGINX; cfgs+=('CFG_INSTALL_NGINX');
-export CFG_INSTALL_APACHE; cfgs+=('CFG_INSTALL_APACHE');
-
-export CFG_INSTALL_MYSQL; cfgs+=('CFG_INSTALL_MYSQL');
-export CFG_INSTALL_MYSQL_DB_IMPORT_FILE; cfgs+=('CFG_INSTALL_MYSQL_DB_IMPORT_FILE');
-
-export CFG_INSTALL_MEMCACHE; cfgs+=('CFG_INSTALL_MEMCACHE');
-export CFG_INSTALL_RAMDISK; cfgs+=('CFG_INSTALL_RAMDISK');
-
-export CFG_INSTALL_PHP_CLI; cfgs+=('CFG_INSTALL_PHP_CLI');
-export CFG_INSTALL_PHP_FPM; cfgs+=('CFG_INSTALL_PHP_FPM');
-export CFG_INSTALL_PHP_VERSION; cfgs+=('CFG_INSTALL_PHP_VERSION');
-
-export CFG_INSTALL_PHPCS; cfgs+=('CFG_INSTALL_PHPCS');
-export CFG_INSTALL_PHING; cfgs+=('CFG_INSTALL_PHING');
-export CFG_INSTALL_PHPUNIT; cfgs+=('CFG_INSTALL_PHPUNIT');
-export CFG_INSTALL_CASPERJS; cfgs+=('CFG_INSTALL_CASPERJS');
-export CFG_INSTALL_COMPOSER; cfgs+=('CFG_INSTALL_COMPOSER');
-export CFG_INSTALL_WP_CLI; cfgs+=('CFG_INSTALL_WP_CLI');
-
-export CFG_INSTALL_APP_REPO; cfgs+=('CFG_INSTALL_APP_REPO');
-
-export CFG_INSTALL_DISCOURSE; cfgs+=('CFG_INSTALL_DISCOURSE');
-export CFG_DISCOURSE_SMTP_HOST; cfgs+=('CFG_DISCOURSE_SMTP_HOST');
-export CFG_DISCOURSE_SMTP_PORT; cfgs+=('CFG_DISCOURSE_SMTP_PORT');
-export CFG_DISCOURSE_SMTP_AUTH_TYPE; cfgs+=('CFG_DISCOURSE_SMTP_AUTH_TYPE');
-export CFG_DISCOURSE_SMTP_USERNAME; cfgs+=('CFG_DISCOURSE_SMTP_USERNAME');
-export CFG_DISCOURSE_SMTP_PASSWORD; cfgs+=('CFG_DISCOURSE_SMTP_PASSWORD');
-
-export CFG_INSTALL_WORDPRESS; cfgs+=('CFG_INSTALL_WORDPRESS');
-export CFG_INSTALL_WORDPRESS_VM_SYMLINKS; cfgs+=('CFG_INSTALL_WORDPRESS_VM_SYMLINKS');
-
-export CFG_INSTALL_FIREWALL; cfgs+=('CFG_INSTALL_FIREWALL');
-export CFG_INSTALL_FAIL2BAN; cfgs+=('CFG_INSTALL_FAIL2BAN');
-export CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN; cfgs+=('CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN');
-export CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443; cfgs+=('CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443');
-
-export CFG_INSTALL_UNATTENDED_UPGRADES; cfgs+=('CFG_INSTALL_UNATTENDED_UPGRADES');
-
-export CFG_CONFIG_FILE; cfgs+=('CFG_CONFIG_FILE');
-
-export CFG_USE_WIZARD; cfgs+=('CFG_USE_WIZARD');
-
-# ----------------------------------------------------------------------------------------------------------------------
-
 # Default config. values.
-
-CFG_4CI='0'; # Off (default).
 
 CFG_HOST="$(hostname --fqdn)";
 CFG_ROOT_HOST="$(hostname --domain)";
@@ -193,32 +104,16 @@ CFG_USE_WIZARD='1'; # Default behavior.
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Apply `CFG_` arguments to configuration.
+# Apply any CLI arguments to config values.
 
-function apply-cfg-args() {
-  local cfg_long_options='';
-  local _cfg cfg_options;
+for _cfg_key in "${cfgs[@]}"; do
+  _a_cfg_key=A_"${_cfg_key}";
+  _a_cfg_val="${!_a_cfg_key:-}";
 
-  for _cfg in "${cfgs[@]}"; do
-    if [[ -n "${cfg_long_options}" ]]; then
-      cfg_long_options+=,"${_cfg}":;
-    else cfg_long_options+="${_cfg}":; fi;
-  done;
-  cfg_options="$(getopt --options '' --longoptions "${cfg_long_options}" -- "${@}")";
-
-  eval set -- "${cfg_options}"; while true; do
-     case "${1}" in
-        --CFG_*)
-          export "${1#--}"="${2}";
-          shift 2;
-          ;;
-        --) shift 1; break;
-          ;;
-        *) echo 'Internal error.'; exit 1;
-          ;;
-     esac;
-  done;
-}; apply-cfg-args "${@}"; # Apply any `CFG_` arguments.
+  if [[ -n "${_a_cfg_val}" ]]; then
+    export "${_cfg_key}"="${_a_cfg_val}";
+  fi;
+done; unset _cfg_key; unset _a_cfg_key; unset _a_cfg_val;
 
 # ----------------------------------------------------------------------------------------------------------------------
 

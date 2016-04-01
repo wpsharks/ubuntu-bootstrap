@@ -3,6 +3,11 @@
 # This script runs on the VM after a `vagrant up`.
 # This is an easy way to customize the software on your VM.
 
+# Link the `/vagrant` directory to `/bootstrap`.
+
+if [[ ! -d /bootstrap && -d /vagrant ]]; then
+  ln --symbolic /vagrant /bootstrap; fi;
+
 # Include strict mode & functions.
 
 . /bootstrap/src/bash/strict-mode;
@@ -11,6 +16,6 @@
 # Add your customizations here.
 # See README.md for available options.
 
-# e.g., `apt-get update --yes`
+# e.g., `apt-get update`
 # e.g., `apt-get install git --yes`
 # etc, etc, etc. Customize away!

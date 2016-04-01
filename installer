@@ -21,6 +21,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
 
   export CFG_INSTALLED_VERSION='';
 
+  . /bootstrap/src/setups/cfgs-args;
   . /bootstrap/src/setups/config;
 
   set -o xtrace; # Print each command that is run.

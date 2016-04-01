@@ -202,10 +202,143 @@ export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 
 ---
 
-### Bootstrapping Base Images for CI Servers
+### Bootstrap Command-Line Arguments
+
+The following CLI arguments can be passed to `/bootstrap/installer`, just in case you'd like to avoid the configuration wizard entirely. These are all optional; i.e., if you don't provide these arguments you will be prompted to configure the bootstrap using a command-line dialog interface whenever the installer runs.
+
+_**Tip:** You can learn more about how these work and what the defaults are by looking over the [src/setups/config](src/setups/config) file carefully and perhaps searching for their use in other files found in `src/setups/*`._
+
+- `--CFG_USE_WIZARD=0|1` `0` to bypass the wizard.
+
+---
+
+- `--CFG_4PKG=0|1` Building this as a base image that will be packaged up?
+- `--CFG_4CI=0|1` Building this as a base image for a CI server?
+
+---
+
+- `--CFG_HOST=my.cool.vm` Host name.
+- `--CFG_ROOT_HOST=cool.vm` Root host name.
+- `--CFG_OTHER_HOSTS=` e.g., `a.vm,b.vm,c.vm`
+
+---
+
+- `--CFG_SLUG=my-cool-vm` Slug w/ dashes, no underscores.
+- `--CFG_VAR=my_cool_vm` Slug w/ underscores, no dashes.
+
+---
+
+- `--CFG_ADMIN_USERNAME=admin` Administrative username.
+- `--CFG_ADMIN_PASSWORD=admin` Administrative password.
+- `--CFG_ADMIN_NAME='Admin Istrator'` Display name.
+- `--CFG_ADMIN_EMAIL='admin@my.cool.vm'` Admin email address.
+- `--CFG_ADMIN_PUBLIC_EMAIL='hostnamster@my.cool.vm'` Public email address.
+- `--CFG_ADMIN_PREFERRED_SHELL=/bin/zsh` Or `/bin/bash`.
+- `--CFG_ADMIN_AUTHORIZED_SSH_KEYS=` e.g., `/authorized_keys`
+
+---
+
+- `--CFG_TOOLS_USERNAME=admin` Administrative username.
+- `--CFG_TOOLS_PASSWORD=admin` Administrative password.
+- `--CFG_TOOLS_PMA_BLOWFISH_KEY=[key]` Secret key. Default is auto-generated.
+- `--CFG_MAINTENANCE_BYPASS_KEY=[key]` Secret key. Default is auto-generated.
+
+---
+
+- `--CFG_MYSQL_DB_HOST=127.0.0.1` MySQL DB host name.
+- `--CFG_MYSQL_DB_PORT=3306` MySQL DB port number.
+- `--CFG_MYSQL_SSL_ENABLE=0|1` MySQL DB supports SSL connections?
+- `--CFG_MYSQL_DB_CHARSET=utf8mb4` MySQL DB charset.
+- `--CFG_MYSQL_DB_COLLATE=utf8mb4_unicode_ci` MySQL DB collation.
+- `--CFG_MYSQL_DB_NAME=db0` MySQL DB name.
+- `--CFG_MYSQL_DB_USERNAME=client` MySQL DB username.
+- `--CFG_MYSQL_DB_PASSWORD=[key]` Default is auto-generated.
+
+---
+
+- `--CFG_INSTALL_SWAP=0|1` Install swap space?
+
+---
+
+- `--CFG_INSTALL_WS_CA_FILES=0|1` Use WebSharks certificate authority?
+
+---
+
+- `--CFG_INSTALL_DOCKER=0|1` Install Docker?
+
+---
+
+- `--CFG_INSTALL_POSTFIX=0|1` Install Postfix?
+
+---
+
+- `--CFG_INSTALL_NGINX=0|1` Install Nginx?
+- `--CFG_INSTALL_APACHE=0|1` Install Apache?
+
+---
+
+- `--CFG_INSTALL_MYSQL=0|1` Install MySQL?
+- `--CFG_INSTALL_MYSQL_DB_IMPORT_FILE=[file path on the VM]` Import SQL tables?
+
+---
+
+- `--CFG_INSTALL_MEMCACHE=0|1` Install Memcached?
+- `--CFG_INSTALL_RAMDISK=0|1` Install a RAM disk partition?
+
+---
+
+- `--CFG_INSTALL_PHP_CLI=0|1` Install PHP command-line interpreter?
+- `--CFG_INSTALL_PHP_FPM=0|1` Install PHP-FPM process manager for Apache/Nginx?
+- `--CFG_INSTALL_PHP_VERSION=[custom-src|custom|7.0|5.6|5.5]` Which PHP version?
+
+---
+
+- `--CFG_INSTALL_PHPCS=0|1` Install PHP Code Sniffer?
+- `--CFG_INSTALL_PHING=0|1` Install Phing?
+- `--CFG_INSTALL_PHPUNIT=0|1` Install PHPUnit?
+- `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
+- `--CFG_INSTALL_COMPOSER=0|1` Install Composer?
+- `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
+
+---
+
+- `--CFG_INSTALL_APP_REPO=0|1` Install a Git repo for the `/app/src` directory?
+
+---
+
+- `--CFG_INSTALL_DISCOURSE=0|1` Install Discourse?
+- `--CFG_DISCOURSE_SMTP_HOST=email-smtp.us-east-1.amazonaws.com` SMTP host name.
+- `--CFG_DISCOURSE_SMTP_PORT=587` SMTP port number.
+- `--CFG_DISCOURSE_SMTP_AUTH_TYPE=login` SMTP authentication type.
+- `--CFG_DISCOURSE_SMTP_USERNAME=[username]` SMTP username.
+- `--CFG_DISCOURSE_SMTP_PASSWORD=[password]` SMTP password.
+
+---
+
+- `--CFG_INSTALL_WORDPRESS=0|1` Install WordPress?
+- `--CFG_INSTALL_WORDPRESS_VM_SYMLINKS=0|1` Install WordPress theme/plugin symlinks?
+
+---
+
+- `--CFG_INSTALL_FIREWALL=0|1` Install firewall?
+- `--CFG_INSTALL_FAIL2BAN=0|1` Install Fail2Ban?
+- `--CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN=0|1` Allow network-based connections?
+- `--CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443=0|1` Allow only CloudFlare?
+
+---
+
+- `--CFG_INSTALL_UNATTENDED_UPGRADES=0|1` Configure unattended upgrades?
+
+---
+
+- `--CFG_CONFIG_FILE=[file path]` This is unrelated to the installer. It's for any purpose you like. e.g., To help you configure a web-based application that will run on this VM. The value that you set here becomes a global environment variable that your application can consume in any way you like. It is expected to be a config file path however.
+
+---
+
+#### Bootstrapping Base Images for CI Servers
 
 ```bash
-$ /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=7.0;
-$ /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.6;
-$ /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.5;
+$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=7.0;
+$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.6;
+$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.5;
 ```

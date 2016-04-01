@@ -7,10 +7,6 @@ Vagrant.configure(2) do |config|
     config.vm.hostname = File.basename(File.dirname(File.expand_path(__FILE__)));
   end;
 
-  # Mount `/vagrant` as `/bootstrap`.
-  config.vm.synced_folder '.', '/bootstrap';
-  config.vm.synced_folder '.', '/vagrant', disabled: true;
-
   # Mount WordPress projects directory.
   if File.directory?(wp_projects_dir = ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
     config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['ro'];
