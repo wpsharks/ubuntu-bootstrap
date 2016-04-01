@@ -1,4 +1,4 @@
-## VirtualBox + Vagrant + Landrush; running Ubuntu w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of custom 7.0+, 7.0, 5.6, 5.5, 5.4), and WordPress
+## VirtualBox + Vagrant + Landrush; running Ubuntu w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of custom 7.0+, 7.0, 5.6, 5.5), and WordPress
 
 ![](http://cdn.websharks-inc.com/jaswsinc/uploads/2015/03/os-x-vagrant-virtualbox.png)
 
