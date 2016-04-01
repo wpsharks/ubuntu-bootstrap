@@ -8,6 +8,8 @@ mkdir --parents /etc/php/fpm;
 echo '[www]' > /etc/php/fpm/env.conf;
 
 for _cfg_key in \
+  'CFG_4CI' \
+  \
   'CFG_HOST' \
   'CFG_ROOT_HOST' \
   'CFG_OTHER_HOSTS' \

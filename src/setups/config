@@ -18,6 +18,8 @@ export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
 
 cfgs=(); # Configurable vars.
 
+export CFG_4CI; cfgs+=('CFG_4CI');
+
 export CFG_HOST; cfgs+=('CFG_HOST');
 export CFG_ROOT_HOST; cfgs+=('CFG_ROOT_HOST');
 export CFG_OTHER_HOSTS; cfgs+=('CFG_OTHER_HOSTS');
@@ -101,6 +103,8 @@ export CFG_USE_WIZARD; cfgs+=('CFG_USE_WIZARD');
 
 # Default config. values.
 
+CFG_4CI='0'; # Off (default).
+
 CFG_HOST="$(hostname --fqdn)";
 CFG_ROOT_HOST="$(hostname --domain)";
 [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]] && CFG_ROOT_HOST="${CFG_HOST}";
@@ -133,11 +137,11 @@ CFG_MYSQL_DB_NAME='db0';
 CFG_MYSQL_DB_USERNAME='client'; is-vm && CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_MYSQL_DB_PASSWORD="$(keygen 32)"; is-vm && CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 
-CFG_INSTALL_SWAP='1'; in-docker && CFG_INSTALL_SWAP='0';
+CFG_INSTALL_SWAP='1';
 
 CFG_INSTALL_WS_CA_FILES='1'; is-vm && CFG_INSTALL_WS_CA_FILES='0';
 
-CFG_INSTALL_DOCKER='0'; is-vm && ! in-docker && CFG_INSTALL_DOCKER='1';
+CFG_INSTALL_DOCKER='0'; is-vm && CFG_INSTALL_DOCKER='1';
 
 CFG_INSTALL_POSTFIX='1';
 
