@@ -49,6 +49,9 @@ Vagrant.configure(2) do |config|
     vb.customize ['modifyvm', :id, '--cpus', '1'];
   end;
 
+  # Don't generate a secure public/private key pair for SSH.
+  config.ssh.insert_key = false; # Avoids problems when packaging a box.
+
   # Run script(s) as part of the provisioning process.
   config.vm.provision :shell, path: 'vg-bootstrap', run: 'always';
   if Vagrant.has_plugin?('vagrant-triggers')
