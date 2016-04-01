@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
   config.ssh.forward_agent = true; # Does not work in scripts; shell only.
 
   # Configure DNS automatically?
-  if Vagrant.has_plugin?('landrush') && ENV['VM_4CI'] != '1'
+  if Vagrant.has_plugin?('landrush') && ENV['VM_4PKG'] != '1'
     config.landrush.enabled = true; # Enable landrush plugin.
     config.landrush.tld = 'vm'; # Set landrush TLD for this VM.
     config.landrush.upstream '8.8.8.8'; # Google public DNS.
