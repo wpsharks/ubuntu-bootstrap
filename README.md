@@ -331,7 +331,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_CONFIG_FILE=[file path]` This is unrelated to the installer. It's for any purpose you like. e.g., To help you configure a web-based application that will run on this VM. The value that you set here becomes a global environment variable that your application can consume in any way you like. It is expected to be a config file path however.
+- `--CFG_CONFIG_FILE=/app/.config.json` This is unrelated to the installer. It's for any purpose you like. e.g., To help you configure a web-based application that will run on this VM. The value that you set here becomes a global environment variable that your application can consume in any way you like. It is expected to be a config file path however.
 
 ---
 
