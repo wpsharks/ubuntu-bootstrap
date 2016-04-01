@@ -3,7 +3,12 @@
 # Is for a packaged box?
 
 function is-4pkg() {
+  if ! is-vagrant; then
+    return 1; fi;
+
   if [[ "${CFG_4PKG}" == 1 ]]; then
+    return 0;
+  elif is-4ci; then
     return 0;
   else # 1 = false.
     return 1;

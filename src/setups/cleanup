@@ -24,8 +24,8 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
   # Resolves fragmentation issues and reduces the size of the disk.
 
   if is-4pkg; then
-    dd if=/dev/zero of=/EMPTY bs=1M;
-    rm -f /EMPTY;
+    dd if=/dev/zero of=/EMPTY bs=1M &>/dev/null || true;
+    rm -f /EMPTY; # ↑ See: <http://jas.xyz/1MGxHCj>
   fi;
 
   # Erase shell history when packaging.

@@ -212,8 +212,8 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_4PKG=0|1` Building this as a base image that will be packaged up?
 - `--CFG_4CI=0|1` Building this as a base image for a CI server?
+- `--CFG_4PKG=0|1` Building this as a base image that will be packaged up?
 
 ---
 
@@ -337,8 +337,16 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 #### Bootstrapping Base Images for CI Servers
 
+When building a base image that is going to be repackaged, please be sure to disable the Vagrant Landrush plugin beforehand; i.e., you don't want its configuration to become a part of any base image. Disabling Landrush can be accomplished by exporting the following environment variable before you run `$ vagrant up`. See [`Vagrantfile`](Vagrantfile) for details.
+
 ```bash
-$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=7.0;
-$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.6;
-$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION=5.5;
+$ export VM_4PKG=1;
+```
+
+After running `$ vagrant up`, SSH into the VM and run `$ /bootstrap/installer`. Be sure to pass the `--CFG_4CI=1 --CFG_4PKG=1` arguments to enable CI-specific and repackaging-specific routines in the bootstrap installer; e.g., better defaults, additional cleanups, drive compression, etc.
+
+```bash
+$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION=7.0;
+$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION=5.6;
+$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION=5.5;
 ```

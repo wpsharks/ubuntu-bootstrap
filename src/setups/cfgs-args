@@ -115,8 +115,11 @@ done; unset _cfg_long_options; unset _cfg; unset _cfg_options;
 
 # Parse these argument-only config values ahead of time.
 
+if [[ -n "${A_CFG_4CI:-}" ]]; then
+  CFG_4CI="${A_CFG_4CI:-}"; fi;
+
 if [[ -n "${A_CFG_4PKG:-}" ]]; then
   CFG_4PKG="${A_CFG_4PKG:-}"; fi;
 
-if [[ -n "${A_CFG_4CI:-}" ]]; then
-  CFG_4CI="${A_CFG_4CI:-}"; fi;
+if [[ "${CFG_4CI}" == 1 ]]; then
+  CFG_4PKG='1'; fi; # 4CI indicates packaging also.
