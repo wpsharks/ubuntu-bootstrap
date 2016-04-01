@@ -45,4 +45,5 @@ mkdir --parents /etc/bootstrap;
 if is-vagrant && is-4pkg; then
   rm --force --recursive /bootstrap;
   cp --force --recursive --preserve=all /vagrant/. /bootstrap;
+  rm --force --recursive /bootstrap/.vagrant;
 fi;
