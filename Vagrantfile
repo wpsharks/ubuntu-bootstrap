@@ -46,7 +46,7 @@ Vagrant.configure(2) do |config|
   end;
 
   # Don't generate a secure public/private key pair for SSH?
-  if ENV['VM_4PKG'] == 1 # Avoids problems when packaging a box.
+  if ENV['VM_4PKG'] == '1' # Avoids problems when packaging a box.
     config.ssh.insert_key = false;
   end;
 
