@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
   config.ssh.forward_agent = true; # Does not work in scripts; shell only.
 
   # Configure DNS automatically? Exclude when building a base image.
-  if Vagrant.has_plugin?('landrush') && ENV['VM_4CI'] !== '1' && ENV['VM_4PKG'] !== '1'
+  if Vagrant.has_plugin?('landrush') && ENV['VM_4CI'] != '1' && ENV['VM_4PKG'] != '1'
     config.landrush.enabled = true; # Enable landrush plugin.
     config.landrush.tld = 'vm'; # Set landrush TLD for this VM.
     config.landrush.upstream '8.8.8.8'; # Google public DNS.
@@ -46,12 +46,12 @@ Vagrant.configure(2) do |config|
   end;
 
   # When building a VM that is going to be packaged-up.
-  if ENV['VM_4CI'] === '1' # Avoids problems when packaging a box.
+  if ENV['VM_4CI'] == '1' # Avoids problems when packaging a box.
     config.vm.provision :shell, inline: 'touch /etc/vm-4ci.cfg;';
   end;
 
   # When building a VM that is going to be packaged-up.
-  if ENV['VM_4CI'] === '1' || ENV['VM_4PKG'] == '1' # Packaging.
+  if ENV['VM_4CI'] == '1' || ENV['VM_4PKG'] == '1' # Packaging.
     config.vm.provision :shell, inline: 'touch /etc/vm-4pkg.cfg;';
     config.ssh.insert_key = false; # Exclude unique SSH key.
   end;
