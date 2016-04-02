@@ -116,10 +116,16 @@ done; unset _cfg_long_options; unset _cfg; unset _cfg_options;
 # Parse these argument-only config values ahead of time.
 
 if [[ -n "${A_CFG_4CI:-}" ]]; then
-  CFG_4CI="${A_CFG_4CI:-}"; fi;
+  CFG_4CI="${A_CFG_4CI:-}";
+elif [[ -f /etc/vm-4ci.cfg ]]; then
+  CFG_4CI='1';
+fi; rm --force /etc/vm-4ci.cfg;
 
 if [[ -n "${A_CFG_4PKG:-}" ]]; then
-  CFG_4PKG="${A_CFG_4PKG:-}"; fi;
+  CFG_4PKG="${A_CFG_4PKG:-}";
+elif [[ -f /etc/vm-4pkg.cfg ]]; then
+  CFG_4PKG='1';
+fi; rm --force /etc/vm-4pkg.cfg;
 
 if [[ "${CFG_4CI}" == 1 ]]; then
-  CFG_4PKG='1'; fi; # 4CI indicates packaging also.
+  CFG_4PKG='1'; fi;
