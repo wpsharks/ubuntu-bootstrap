@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 
+# Update.
+
+apt-get update;
+
 # Install APT dependencies.
 
-apt-get install software-properties-common --yes;
-apt-get install apt-transport-https --yes;
 apt-get install ca-certificates --yes;
+apt-get install apt-transport-https --yes;
+apt-get install software-properties-common --yes;
 
 # Add multiverse repo.
 
 apt-add-repository multiverse --yes;
-
-# Update package repositories.
-
-apt-get update; # Takes a while.
+apt-get update; # Update again.
 
 # Setup automatic security updates.
 

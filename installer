@@ -62,7 +62,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/ramdisk;
   . /bootstrap/src/setups/memcache;
 
-  . /bootstrap/src/setups/php/_stub;
+  . /bootstrap/src/setups/php/stub;
 
   . /bootstrap/src/setups/phpcs;
   . /bootstrap/src/setups/phing;

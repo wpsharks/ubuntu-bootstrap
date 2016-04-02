@@ -2,20 +2,19 @@
 
 if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
 
+  # Remove existing `/app`.
+
+  rm --force --recursive /app;
+  mkdir --parents /app/src;
+
   # Clone the WordPress master branch.
 
   curl http://wordpress.org/latest.zip --location --output /tmp/wordpress-latest.zip;
   unzip -qq -d /tmp/wordpress-latest /tmp/wordpress-latest.zip;
-  cp --force --recursive /tmp/wordpress-latest/wordpress/. /app/src;
+  cp --force --recursive --preserve=all /tmp/wordpress-latest/wordpress/. /app/src;
 
   rm --force --recursive /tmp/wordpress-latest;
   rm /tmp/wordpress-latest.zip;
-
-  # Set permissions in the `/app/src` directory.
-
-  chown --recursive www-data /app/src;
-  find /app/src -type d -exec chmod 2775 {} \;
-  find /app/src -type f -exec chmod 664 {} \;
 
   # Setup the `/wp-config.php` file on VMs for quick access.
 
@@ -30,7 +29,18 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
     perl -i -wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /bootstrap/src/wordpress/.wp-config.php;
     perl -i -wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /bootstrap/src/wordpress/.wp-config.php;
   fi;
+  # Set permissions in the `/app` directory.
+
+  chown --recursive nobody:app /app;
+  find /app -type d -exec chmod 2775 {} \;
+  find /app -type f -exec chmod 664 {} \;
+
+  chown --recursive www-data /app/src;
+  find /app/src -type d -exec chmod 2775 {} \;
+  find /app/src -type f -exec chmod 664 {} \;
+
   # Build symlinks to development files when run via Vagrant.
+  # Note: These are read-only mounts; to avoid inadvertent changes.
 
   if [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]]; then
 

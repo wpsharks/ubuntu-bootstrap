@@ -1,17 +1,26 @@
 #!/usr/bin/env bash
 
-# App directories.
+# Systematics.
+
+mkdir --parents /usr/local/src;
+mkdir --parents /etc/bootstrap;
+
+# App directory (and `src`).
 
 mkdir --parents /app;
 mkdir --parents /app/src;
 
 if is-vm; then # Use symlink.
-  rm --force --recursive /app/src;
-  ln --symbolic /bootstrap/app/src /app/src;
+  rm --force --recursive /app;
+  ln --symbolic /bootstrap/app /app;
 fi;
 chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;
 find /app -type f -exec chmod 664 {} \;
+
+chown --recursive www-data /app/src;
+find /app/src -type d -exec chmod 2775 {} \;
+find /app/src -type f -exec chmod 664 {} \;
 
 # App repo directory for downloads.
 
@@ -34,11 +43,6 @@ mkdir --parents /var/log/app;
 chown --recursive nobody:www-data /var/log/app;
 find /var/log/app -type d -exec chmod 2775 {} \;
 find /var/log/app -type f -exec chmod 664 {} \;
-
-# Systematics.
-
-mkdir --parents /usr/local/src;
-mkdir --parents /etc/bootstrap;
 
 # When packaging, don't rely upon shared folders.
 
