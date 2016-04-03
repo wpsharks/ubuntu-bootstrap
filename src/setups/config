@@ -107,7 +107,7 @@ done; unset _cfg_key; unset _a_cfg_key; unset _a_cfg_val;
 
 # Need dialog utility?
 
-if "${CFG_USE_WIZARD}"; then
+if [[ "${CFG_USE_WIZARD}" == 1 ]]; then
   apt-get install dialog --yes --force-yes;
   export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
 fi;
