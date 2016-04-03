@@ -9,7 +9,7 @@ setopt emacs; # See: <http://jas.xyz/1GwFQUF>
 # Extended pattern matching operators.
 setopt extended_glob; # See: <http://jas.xyz/1Re99Pf>
 
-# Converts`cd arg` to `cd ~arg` in some cases.
+# Converts `cd arg` to `cd ~arg` in some cases.
 setopt cdable_vars; # See: <http://jas.xyz/1FOdYee>
 
 # Allow comments on the command line when experimenting.
