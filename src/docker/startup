@@ -13,7 +13,3 @@ if [[ "$(whoami)" != 'root' ]]; then
 # Run any custom code now.
 
 . /bootstrap/src/docker/startup-custom;
-
-# Start services via Phusion.
-
-/sbin/my_init;

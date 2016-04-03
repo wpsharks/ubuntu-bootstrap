@@ -25,17 +25,19 @@ deb='export DEBIAN_FRONTEND=noninteractive';
 apt='apt-get update'; git='apt-get install git --yes';
 bootstrap='git clone https://github.com/websharks/ubuntu-bootstrap /bootstrap --branch=master --depth=1';
 bootstrap+=' && /bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION='"${php_version}";
+container_name_tag=websharks-ubuntu-ci-php"${php_version}"-"$(date +%Y%m%d)";
 image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
 # Prepare a new container for this CI image.
 
-container="$(docker run --hostname="${host}" phusion/baseimage:0.9.18 /sbin/my_init --quiet -- /usr/bin/env bash -c "${deb}"' && '"${apt}"' && '"${git}"' && '"${bootstrap}")";
+docker run --hostname="${host}" --name="${container_name_tag}" phusion/baseimage:0.9.18 \
+  /sbin/my_init --quiet -- /usr/bin/env bash -c "${deb}"' && '"${apt}"' && '"${git}"' && '"${bootstrap}";
 
 # Commit changes to this image and give them a name.
 
-docker commit --change='CMD ["/bootstrap/src/docker/startup"]' \
+docker commit --change='CMD ["/sbin/my_init --quiet -- /bootstrap/src/docker/startup"]' \
   --message="${image_name_tag}" --author='WS Ubuntu Bootstrap' \
-  "${container}" "${image_name_tag}";
+  "${container_name_tag}" "${image_name_tag}";
 
 # Output details associated with this new image.
 
