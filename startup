@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Sanity checks. Right location? Running as sudo?
+
+if [[ "${BASH_SOURCE[0]}" != '/bootstrap/startup' ]]; then
+  echo 'I must live in the /bootstrap directory.'; exit 1;
+elif [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Start app-related services.
+
+restart-app-related-services;
