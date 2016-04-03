@@ -2,18 +2,6 @@
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Need the dialog utility.
-
-apt-get install dialog --yes --force-yes;
-
-# ----------------------------------------------------------------------------------------------------------------------
-
-# Set the dialogrc file for this routine.
-
-export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
-
-# ----------------------------------------------------------------------------------------------------------------------
-
 # Default config. values.
 
 CFG_HOST="$(hostname --fqdn)";
@@ -100,7 +88,7 @@ CFG_INSTALL_UNATTENDED_UPGRADES='1';
 
 CFG_CONFIG_FILE='/app/.config.json';
 
-CFG_USE_WIZARD='1'; # Default behavior.
+CFG_USE_WIZARD='1'; [[ ! -t 1 ]] && CFG_USE_WIZARD='0';
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -115,6 +103,14 @@ for _cfg_key in "${cfgs[@]}"; do
   fi;
 done; unset _cfg_key; unset _a_cfg_key; unset _a_cfg_val;
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Need dialog utility?
+
+if "${CFG_USE_WIZARD}"; then
+  apt-get install dialog --yes --force-yes;
+  export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
+fi;
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Fills replacement codes.
