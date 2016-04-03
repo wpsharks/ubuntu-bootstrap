@@ -56,11 +56,13 @@ Vagrant.configure(2) do |config|
     config.ssh.insert_key = false; # Exclude unique SSH key.
   end;
 
-  # Run script(s) as part of the provisioning process.
-  config.vm.provision :shell, path: 'vg-bootstrap', run: 'always';
+  # Run script as part of the provisioning process.
+  config.vm.provision :shell, path: 'src/vagrant/bootstrap', run: 'always';
+
+  # Run script as part of the provisioning process.
   if Vagrant.has_plugin?('vagrant-triggers')
     config.trigger.after [:up, :resume], :append_to_path => File.dirname(File.expand_path(__FILE__)) do
-      run 'vg-bootstrap-me';
+      run 'src/vagrant/bootstrap-me';
     end;
   end;
 end;

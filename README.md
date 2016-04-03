@@ -45,7 +45,7 @@ $ vagrant up
 
 ```bash
 $ vagrant ssh
-$ sudo /bootstrap/installer # Presents a configuration dialog.
+$ sudo /bootstrap/src/installer # Presents a configuration dialog.
 # Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
@@ -101,13 +101,13 @@ $ cd ~/VMs/my.vm
 $ vagrant destroy
 ```
 
-In the project directory you'll find a `/vg-bootstrap` file. This bash script runs as the `root` user during `vagrant up`. Therefore, you can install software and configure anything you like in this script. By default, this script doesn't do much. All of the software installation and system configuration takes place whenever you run `/bootstrap/installer` inside the VM.
+In the project directory you'll find a `/src/vagrant/bootstrap-custom` file. This bash script runs as the `root` user during `vagrant up`. Therefore, you can install software and configure anything you like in this script. By default, this script does nothing. All of the software installation and system configuration takes place whenever you run `/bootstrap/src/installer` inside the VM.
 
 ##### Customization (Two Choices Available)
 
-1. Customize `/bootstrap/installer` and the associated setup files that it calls upon, which are located in: `/src/setups/*`. _**Note:** If you go this route, there really is no reason to customize `/vg-bootstrap`. You can leave it as-is._
+1. Customize `/src/installer` and the associated setup files that it calls upon, which are located in: `/src/setups/*`. _**Note:** If you go this route, there really is no reason to customize the `/src/vagrant/bootstrap-custom` file. You can leave it as-is._
 
-2. Or, instead of working with the more complex installer, you can keep things simple and add your customizations to the `/vg-bootstrap` script, which is a very simple starting point. The `/vg-bootstrap` runs whenever you type `vagrant up`, so this is a logical choice for beginners. _**Note:** If you go this route, you can simply choose not to run `/bootstrap/installer`, because all of your customizations will be in the `/vg-bootstrap`; i.e., there will be no reason to run the installer._
+2. Or, instead of working with the more complex installer, you can keep things simple and add your customizations to the `/src/vagrant/bootstrap-custom` script, which is a very simple starting point. The `/src/vagrant/bootstrap-custom` runs whenever you type `vagrant up`, so this is a logical choice for beginners. _**Note:** If you go this route, you can simply choose not to run `/bootstrap/src/installer`, because all of your customizations will be in the `/src/vagrant/bootstrap-custom` file; i.e., there will be no reason to run the installer._
 
 ##### When you're done with your customizations, type:
 
@@ -115,11 +115,12 @@ In the project directory you'll find a `/vg-bootstrap` file. This bash script ru
 $ vagrant up
 ```
 
-###### If you decided to use the `/bootstrap/installer` option, also type:
+###### If you decided to use the `/bootstrap/src/installer` option, also type:
 
 ```bash
 $ vagrant ssh
-$ sudo /bootstrap/installer
+$ sudo /bootstrap/src/installer # Presents a configuration dialog.
+# Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
 ---
@@ -133,7 +134,8 @@ $ git clone https://github.com/jaswsinc/vagrant-ubuntu-lemp my-second.vm
 $ cd my-second.vm
 $ vagrant up
 $ vagrant ssh
-$ sudo /bootstrap/installer
+$ sudo /bootstrap/src/installer # Presents a configuration dialog.
+# Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
 #### Understanding Domain Name Mapping
@@ -188,7 +190,7 @@ Inside `~/projects/wordpress` you need to have two sub-directories. One for them
 - `~/projects/wordpress/themes` (put WP themes in this directory; e.g., `my-theme`)
 - `~/projects/wordpress/plugins` (put WP plugins here; e.g., `my-plugin`)
 
-Now, whenever you run `/bootstrap/installer` from the VM, your local copy of `~/projects/wordpress/themes/my-theme` becomes `/app/src/wp-content/themes/my-theme` on the VM. Your local copy of `~/projects/wordpress/plugins/my-plugin` becomes `/app/src/wp-content/plugins/my-plugin` on the VM ... and so on... for each theme/plugin sub-directory, and for each of the three possible mounts listed above. This all happens automatically if you followed the instructions correctly.
+Now, whenever you run `/bootstrap/src/installer` from the VM, your local copy of `~/projects/wordpress/themes/my-theme` becomes `/app/src/wp-content/themes/my-theme` on the VM. Your local copy of `~/projects/wordpress/plugins/my-plugin` becomes `/app/src/wp-content/plugins/my-plugin` on the VM ... and so on... for each theme/plugin sub-directory, and for each of the three possible mounts listed above. This all happens automatically if you followed the instructions correctly.
 
 #### Can I override the default source directories for WordPress?
 
@@ -204,7 +206,7 @@ export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 
 ### Bootstrap Command-Line Arguments
 
-The following CLI arguments can be passed to `/bootstrap/installer`, just in case you'd like to avoid the configuration wizard entirely. These are all optional; i.e., if you don't provide these arguments you will be prompted to configure the bootstrap using a command-line dialog interface whenever the installer runs.
+The following CLI arguments can be passed to `/bootstrap/src/installer`, just in case you'd like to avoid the configuration wizard entirely. These are all optional; i.e., if you don't provide these arguments you will be prompted to configure the bootstrap using a command-line dialog interface whenever the installer runs.
 
 _**Tip:** You can learn more about how these work and what the defaults are by looking over the [src/setups/config](src/setups/config) file carefully and perhaps searching for their use in other files found in `src/setups/*`._
 
@@ -335,18 +337,17 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-#### Bootstrapping Base Images for CI Servers
+#### Bootstrapping Base Images for Custom Vagrant Boxes
 
 When building a base image that is going to be repackaged, please be sure to disable the Vagrant Landrush plugin beforehand; i.e., you don't want its configuration to become a part of any base image. Disabling Landrush can be accomplished by exporting the following environment variable before you run `$ vagrant up`. See [`Vagrantfile`](Vagrantfile) for details.
 
 ```bash
 $ export VM_4PKG=1;
+$ vagrant up
 ```
 
-After running `$ vagrant up`, SSH into the VM and run `$ /bootstrap/installer`. Be sure to pass the `--CFG_4CI=1 --CFG_4PKG=1` arguments to enable CI-specific and repackaging-specific routines in the bootstrap installer; e.g., better defaults, additional cleanups, drive compression, etc.
+After running `$ vagrant up`, SSH into the VM and run `$ /bootstrap/src/installer`. The installer itself will also be aware of the `VM_4PKG` environment variable, which enables repackaging-specific routines in the bootstrap installer; i.e.., better defaults, additional cleanups, drive compression, etc.
 
 ```bash
-$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION=7.0;
-$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION=5.6;
-$ sudo /bootstrap/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION=5.5;
+$ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_INSTALL_PHP_VERSION=7.0;
 ```

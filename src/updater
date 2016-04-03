@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# Sanity checks. Right location? Running as sudo?
+# Running as root?
 
-if [[ "${BASH_SOURCE[0]}" != '/bootstrap/updater' ]]; then
-  echo 'I must live in the /bootstrap directory.'; exit 1;
-elif [[ "$(whoami)" != 'root' ]]; then
+if [[ "$(whoami)" != 'root' ]]; then
   echo 'Please run w/ `sudo`.'; exit 1; fi;
 
 # Include strict mode & functions.
