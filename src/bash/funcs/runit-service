@@ -10,7 +10,7 @@ function runit-service() {
 
   elif [[ "${service}" == 'ssh' ]]; then
     # Disabled in a Docker container.
-    exit 0; # Ignore silently.
+    return 0; # Ignore silently.
 
-  else exit 1; fi; # Failure.
+  else return 1; fi; # Failure.
 };
