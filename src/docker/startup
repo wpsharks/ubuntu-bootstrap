@@ -16,4 +16,4 @@ restart-app-related-services;
 
 # Now run any additional custom code.
 
-. /bootstrap/src/docker/bootstrap-custom;
+. /bootstrap/src/docker/startup-custom;

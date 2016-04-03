@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Read PHP version from argument[1].
+
+php_version="${1:-}";
+if [[ -z "${php_version}" ]]; then
+  echo 'Expecting PHP version string.'; exit 1;
+fi; # Bail on failure to acquire.
+
+# Configuration of the base Docker image.
+# CLI args are passed into the `/bootstrap/src/installer`.
+
+host='ci.vm';
+apt='apt-get update';
+git='apt-get install git --yes';
+bootstrap='git clone https://github.com/websharks/ubuntu-bootstrap /bootstrap --branch=master --depth=1';
+bootstrap+=' && /bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_4PKG=1 --CFG_INSTALL_PHP_VERSION='"${php_version}";
+image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
+
+# Prepare a new container for this CI image.
+
+container="$(docker run --hostname="${host}" ubuntu:14.04 /usr/bin/env bash -c "${apt}"' && '"${git}"' && '"${bootstrap}")";
+
+# Commit changes to this image and give them a name.
+
+docker commit --change='CMD ["/bootstrap/src/docker/startup"]' \
+  --message="${image_name_tag}" --author='WS Ubuntu Bootstrap' \
+  "${container}" "${image_name_tag}";
+
+# Output details associated with this new image.
+
+echo 'Docker Container ID: '"${container}";
+echo 'Docker Image Name:Tag: '"${image_name_tag}";
