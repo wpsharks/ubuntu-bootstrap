@@ -21,15 +21,15 @@ fi; # Bail on failure to acquire.
 # CLI args are passed into the `/bootstrap/src/installer`.
 
 host='ci.vm';
-apt='apt-get update';
-git='apt-get install git --yes';
+deb='export DEBIAN_FRONTEND=noninteractive';
+apt='apt-get update'; git='apt-get install git --yes';
 bootstrap='git clone https://github.com/websharks/ubuntu-bootstrap /bootstrap --branch=master --depth=1';
 bootstrap+=' && /bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION='"${php_version}";
 image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
 # Prepare a new container for this CI image.
 
-container="$(docker run --hostname="${host}" phusion/baseimage:0.9.18 /usr/bin/env bash -c "${apt}"' && '"${git}"' && '"${bootstrap}")";
+container="$(docker run --hostname="${host}" phusion/baseimage:0.9.18 /usr/bin/env bash -c "${deb}"' && '"${apt}"' && '"${git}"' && '"${bootstrap}")";
 
 # Commit changes to this image and give them a name.
 
