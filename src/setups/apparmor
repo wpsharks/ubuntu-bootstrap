@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Install AppArmor.
-
-apt-get install apparmor --yes;

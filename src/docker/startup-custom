@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
 
-# Add any custom code below to startup services, etc.
-
-# e.g., `service [service name] restart;`
+# Add any custom code below.

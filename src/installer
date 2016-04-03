@@ -25,11 +25,11 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   set -o xtrace; # Print each command that is run.
   umask 0002; # Force this default during installation.
 
+  . /bootstrap/src/setups/runit;
   . /bootstrap/src/setups/debian;
   . /bootstrap/src/setups/aptitude;
   . /bootstrap/src/setups/timezone;
 
-  . /bootstrap/src/setups/apparmor;
   . /bootstrap/src/setups/utilities;
   . /bootstrap/src/setups/git-utils;
   . /bootstrap/src/setups/keybase;

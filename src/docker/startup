@@ -10,10 +10,10 @@ if [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Start app-related services.
-
-restart-app-related-services;
-
-# Now run any additional custom code.
+# Run any custom code now.
 
 . /bootstrap/src/docker/startup-custom;
+
+# Start services via Phusion.
+
+/sbin/my_init;

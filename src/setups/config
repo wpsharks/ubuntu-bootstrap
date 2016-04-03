@@ -56,8 +56,8 @@ CFG_INSTALL_DOCKER='0'; is-vm && ! in-docker && CFG_INSTALL_DOCKER='1';
 
 CFG_INSTALL_POSTFIX='1';
 
-CFG_INSTALL_NGINX='1';
-CFG_INSTALL_APACHE='0';
+CFG_INSTALL_NGINX='1'; is-4ci && CFG_INSTALL_NGINX='0';
+CFG_INSTALL_APACHE='0'; is-4ci && CFG_INSTALL_APACHE='1';
 
 CFG_INSTALL_MYSQL='1';
 CFG_INSTALL_MYSQL_DB_IMPORT_FILE='';
@@ -302,6 +302,14 @@ function validate-cfgs() {
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
     cfg_warning+='CloudFlare integration is not possible when running on a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif in-docker && [[ "${CFG_INSTALL_DOCKER}" == 1 \
+    || "${CFG_INSTALL_SWAP}" == 1 || "${CFG_INSTALL_RAMDISK}" == 1 \
+    || "${CFG_INSTALL_FIREWALL}" == 1 || "${CFG_INSTALL_FAIL2BAN}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Inside Docker, please exclude: Docker, Swap, RAM Disk, Firewall, and Fail2Ban.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   fi; # End conflicts/validation.

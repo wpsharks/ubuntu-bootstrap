@@ -15,6 +15,10 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
   echo 'mariadb-server mysql-server/root_password_again password '"${CFG_MYSQL_DB_PASSWORD}" | debconf-set-selections;
   apt-get install mariadb-server --yes; # Install w/ the above options.
 
+  if in-docker && can-run sv; then
+    mkdir --parents /etc/service/mysql;
+    ln --symbolic /bootstrap/src/docker/runit/mysql /etc/service/mysql/run;
+  fi;
   service mysql restart; # Make sure the service is up and running for the following commands.
 
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
@@ -30,7 +34,9 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
 
   ln --symbolic /bootstrap/src/mysql/.cnf /etc/mysql/conf.d/z90.cnf;
-  echo '/bootstrap/src/mysql/.cnf r,' >> /etc/apparmor.d/local/usr.sbin.mysqld;
+
+  if [[ -f /etc/apparmor.d/local/usr.sbin.mysqld ]]; then
+  echo '/bootstrap/src/mysql/.cnf r,' >> /etc/apparmor.d/local/usr.sbin.mysqld; fi;
 
   # Install phpMyAdmin for MySQL administration.
 

@@ -11,6 +11,12 @@ if [[ "${CFG_INSTALL_MEMCACHE}" == 1 ]]; then
   rm --force /etc/memcached.conf;
   ln --symbolic /bootstrap/src/memcache/.conf /etc/memcached.conf;
 
+  # Maybe create an RUnit startup script.
+
+  if in-docker && can-run sv; then
+    mkdir --parents /etc/service/memcached;
+    ln --symbolic /bootstrap/src/docker/runit/memcached /etc/service/memcached/run;
+  fi;
   # Restart service.
 
   service memcached restart;

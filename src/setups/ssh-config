@@ -2,11 +2,18 @@
 
 # Maybe harden SSH security.
 
-if ! is-vm; then # On production servers only.
+if ! is-vm && ! in-docker; then
+
+  # Disallow root SSH access.
 
   perl -i -wpe 's/^(\s*)PermitRootLogin\s+.*$/$1PermitRootLogin no/ui' /etc/ssh/sshd_config;
+
+  # Only allow SSH access to these groups.
+
   echo '# Allow Specific Groups Only' >> /etc/ssh/sshd_config;
   echo 'AllowGroups sudo ssh-access' >> /etc/ssh/sshd_config;
+
+  # Only allow SFTP access to these groups.
 
   echo '# SFTP Only Group Restrictions' >> /etc/ssh/sshd_config;
   echo 'Match Group sftp-only' >> /etc/ssh/sshd_config;
@@ -15,6 +22,8 @@ if ! is-vm; then # On production servers only.
   echo '    ForceCommand internal-sftp' >> /etc/ssh/sshd_config;
 
   perl -i -wpe 's/^(\s*)Subsystem\s+sftp\s+.*$/$1Subsystem sftp internal-sftp/ui' /etc/ssh/sshd_config;
+
+  # Restart service.
 
   service ssh restart;
 

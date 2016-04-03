@@ -40,6 +40,12 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
 
     ln --symbolic /bootstrap/src/nginx/conf.d/server/cf-real-ip.conf /etc/nginx/conf.d/server/cf-real-ip.conf;
   fi;
+  # Maybe create an RUnit startup script.
+
+  if in-docker && can-run sv; then
+    mkdir --parents /etc/service/nginx;
+    ln --symbolic /bootstrap/src/docker/runit/nginx /etc/service/nginx/run;
+  fi;
   # Put live sites into maintenance mode by default.
 
   if ! is-vm; then

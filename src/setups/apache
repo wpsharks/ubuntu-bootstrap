@@ -60,6 +60,12 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
   # Tack our `CFG_` vars onto the existing environment vars.
   cat /etc/apache2/~envvars >> /etc/apache2/envvars; rm /etc/apache2/~envvars;
 
+  # Maybe create an RUnit startup script.
+
+  if in-docker && can-run sv; then
+    mkdir --parents /etc/service/apache2;
+    ln --symbolic /bootstrap/src/docker/runit/apache2 /etc/service/apache2/run;
+  fi;
   # Put live sites into maintenance mode by default.
 
   if ! is-vm; then

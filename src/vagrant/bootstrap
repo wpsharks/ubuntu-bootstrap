@@ -15,6 +15,6 @@ if [[ ! -d /bootstrap && -d /vagrant ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Now run any additional custom code.
+# Run any custom code now.
 
 . /bootstrap/src/vagrant/bootstrap-custom;

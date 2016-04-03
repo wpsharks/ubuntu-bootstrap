@@ -13,6 +13,12 @@ if [[ "${CFG_INSTALL_POSTFIX}" == 1 ]]; then
   # We disable TLS, because it's not worth configuring the certificate files.
   perl -i -wpe 's/^(\s*)smtpd_use_tls\s\=.*$/$1smtpd_use_tls=no/u' /etc/postfix/main.cf;
 
+  # Maybe create an RUnit startup script.
+
+  if in-docker && can-run sv; then
+    mkdir --parents /etc/service/postfix;
+    ln --symbolic /bootstrap/src/docker/runit/postfix /etc/service/postfix/run;
+  fi;
   # Restart service.
 
   service postfix restart;

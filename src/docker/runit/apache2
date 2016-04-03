@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+env -i LANG=C PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin;
+. /etc/apache2/envvars; # Start w/ a clean environment and set these only.
+
+exec httpd -f /etc/apache2/apache.conf -eDEBUG -DNO_DETACH -DFOREGROUND 2>&1;
