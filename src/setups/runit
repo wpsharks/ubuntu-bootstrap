@@ -8,13 +8,6 @@ if in-docker && can-run sv; then
 
   mkdir --parents /etc/service;
 
-  ## Create service handlers.
-
-  for _file in /bootstrap/src/docker/runit/*; do
-    _service="$(basename "${_file}")"; # Service name.
-    ln --symbolic /bootstrap/src/docker/runit/"${_service}" /etc/service/"${_service}"/run;
-  done; unset _file; unset _service;
-
   ## Create an Upstart `service` alias.
 
   mv /usr/sbin/service /usr/sbin/service~;
