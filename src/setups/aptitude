@@ -9,6 +9,12 @@ apt-get update;
 apt-get install ca-certificates --yes;
 apt-get install apt-transport-https --yes;
 apt-get install software-properties-common --yes;
+apt-get install language-pack-en-base --yes;
+
+# Set an english/UTF-8 locale.
+
+export LC_ALL=en_US.UTF-8;
+export LANG=en_US.UTF-8;
 
 # Add multiverse repo.
 

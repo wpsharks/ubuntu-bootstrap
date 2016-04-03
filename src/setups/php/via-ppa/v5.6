@@ -5,7 +5,7 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   # Install from Ondrej's PPA.
   # See: <https://launchpad.net/~ondrej/+archive/ubuntu/php5-5.6>
 
-  LC_ALL=C.UTF-8; add-apt-repository ppa:ondrej/php5-5.6 --yes;
+  add-apt-repository ppa:ondrej/php5-5.6 --yes;
   apt-get update; # Update after adding PPA.
 
   if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then
