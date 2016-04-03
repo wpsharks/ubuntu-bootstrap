@@ -31,11 +31,11 @@ image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 # Prepare a new container for this CI image.
 
 docker run --hostname="${host}" --name="${container_name_tag}" phusion/baseimage:0.9.18 \
-  /sbin/my_init --quiet -- /usr/bin/env bash -c "${deb}"' && '"${apt}"' && '"${git}"' && '"${bootstrap}";
+  /sbin/my_init -- bash -c "${deb}"' && '"${apt}"' && '"${git}"' && '"${bootstrap}";
 
 # Commit changes to this image and give them a name.
 
-docker commit --change='CMD ["/sbin/my_init --quiet -- /bootstrap/src/docker/startup"]' \
+docker commit --change='CMD ["/sbin/my_init"]' \
   --message="${image_name_tag}" --author='WS Ubuntu Bootstrap' \
   "${container_name_tag}" "${image_name_tag}";
 
