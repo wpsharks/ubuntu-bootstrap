@@ -16,20 +16,20 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
   apt-get install mariadb-server --yes; # Install w/ the above options.
 
   maybe-add-runit-service mysql; # Maybe create an RUnit startup script.
-  
+
   service mysql restart; # Make sure the service is up and running for the following commands.
 
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;";
 
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
 
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = '';";
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = 'root' AND \`Host\` NOT IN ('localhost', '127.0.0.1', '::1');";
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`test\`; DELETE FROM \`mysql\`.\`db\` WHERE \`Db\` = 'test' OR \`Db\` LIKE 'test\\_%';";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = '';";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DELETE FROM \`mysql\`.\`user\` WHERE \`User\` = 'root' AND \`Host\` NOT IN ('localhost', '127.0.0.1', '::1');";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`test\`; DELETE FROM \`mysql\`.\`db\` WHERE \`Db\` = 'test' OR \`Db\` LIKE 'test\\_%';";
 
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
+  mysql --host=127.0.0.1 --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
 
   ln --symbolic /bootstrap/src/mysql/.cnf /etc/mysql/conf.d/z90.cnf;
 
@@ -50,6 +50,7 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
 
   if [[ -f "${CFG_INSTALL_MYSQL_DB_IMPORT_FILE}" ]]; then
     mysql \
+      --host=127.0.0.1 \
       --user="${CFG_MYSQL_DB_USERNAME}" \
       --password="${CFG_MYSQL_DB_PASSWORD}" \
       "${CFG_MYSQL_DB_NAME}" < "${CFG_INSTALL_MYSQL_DB_IMPORT_FILE}";
