@@ -24,7 +24,8 @@ image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
 # Prepare a new container for this CI image.
 
-docker run --hostname=ci.vm --name="${container_name_tag}" --volume=/bootstrap:/docker phusion/baseimage:0.9.18 \
+docker run --tty --hostname=ci.vm --name="${container_name_tag}" \
+  --volume=/bootstrap:/docker phusion/baseimage:0.9.18 \
   /sbin/my_init -- /docker/src/docker/4ci/installer "${php_version}";
 
 # Commit changes to this image and give them a name.
