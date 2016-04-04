@@ -15,7 +15,7 @@ function runit-service() {
 
     return "${exit_status}";
 
-  elif in-docker && can-run sv && [[ "${service}" == 'ssh' ]]; then
+  elif in-docker && can-run sv && [[ ( "${service}" == 'ssh' || "${service}" == 'sshd' ) ]]; then
     # Disabled in a Docker container.
     return 0; # Ignore silently.
 
