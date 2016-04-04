@@ -10,8 +10,8 @@ function runit-service() {
   if in-docker && can-run sv && [[ -x /etc/service/"${service}"/run ]]; then
     sv "${operation}" "${service}"; exit_status=$?;
 
-    if [[ "${service}" == 'mysql' && ( "${operation}" == 'start' || "${operation}" == 'restart' ) ]]; then
-      sleep 5; fi; # This requires a slight delay due to an ugly hack in the init script.
+    if [[ "${operation}" == 'start' || "${operation}" == 'restart' ]]; then
+      sleep 5; fi; # Give the service time to startup.
 
     return "${exit_status}";
 
