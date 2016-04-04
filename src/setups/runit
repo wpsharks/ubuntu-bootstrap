@@ -10,7 +10,6 @@ if in-docker && can-run sv; then
 
   ## Create an Upstart `service` alias.
 
-  mv /usr/sbin/service /usr/sbin/service~;
-  ln --symbolic /bootstrap/src/bin/runit-service /usr/sbin/service;
+  ln --symbolic --force /bootstrap/src/bin/runit-service /usr/sbin/service;
 
 fi;

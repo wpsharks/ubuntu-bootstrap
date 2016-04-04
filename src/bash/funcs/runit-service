@@ -4,9 +4,10 @@
 
 function runit-service() {
   local service="${1:-}";
+  local operation="${2:-}";
 
   if in-docker && can-run sv && [[ -x /etc/service/"${service}"/run ]]; then
-    sv "${@}"; # See: <http://smarden.org/runit/sv.8.html>
+    sv "${2:-}" "${1:-}"; # See: <http://smarden.org/runit/sv.8.html>
 
   elif [[ "${service}" == 'ssh' ]]; then
     # Disabled in a Docker container.
