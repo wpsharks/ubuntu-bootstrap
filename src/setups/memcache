@@ -13,10 +13,8 @@ if [[ "${CFG_INSTALL_MEMCACHE}" == 1 ]]; then
 
   # Maybe create an RUnit startup script.
 
-  if in-docker && can-run sv; then
-    mkdir --parents /etc/service/memcached;
-    ln --symbolic /bootstrap/src/docker/runit/memcached /etc/service/memcached/run;
-  fi;
+  maybe-add-runit-service memcached;
+
   # Restart service.
 
   service memcached restart;

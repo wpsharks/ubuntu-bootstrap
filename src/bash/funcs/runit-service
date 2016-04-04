@@ -15,3 +15,12 @@ function runit-service() {
 
   else return 1; fi; # Failure.
 };
+function maybe-add-runit-service() {
+  local service="${1:-}";
+
+  if in-docker && can-run sv && [[ -x /bootstrap/src/docker/runit/"${service}" ]]; then
+    mkdir --parents /etc/sv/"${service}";
+    ln --symbolic --force /bootstrap/src/docker/runit/"${service}" /etc/sv/"${service}"/run;
+    ln --symbolic --force /etc/sv/"${service}" /etc/service/"${service}"; # Enable.
+  fi;
+};

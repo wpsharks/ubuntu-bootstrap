@@ -186,11 +186,7 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
   if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
     cp /bootstrap/src/php/fpm/upstart.tpl.conf /etc/init/php-fpm.conf;
-
-    if in-docker && can-run sv; then
-      mkdir --parents /etc/service/php-fpm;
-      ln --symbolic /bootstrap/src/docker/runit/php-fpm /etc/service/php-fpm/run;
-    fi;
+    maybe-add-runit-service php-fpm; # Maybe create an RUnit startup script.
   fi;
   ## Setup log rotation for PHP-related log files.
   ## Note that app-specific log files can be placed here also.

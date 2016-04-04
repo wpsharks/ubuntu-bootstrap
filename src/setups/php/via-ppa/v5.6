@@ -39,10 +39,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
     perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask 0002/u' /etc/init/php5-fpm.conf;
 
-    if in-docker && can-run sv; then
-      mkdir --parents /etc/service/php5-fpm;
-      ln --symbolic /bootstrap/src/docker/runit/php5-fpm /etc/service/php5-fpm/run;
-    fi;
+    maybe-add-runit-service php5-fpm; # Maybe create an RUnit startup script.
+    
     service php5-fpm restart; # Restart service; PHP process manager.
   fi;
 

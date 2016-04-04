@@ -43,10 +43,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
     perl -i -wpe 's/^(\s*)start\-stop\-daemon\s+\-\-start\s+/$1start-stop-daemon --umask 0002 --start /u' /etc/init.d/php7.0-fpm;
 
-    if in-docker && can-run sv; then
-      mkdir --parents /etc/service/php7.0-fpm;
-      ln --symbolic /bootstrap/src/docker/runit/php7.0-fpm /etc/service/php7.0-fpm/run;
-    fi;
+    maybe-add-runit-service php7.0-fpm; # Maybe create an RUnit startup script.
+
     service php7.0-fpm restart; # Restart service; PHP process manager.
   fi;
 

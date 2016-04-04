@@ -62,10 +62,8 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   # Maybe create an RUnit startup script.
 
-  if in-docker && can-run sv; then
-    mkdir --parents /etc/service/apache2;
-    ln --symbolic /bootstrap/src/docker/runit/apache2 /etc/service/apache2/run;
-  fi;
+  maybe-add-runit-service apache2;
+
   # Put live sites into maintenance mode by default.
 
   if ! is-vm; then

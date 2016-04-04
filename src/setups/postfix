@@ -15,10 +15,8 @@ if [[ "${CFG_INSTALL_POSTFIX}" == 1 ]]; then
 
   # Maybe create an RUnit startup script.
 
-  if in-docker && can-run sv; then
-    mkdir --parents /etc/service/postfix;
-    ln --symbolic /bootstrap/src/docker/runit/postfix /etc/service/postfix/run;
-  fi;
+  maybe-add-runit-service postfix;
+
   # Restart service.
 
   service postfix restart;

@@ -4,8 +4,9 @@ if in-docker && can-run sv; then
 
   # Configure RUnit.
 
-  ## Create service dir.
+  ## Create service dirs.
 
+  mkdir --parents /etc/sv;
   mkdir --parents /etc/service;
 
   ## Create an Upstart `service` alias.
