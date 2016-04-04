@@ -6,4 +6,4 @@ umask 077;
 trap 'mysqladmin --defaults-extra-file=/etc/mysql/debian.cnf shutdown' 0;
 trap 'exit 2' 1 2 3 15;
 
-mysqld_safe --user=mysql --defaults-file=/etc/mysql/my.cnf & wait;
+mysqld_safe --defaults-file=/etc/mysql/my.cnf & wait;
