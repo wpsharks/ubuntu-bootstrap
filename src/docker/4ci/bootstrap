@@ -26,12 +26,11 @@ image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
 docker run --detach --hostname=ci.vm --name="${container_name_tag}" --volume=/bootstrap:/docker phusion/baseimage:0.9.18;
 docker exec --tty "${container_name_tag}" /docker/src/docker/4ci/installer "${php_version}";
+docker stop "${container_name_tag}";
 
 # Commit changes to this image and give them a name.
 
-docker commit --change='CMD ["/sbin/my_init"]' \
-  --message="${image_name_tag}" --author='WS Ubuntu Bootstrap' \
-  "${container_name_tag}" "${image_name_tag}";
+docker commit --message="${image_name_tag}" --author='WS Ubuntu Bootstrap' "${container_name_tag}" "${image_name_tag}";
 
 # Output details associated with this new image.
 
