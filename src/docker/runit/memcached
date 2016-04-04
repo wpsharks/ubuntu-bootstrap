@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-options=''; while read -r _line; do
-  if [[ "${_line}" =~ ^\- && "${_line}" != '-d' ]]; then
-    options+=' '"${_line}"; fi;
+memcached='memcached'; while read -r _line; do
+  if [[ "${_line}" =~ ^\- && "${_line}" != '-d' && ! "${_line}" =~ ^\-u ]]; then
+    memcached+=' '"${_line}"; fi;
 done < /etc/memcached.conf; unset _line;
 
-exec memcached "${options}" 2>&1;
+exec setuser memcache "${memcached}" >> /var/log/memcached.log 2>&1;
