@@ -8,6 +8,7 @@ if in-docker && can-run sv; then
 
   mkdir --parents /etc/sv;
   mkdir --parents /etc/service;
+  ln --symbolic /etc/service /service;
 
   ## Create an Upstart `service` alias.
 
