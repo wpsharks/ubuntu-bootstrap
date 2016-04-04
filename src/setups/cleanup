@@ -24,7 +24,6 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
 
   if is-4pkg; then
     rm --force --recursive /tmp/*;
-    rm --force --recursive /var/tmp/*;
   fi;
   # Zero-out drive when packaging. See: <http://jas.xyz/1MGoPML>
   # Resolves fragmentation issues and reduces the size of the disk.
