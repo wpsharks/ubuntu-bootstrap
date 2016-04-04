@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Link the `/docker` directory to `/bootstrap`.
+
+if [[ ! -d /bootstrap && -d /docker ]]; then
+  ln --symbolic /docker /bootstrap; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Read PHP version.
+
+php_version="${1:-}";
+if [[ -z "${php_version}" ]]; then
+  echo 'Expecting PHP version string.'; exit 1;
+fi; # Bail on failure to acquire.
+
+# Bootstrap the CI server.
+
+/bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION="${php_version}";

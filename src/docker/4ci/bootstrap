@@ -10,28 +10,22 @@ if [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Read PHP version from argument[1].
+# Read PHP version.
 
 php_version="${1:-}";
 if [[ -z "${php_version}" ]]; then
   echo 'Expecting PHP version string.'; exit 1;
 fi; # Bail on failure to acquire.
 
-# Configuration of the base Docker image.
-# CLI args are passed into the `/bootstrap/src/installer`.
+# Configuration of the CI server.
 
-host='ci.vm'; # Always the same.
-deb='export DEBIAN_FRONTEND=noninteractive';
-apt='apt-get update'; git='apt-get install git --yes';
-bootstrap='git clone https://github.com/websharks/ubuntu-bootstrap /bootstrap --branch=master --depth=1';
-bootstrap+=' && /bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_4CI=1 --CFG_INSTALL_PHP_VERSION='"${php_version}";
 container_name_tag=websharks-ubuntu-ci-php"${php_version}"-"$(date +%Y%m%d)";
 image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
 # Prepare a new container for this CI image.
 
-docker run --hostname="${host}" --name="${container_name_tag}" phusion/baseimage:0.9.18 \
-  /sbin/my_init -- bash -c "${deb}"' && '"${apt}"' && '"${git}"' && '"${bootstrap}";
+docker run --hostname=ci.vm --name="${container_name_tag}" --volume=/bootstrap:/docker phusion/baseimage:0.9.18 \
+  /sbin/my_init -- /bootstrap/src/docker/4ci/installer "${php_version}";
 
 # Commit changes to this image and give them a name.
 
@@ -41,5 +35,5 @@ docker commit --change='CMD ["/sbin/my_init"]' \
 
 # Output details associated with this new image.
 
-echo 'Docker Container ID: '"${container}";
-echo 'Docker Image Name:Tag: '"${image_name_tag}";
+echo 'Docker Container: '"${container_name_tag}";
+echo 'Docker Image: '"${image_name_tag}";

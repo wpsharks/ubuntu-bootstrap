@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 
-# Systematics.
+# When packaging, don't rely upon shared folders.
 
-mkdir --parents /usr/local/src;
-mkdir --parents /etc/bootstrap;
-
-# App directory (and `src`).
+if is-vagrant && is-4pkg && [[ -d /vagrant && -L /bootstrap ]]; then
+  rm --force --recursive /bootstrap;
+  cp --force --recursive --preserve=all /vagrant/. /bootstrap;
+  rm --force --recursive /bootstrap/.vagrant;
+elif in-docker && is-4pkg && [[ -d /docker && -L /bootstrap ]]; then
+  rm --force --recursive /bootstrap;
+  cp --force --recursive --preserve=all /docker/. /bootstrap;
+fi;
+# App directory (including the `src` sub-dir).
 
 mkdir --parents /app;
 mkdir --parents /app/src;
 
-if is-vm; then # Use symlink.
+if is-vm; then # VM symlink.
   rm --force --recursive /app;
-  ln --symbolic /bootstrap/app /app;
+  ln --symbolic /bootstrap/src/app /app;
 fi;
 chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;
@@ -44,10 +49,7 @@ chown --recursive nobody:www-data /var/log/app;
 find /var/log/app -type d -exec chmod 2775 {} \;
 find /var/log/app -type f -exec chmod 664 {} \;
 
-# When packaging, don't rely upon shared folders.
+# Systematics.
 
-if is-vagrant && is-4pkg; then
-  rm --force --recursive /bootstrap;
-  cp --force --recursive --preserve=all /vagrant/. /bootstrap;
-  rm --force --recursive /bootstrap/.vagrant;
-fi;
+mkdir --parents /usr/local/src;
+mkdir --parents /etc/bootstrap;
