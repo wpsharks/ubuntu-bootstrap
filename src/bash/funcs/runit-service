@@ -3,13 +3,19 @@
 # A `service` alternative.
 
 function runit-service() {
+  local exit_status;
   local service="${1:-}";
   local operation="${2:-}";
 
   if in-docker && can-run sv && [[ -x /etc/service/"${service}"/run ]]; then
-    sv "${2:-}" "${1:-}"; # See: <http://smarden.org/runit/sv.8.html>
+    sv "${operation}" "${service}"; exit_status=$?;
 
-  elif [[ "${service}" == 'ssh' ]]; then
+    if [[ "${service}" == 'mysql' && ( "${operation}" == 'start' || "${operation}" == 'restart' ) ]]; then
+      sleep 5; fi; # This requires a slight delay due to an ugly hack in the init script.
+
+    return "${exit_status}";
+
+  elif in-docker && can-run sv && [[ "${service}" == 'ssh' ]]; then
     # Disabled in a Docker container.
     return 0; # Ignore silently.
 
