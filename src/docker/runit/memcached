@@ -5,4 +5,4 @@ options=''; while read -r _line; do
     options+=' '"${_line}"; fi;
 done < /etc/memcached.conf; unset _line;
 
-exec memcached "${options}" >> /var/log/memcached.log 2>&1;
+exec memcached "${options}" 2>&1;
