@@ -5,10 +5,11 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
   # Cleanup archives.
 
   if ! is-vm || is-4pkg; then
-    apt-get autoremove --yes;
-    apt-get clean --yes;
+    apt-get autoremove --yes; apt-get clean --yes;
+    if is-4pkg; then # Remove package lists.
+      rm --force --recursive /var/lib/apt/lists/*;
+    fi; # Running `apt-get update` will restore these.
   fi;
-
   # Remove root SSH key (security).
   # Note that VMs don't generally require an SSH key.
   # If an administrator uploads them though, leave them there.
@@ -19,7 +20,12 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
     rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;
     rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/ws-bot-np;
   fi;
+  # Cleanup temporary files.
 
+  if is-4pkg; then
+    rm --force --recursive /tmp/*;
+    rm --force --recursive /var/tmp/*;
+  fi;
   # Zero-out drive when packaging. See: <http://jas.xyz/1MGoPML>
   # Resolves fragmentation issues and reduces the size of the disk.
 
@@ -27,7 +33,6 @@ if [[ "${CFG_IS_INSTALLER}" == 1 || "${CFG_IS_UPDATER}" == 1 ]]; then
     dd if=/dev/zero of=/EMPTY bs=1M &>/dev/null || true;
     rm -f /EMPTY; # ↑ See: <http://jas.xyz/1MGxHCj>
   fi;
-
   # Erase shell history when packaging.
   # See: <http://jas.xyz/1MGpmOK>
 
