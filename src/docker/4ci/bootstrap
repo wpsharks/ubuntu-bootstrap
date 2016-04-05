@@ -24,8 +24,8 @@ image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
 # Install/bootstrap a container and commit changes for a new CI image.
 
-docker run --detach --hostname=ci.vm --name="${container_name_tag}" phusion/baseimage:0.9.18;
-docker exec --tty "${container_name_tag}" /docker/src/docker/4ci/installer "${php_version}";
+docker run --detach --hostname=ci.vm --name="${container_name_tag}" --volume=/bootstrap:/bootstrap-parent phusion/baseimage:0.9.18;
+docker exec --tty "${container_name_tag}" /bootstrap-parent/src/docker/4ci/installer "${php_version}";
 docker commit "${container_name_tag}" "${image_name_tag}";
 
 # Housekeeping; i.e., stop and remove the container.
