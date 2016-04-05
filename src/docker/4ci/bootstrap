@@ -22,15 +22,15 @@ fi; # Bail on failure to acquire.
 container_name_tag=websharks-ubuntu-ci-php"${php_version}"-"$(date +%Y%m%d)";
 image_name_tag=websharks/ubuntu-ci-php"${php_version}":"$(date +%Y%m%d)";
 
-# Prepare a new container for this CI image.
+# Install a container and export it as a new CI image.
 
 docker run --detach --hostname=ci.vm --name="${container_name_tag}" --volume=/bootstrap:/docker phusion/baseimage:0.9.18;
 docker exec --tty "${container_name_tag}" /docker/src/docker/4ci/installer "${php_version}";
-docker stop "${container_name_tag}";
+docker export "${container_name_tag}" | docker import - "${image_name_tag}";
 
-# Commit changes to this image and give them a name.
+# Housekeeping; i.e., stop and remove the container.
 
-docker commit --message="${image_name_tag}" --author='WS Ubuntu Bootstrap' "${container_name_tag}" "${image_name_tag}";
+docker stop "${container_name_tag}"; docker rm "${container_name_tag}";
 
 # Output details associated with this new image.
 

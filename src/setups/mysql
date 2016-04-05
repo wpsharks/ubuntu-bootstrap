@@ -38,10 +38,11 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
 
   # Install phpMyAdmin for MySQL administration.
 
-  git clone https://github.com/phpmyadmin/phpmyadmin /usr/local/src/pma --branch=STABLE --depth=1;
-  ln --symbolic /bootstrap/src/tools/.pma.php /usr/local/src/pma/config.inc.php;
-  ln --symbolic /usr/local/src/pma /bootstrap/src/tools/pma;
-
+  if ! is-4ci; then # We don't need this in a CI server.
+    git clone https://github.com/phpmyadmin/phpmyadmin /usr/local/src/pma --branch=STABLE --depth=1;
+    ln --symbolic /bootstrap/src/tools/.pma.php /usr/local/src/pma/config.inc.php;
+    ln --symbolic /usr/local/src/pma /bootstrap/src/tools/pma;
+  fi;
   # Restart service.
 
   service mysql restart;
