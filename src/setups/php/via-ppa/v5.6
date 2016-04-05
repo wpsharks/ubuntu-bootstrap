@@ -23,6 +23,7 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   apt-get install php5-gd --yes;
   apt-get install php5-mcrypt --yes;
   apt-get install php5-memcached --yes;
+  apt-get install php-pear --yes;
 
   ## Create PHP config file symlink.
 
@@ -40,7 +41,7 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
     perl -i -wpe 's/^(\s*stop\s+on\s+.*)$/$1\n\numask 0002/u' /etc/init/php5-fpm.conf;
 
     maybe-add-runit-service php5-fpm; # Maybe create an RUnit startup script.
-    
+
     service php5-fpm restart; # Restart service; PHP process manager.
   fi;
 

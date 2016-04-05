@@ -22,11 +22,12 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   apt-get install php7.0-bz2 --yes;
   apt-get install php7.0-gd --yes;
   apt-get install php7.0-mcrypt --yes;
-  apt-get install php-memcached --yes;
   apt-get install php7.0-mbstring --yes;
   apt-get install php7.0-xml --yes;
   apt-get install php7.0-zip --yes;
   apt-get install php7.0-bcmath --yes;
+  apt-get install php-memcached --yes;
+  apt-get install php-pear --yes;
 
   ## Create PHP config file symlink.
 
