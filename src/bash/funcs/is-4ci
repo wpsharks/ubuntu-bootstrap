@@ -3,7 +3,7 @@
 # Is for CI a server?
 
 function is-4ci() {
-  if [[ "${CFG_4CI}" == 1 ]]; then
+  if [[ "${CFG_4CI:-}" == 1 ]]; then
     return 0;
   else # 1 = false.
     return 1;
