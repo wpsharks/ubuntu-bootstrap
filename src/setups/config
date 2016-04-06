@@ -7,7 +7,7 @@
 CFG_HOST="$(hostname --fqdn)";
 CFG_ROOT_HOST="$(hostname --domain)";
 [[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]] && CFG_ROOT_HOST="${CFG_HOST}";
-CFG_OTHER_HOSTS=''; is-4ci && CFG_OTHER_HOSTS='sub.'"${CFG_HOST}"',sub1.'"${CFG_HOST}"',sub2.'"${CFG_HOST}";
+CFG_OTHER_HOSTS=''; # Note that Docker will wipe out `/etc/hosts`.
 
 CFG_SLUG="$(hostname --short)";
 CFG_VAR="${CFG_SLUG//-/_}";
