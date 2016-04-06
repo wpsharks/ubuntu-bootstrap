@@ -16,5 +16,8 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   elif [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
     . /bootstrap/src/setups/php/custom;
   fi;
+  if is-vm; then
+    echo 'phar.readonly = no' >> /bootstrap/src/php/.ini;
+  fi;
 
 else echo 'Skipping PHP installation.'; fi;

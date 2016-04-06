@@ -10,6 +10,7 @@ apt-get install libssl-dev --yes;
 apt-get install apache2-utils --yes;
 apt-get install build-essential --yes;
 apt-get install coreutils --yes;
+apt-get install gettext --yes;
 apt-get install zip --yes;
 apt-get install unzip --yes;
 apt-get install curl --yes;

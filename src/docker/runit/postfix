@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-exec setuser postfix /usr/lib/postfix/master -c /etc/postfix 2>&1;
+exec /usr/lib/postfix/master -c /etc/postfix 2>&1;
