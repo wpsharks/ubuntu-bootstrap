@@ -9,10 +9,10 @@ set -o pipefail;
 
 # Shell options.
 
+shopt -s extglob;
 shopt -s dotglob;
 shopt -s globstar;
 shopt -s nullglob;
-shopt -s failglob;
 
 # Stack trace on error.
 
