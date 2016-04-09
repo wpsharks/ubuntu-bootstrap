@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# Download from LFS.
-
-cd /bootstrap;
-git lfs pull;
-
 # Git-Crypt app key permissions.
 
 if [[ -f /etc/git-crypt.app.key ]]; then
