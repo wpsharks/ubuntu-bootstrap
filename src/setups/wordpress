@@ -5,9 +5,8 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   # Remove existing `/app`.
 
   if is-vm && [[ -L /app ]]; then
-    rm --force --recursive /bootstrap/src/app;
-    mkdir --parents /bootstrap/src/app/src;
-  else rm --force --recursive /app; mkdir --parents /app/src; fi;
+    rm --force --recursive /bootstrap/src/app/*;
+  else rm --force --recursive /app/*; mkdir --parents /app/src; fi;
 
   # Clone the WordPress master branch.
 

@@ -3,11 +3,11 @@
 # When packaging, don't rely upon shared folders.
 
 if is-vagrant && is-4pkg && [[ -d /vagrant && -L /bootstrap ]]; then
-  rm --force --recursive /bootstrap;
+  rm --force --recursive /bootstrap/*;
   cp --force --recursive --preserve=all /vagrant/. /bootstrap;
   rm --force --recursive /bootstrap/.vagrant;
 elif in-docker && is-4pkg && [[ -d /docker && -L /bootstrap ]]; then
-  rm --force --recursive /bootstrap;
+  rm --force --recursive /bootstrap/*;
   cp --force --recursive --preserve=all /docker/. /bootstrap;
 fi;
 # App directory (including the `src` sub-dir).
