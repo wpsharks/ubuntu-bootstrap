@@ -30,6 +30,7 @@ $ vagrant box add ubuntu/trusty64
 ```bash
 $ mkdir ~/VMs && cd ~/VMs
 $ git clone https://github.com/websharks/ubuntu-bootstrap my.vm
+$ cd ~/VMs/my.vm && git lfs pull # Pull large file storage.
 ```
 
 _Note that `my.vm` becomes your domain name. Change it if you like. Must end with `.vm` please._
