@@ -302,6 +302,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
 - `--CFG_INSTALL_COMPOSER=0|1` Install Composer?
 - `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
+- `--CFG_INSTALL_WP_I18N_TOOLS=0|1` Install WP i18n tools?
 
 ---
 

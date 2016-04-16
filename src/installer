@@ -68,6 +68,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/casperjs;
   . /bootstrap/src/setups/composer;
   . /bootstrap/src/setups/wp-cli;
+  . /bootstrap/src/setups/wp-i18n-tools;
   . /bootstrap/src/setups/wsc;
 
   . /bootstrap/src/setups/app-repo;

@@ -65,6 +65,7 @@ CFG_INSTALL_PHPUNIT='1';
 CFG_INSTALL_CASPERJS='1';
 CFG_INSTALL_COMPOSER='1';
 CFG_INSTALL_WP_CLI='1';
+CFG_INSTALL_WP_I18N_TOOLS='1';
 
 CFG_INSTALL_APP_REPO='1';
 
@@ -408,6 +409,7 @@ function cfgs-wizard() {
         'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_COMPOSER' 'Install?' "$([[ "${CFG_INSTALL_COMPOSER}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WP_I18N_TOOLS' 'Install?' "$([[ "${CFG_INSTALL_WP_I18N_TOOLS}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
         \
@@ -448,6 +450,7 @@ function cfgs-wizard() {
       CFG_INSTALL_CASPERJS='0';
       CFG_INSTALL_COMPOSER='0';
       CFG_INSTALL_WP_CLI='0';
+      CFG_INSTALL_WP_I18N_TOOLS='0';
 
       CFG_INSTALL_APP_REPO='0';
 
