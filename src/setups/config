@@ -62,6 +62,7 @@ CFG_INSTALL_PHP_VERSION='custom';
 CFG_INSTALL_PHPCS='1';
 CFG_INSTALL_PHING='1';
 CFG_INSTALL_PHPUNIT='1';
+CFG_INSTALL_APIGEN='1';
 CFG_INSTALL_CASPERJS='1';
 CFG_INSTALL_COMPOSER='1';
 CFG_INSTALL_WP_CLI='1';
@@ -406,6 +407,7 @@ function cfgs-wizard() {
         'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHPUNIT' 'Install?' "$([[ "${CFG_INSTALL_PHPUNIT}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_APIGEN' 'Install?' "$([[ "${CFG_INSTALL_APIGEN}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_COMPOSER' 'Install?' "$([[ "${CFG_INSTALL_COMPOSER}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -447,6 +449,7 @@ function cfgs-wizard() {
       CFG_INSTALL_PHPCS='0';
       CFG_INSTALL_PHING='0';
       CFG_INSTALL_PHPUNIT='0';
+      CFG_INSTALL_APIGEN='0';
       CFG_INSTALL_CASPERJS='0';
       CFG_INSTALL_COMPOSER='0';
       CFG_INSTALL_WP_CLI='0';

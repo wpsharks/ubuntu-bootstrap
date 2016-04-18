@@ -65,6 +65,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/phpcs;
   . /bootstrap/src/setups/phing;
   . /bootstrap/src/setups/phpunit;
+  . /bootstrap/src/setups/apigen;
   . /bootstrap/src/setups/casperjs;
   . /bootstrap/src/setups/composer;
   . /bootstrap/src/setups/wp-cli;

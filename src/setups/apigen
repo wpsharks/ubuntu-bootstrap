@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if can-run php && [[ "${CFG_INSTALL_APIGEN}" == 1 ]]; then
+
+  # Install APIGen for codex generation.
+
+  curl https://github.com/ApiGen/ApiGen/releases/download/v4.1.2/apigen.phar --location --output /usr/bin/apigen;
+  chmod +x /usr/bin/apigen; # Make it executable.
+
+else echo 'Skipping APIGen installation.'; fi;

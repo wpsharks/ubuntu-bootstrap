@@ -299,6 +299,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_INSTALL_PHPCS=0|1` Install PHP Code Sniffer?
 - `--CFG_INSTALL_PHING=0|1` Install Phing?
 - `--CFG_INSTALL_PHPUNIT=0|1` Install PHPUnit?
+- `--CFG_INSTALL_APIGEN=0|1` Install APIGen?
 - `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
 - `--CFG_INSTALL_COMPOSER=0|1` Install Composer?
 - `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
