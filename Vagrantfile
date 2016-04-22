@@ -6,22 +6,25 @@ Vagrant.configure(2) do |config|
   if !File.dirname(File.expand_path(__FILE__)).scan(/\.vm$/i).empty?
     config.vm.hostname = File.basename(File.dirname(File.expand_path(__FILE__)));
   end;
+  # Configure vars for the VM hostname (lower & upper).
+  _vm_hostname_lc_var = config.vm.hostname.downcase.tr('.-', '_');
+  _VM_HOSTNAME_UC_VAR = config.vm.hostname.upcase.tr('.-', '_');
 
   # Mount `/vagrant/src/app/src` in a specific way. See `src/setups/mkdirs` for details.
   config.vm.synced_folder './src/app/src', '/vagrant/src/app/src', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
 
   # Mount WordPress projects directory.
-  if File.directory?(wp_projects_dir = ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
+  if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
     config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['defaults', 'ro'];
   end;
 
   # Mount WordPress personal projects directory.
-  if File.directory?(wp_personal_projects_dir = ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
+  if File.directory?(wp_personal_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
     config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['defaults', 'ro'];
   end;
 
   # Mount WordPress business projects directory.
-  if File.directory?(wp_business_projects_dir = ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
+  if File.directory?(wp_business_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUSINESS_PROJECTS_DIR"] || ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
     config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['defaults', 'ro'];
   end;
 
