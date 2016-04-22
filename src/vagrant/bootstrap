@@ -15,6 +15,11 @@ if [[ ! -d /bootstrap && -d /vagrant ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
+# Restart app-related services if installation is complete.
+
+if [[ -f /etc/bootstrap/.installed ]]; then
+  restart-app-related-services; fi;
+
 # Run any custom code now.
 
 . /bootstrap/src/vagrant/bootstrap-custom;
