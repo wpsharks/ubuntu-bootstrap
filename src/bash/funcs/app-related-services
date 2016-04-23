@@ -11,6 +11,8 @@ ___app_related_services[ssh]=ssh; ___app_related_services_order+=('ssh');
 
 ___app_related_services[postfix]=postfix; ___app_related_services_order+=('postfix');
 
+___app_related_services[mailcatcher]=mailcatcher; ___app_related_services_order+=('mailcatcher');
+
 ___app_related_services[ufw]=ufw; ___app_related_services_order+=('ufw');
 ___app_related_services[fail2ban-client]=fail2ban; ___app_related_services_order+=('fail2ban-client');
 
