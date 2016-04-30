@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
+
+  # Install MailHog.
+
+  curl https://github.com/mailhog/MailHog/releases/download/v0.2.0/MailHog_linux_amd64 --location --output /usr/bin/mailhog;
+  chmod +x /usr/bin/mailhog; # Make it executable.
+
+  # Install startup scripts.
+
+  cp /bootstrap/src/mailhog/upstart.tpl.conf /etc/init/mailhog.conf;
+  maybe-add-runit-service mailhog; # Maybe create an RUnit startup script.
+
+  # Modify the `sendmail_path` used by PHP.
+
+  echo "sendmail_path = '/usr/bin/mailhog sendmail mailhog@127.0.0.1'" >> /bootstrap/src/php/.ini;
+
+  # Restart service.
+
+  service mailhog restart;
+
+else echo 'Skipping MailHog installation.'; fi;

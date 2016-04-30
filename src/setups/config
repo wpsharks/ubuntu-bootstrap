@@ -42,7 +42,8 @@ CFG_INSTALL_WS_CA_FILES='1'; is-vm && CFG_INSTALL_WS_CA_FILES='0';
 
 CFG_INSTALL_DOCKER='0'; is-vm && ! in-docker && CFG_INSTALL_DOCKER='1';
 
-CFG_INSTALL_POSTFIX='1';
+CFG_INSTALL_POSTFIX='1'; is-vm && CFG_INSTALL_POSTFIX='0';
+CFG_INSTALL_MAILHOG='0'; is-vm && CFG_INSTALL_MAILHOG='1';
 
 CFG_INSTALL_NGINX='1'; is-4ci && CFG_INSTALL_NGINX='0';
 CFG_INSTALL_APACHE='0'; is-4ci && CFG_INSTALL_APACHE='1';
@@ -252,6 +253,18 @@ function validate-cfgs() {
     cfg_warning+='The WebSharks SSL CA files require a production server.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
+  elif [[ "${CFG_INSTALL_MAILHOG}" == 1 ]] && ! is-vm; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='The installation of MailHog applies only when running a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_POSTFIX}" == 1 && "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Please install Postfix or MailHog; not both.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
   elif [[ "${CFG_INSTALL_NGINX}" == 1 && "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
@@ -394,6 +407,7 @@ function cfgs-wizard() {
         'CFG_INSTALL_DOCKER' 'Install?' "$([[ "${CFG_INSTALL_DOCKER}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_MAILHOG' 'Install?' "$([[ "${CFG_INSTALL_MAILHOG}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -438,6 +452,7 @@ function cfgs-wizard() {
       CFG_INSTALL_DOCKER='0';
 
       CFG_INSTALL_POSTFIX='0';
+      CFG_INSTALL_MAILHOG='0';
 
       CFG_INSTALL_NGINX='0';
       CFG_INSTALL_APACHE='0';

@@ -47,6 +47,11 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
       ufw allow 80/tcp; ufw allow 443/tcp;
     fi;
   fi;
+  # Open up the HTTP/HTTPS port number `8025` for MailHog.
+
+  if is-vm && [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
+    ufw allow 8025/tcp; fi; # MailHog does not support HTTPS at this time.
+
   # Restart firewall now; i.e., apply changes.
 
   ufw --force enable; # Apply firewall changes.

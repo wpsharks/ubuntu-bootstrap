@@ -1,5 +1,6 @@
 <?php
 namespace WebSharks\Ubuntu\Bootstrap;
+
 // This is loaded via INI `auto_prepend_file`.
 // No strict types. This must be compatible w/ PHP v5.4+.
 
@@ -9,3 +10,5 @@ foreach ($_SERVER as $_key => &$_value) {
         $_value = ''; // Empty this string.
     }
 } unset($_key, $_value);
+
+$_SERVER['SERVER_NAME'] = $_SERVER['CFG_HOST'];
