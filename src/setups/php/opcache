@@ -11,13 +11,6 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
 
   if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
     ln --symbolic /etc/php/conf.d/opcache.ini /etc/php/fpm/conf.d/opcache.ini;
-
-    curl http://gordalina.github.io/cachetool/downloads/cachetool.phar --location --output /usr/bin/cachetool;
-    chmod +x /usr/bin/cachetool; # Make it executable.
-
-    echo 'adapter: fastcgi' > /etc/cachetool.yml;
-    echo 'fastcgi: /var/run/php-fpm.sock' >> /etc/cachetool.yml;
-
     service php-fpm restart; # Restart service.
   fi;
 

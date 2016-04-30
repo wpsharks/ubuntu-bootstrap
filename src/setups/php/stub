@@ -16,8 +16,14 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   elif [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
     . /bootstrap/src/setups/php/custom;
   fi;
-  if is-vm; then
-    echo 'phar.readonly = no' >> /bootstrap/src/php/.ini;
+  # PHP ini file alterations based on other config values.
+
+  if [[ "${CFG_ENABLE_PHP_OPCACHE}" != 1 ]]; then
+    perl -i -wpe 's/^(\s*)opcache\.enable\s*=\s*(?:yes|1|on|true)$/$1opcache.enable = no/u' /bootstrap/src/php/.ini;
+    perl -i -wpe 's/^(\s*)opcache\.enable_cli\s*=\s*(?:yes|1|on|true)$/$1opcache.enable_cli = no/u' /bootstrap/src/php/.ini;
   fi;
+  if [[ "${CFG_ENABLE_PHP_PHAR_READONLY}" != 1 ]]; then
+    perl -i -wpe 's/^(\s*)phar\.readonly\s*=\s*(?:yes|1|on|true)$/$1phar.readonly = no/u' /bootstrap/src/php/.ini;
+  fi; # Allow full PHAR functionality on a VM.
 
 else echo 'Skipping PHP installation.'; fi;

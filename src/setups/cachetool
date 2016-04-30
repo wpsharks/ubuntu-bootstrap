@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if can-run php && [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+
+  # Install cachetool for OPcache management in PHP.
+
+  curl http://gordalina.github.io/cachetool/downloads/cachetool.phar --location --output /usr/bin/cachetool;
+  chmod +x /usr/bin/cachetool; # Make it executable.
+
+  echo 'adapter: fastcgi' > /etc/cachetool.yml;
+  echo 'fastcgi: /var/run/php-fpm.sock' >> /etc/cachetool.yml;
+
+else echo 'Skipping PHP cachetool installation.'; fi;

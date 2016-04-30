@@ -293,6 +293,8 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_INSTALL_PHP_CLI=0|1` Install PHP command-line interpreter?
 - `--CFG_INSTALL_PHP_FPM=0|1` Install PHP-FPM process manager for Apache/Nginx?
 - `--CFG_INSTALL_PHP_VERSION=[custom-src|custom|7.0|5.6|5.5]` Which PHP version?
+- `--CFG_ENABLE_PHP_OPCACHE=0|1` Enable the PHP OPcache extension?
+- `--CFG_ENABLE_PHP_PHAR_READONLY=0|1` Force PHAR readonly mode?
 
 ---
 
