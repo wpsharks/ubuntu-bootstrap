@@ -15,8 +15,8 @@ $ brew cask install virtualbox
 $ brew cask install vagrant
 $ vagrant plugin install landrush
 
-$ vagrant plugin install vagrant-cachier # Suggested (optional).
-$ vagrant plugin install vagrant-triggers # Suggested (optional).
+$ vagrant plugin install vagrant-cachier # Suggested only (optional).
+$ vagrant plugin install vagrant-triggers # This is optional also.
 ```
 
 You need to install the `ubuntu/trusty64` Box.
@@ -52,10 +52,9 @@ $ sudo /bootstrap/src/installer # Presents a configuration dialog.
 
 #### Step 5: Confirm it is Working!
 
-- Open <http://my.vm>. You should see a WordPress installation page.
-- Open <https://my.vm>. You should get an SSL security warning. Please bypass this self-signed certificate warning and proceed. You should again see the WordPress installation page. SSL is working as expected!
+- Open <https://my.vm>. You should get an SSL security warning. Please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page. SSL is working as expected!
 
-  _The URL <http://my.vm> is not working?_
+  _The URL <https://my.vm> is not working?_
 
   _Try flushing your DNS cache. Each time you `vagrant up`, a new IP is generated automatically that is mapped to the `my.vm` hostname. If you are working with multiple VMs, you might need to flush your DNS cache to make sure your system is mapping `my.vm` to the correct IP address. See: <http://jas.xyz/1fmAa4P> for instructions on a Mac._
 
@@ -63,11 +62,17 @@ $ sudo /bootstrap/src/installer # Presents a configuration dialog.
 
 ### Additional Steps (All Optional)
 
-#### Step 6: Add Files to: `~/VMs/my.vm/app/src/`
+#### Step 6: Install Root CA
+
+If you'd like to always see a green SSL status for your local test sites (i.e., avoid `https://` warnings on anything ending with `.vm`), you can download and install [this root CA certificate file](https://github.com/websharks/ubuntu-bootstrap/blob/master/src/ssl/vm-ca-crt.pem) and set your trust settings to "Always Trust" for this certificate.
+
+Any SSL certificates created by the Ubuntu Bootstrap will use that root CA certificate. Trusting the root CA (it's fake, and only for the Ubuntu Bootstrap project), will green-light all of your local `.vm` domains when accessing them over `https://`. On a Mac, you can simply download, then drag n' drop the certificate file onto your Keychain.app. Open up the settings for that certification in Keychain.app and choose "Always Trust" at the top. Done! :-)
+
+#### Step 7: Add Files to: `~/VMs/my.vm/app/src/`
 
 The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/VMs/my.vm/app/src/phpBB`
 
-#### Step 7: Understanding Environment Variables
+#### Step 8: Understanding Environment Variables
 
 This stack comes preconfigured with a MySQL database and environment variables you can use in any PHP config. files.
 
@@ -76,9 +81,9 @@ This stack comes preconfigured with a MySQL database and environment variables y
 - `$_SERVER['CFG_MYSQL_DB_USERNAME']` This is the database username. Defaults to `admin`.
 - `$_SERVER['CFG_MYSQL_DB_PASSWORD']` This is the database password. Defaults to `admin`.
 
-_**Tip:** For a full list of all global environment variables, see: `setups/env-vars` in the repo._
+_**Tip:** For a full list of all global environment variables, see: `src/setups/env-vars` in the repo. Or, from the command-line on your VM type: `$ cat /etc/environment` (shows you the values too)._
 
-#### Step 8: Learn to Use the Tools That I've Bundled
+#### Step 9: Learn to Use the Tools That I've Bundled
 
 A username/password is required to access each of these tools. It is always the same thing.
 
@@ -94,8 +99,9 @@ Available Tools (Using Any of These is Optional):
 - <https://my.vm/---tools/status.nginx> NGINX status page (if Nginx was installed).
 - <https://my.vm/---tools/apache-status> Apache status page (if Apache was installed).
 - <https://my.vm/---tools/apache-info> Apache page (if Apache was installed).
+- <http://my.vm:8025> MailHog web interface for reviewing test emails on a VM.
 
-#### Step 9: Tear it Down and Customize
+#### Step 10: Tear it Down and Customize
 
 ```bash
 $ cd ~/VMs/my.vm
@@ -154,18 +160,18 @@ _~ See also: `/src/setups/wordpress`_
 
 ```ruby
 # Mount WordPress projects directory.
-if File.directory?(wp_projects_dir = ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
-  config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['ro'];
+if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
+  config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['defaults', 'ro'];
 end;
 
 # Mount WordPress personal projects directory.
-if File.directory?(wp_personal_projects_dir = ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
-  config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['ro'];
+if File.directory?(wp_personal_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
+  config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['defaults', 'ro'];
 end;
 
 # Mount WordPress business projects directory.
-if File.directory?(wp_business_projects_dir = ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
-  config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['ro'];
+if File.directory?(wp_business_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUSINESS_PROJECTS_DIR"] || ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
+  config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['defaults', 'ro'];
 end;
 ```
 
@@ -173,7 +179,7 @@ end;
 
 The `Vagrantfile` is automatically mounting drives on your VM that are sourced by your local `~/projects` directory (if you have one). Thus, if you have your WordPress themes/plugins in `~/projects/wordpress` (i.e., in your local filesystem), it will be mounted on the VM automatically, as `/wordpress`.
 
-In the `src/setups/wordpress` file, we iterate `/wordpress` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<http://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
+In the `src/setups/wordpress` file, we iterate `/wordpress` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<https://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
 
 The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `src/setups/wordpress` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
 
@@ -195,12 +201,20 @@ Now, whenever you run `/bootstrap/src/installer` from the VM, your local copy of
 
 #### Can I override the default source directories for WordPress?
 
-Yes. Looking over the code snippet above, you can see that there are three environment variables that you can set in your `~/.profile` that (if found) will override the default locations automatically. Here's a quick example showing how you might customize these in your own `~/.profile`.
+Yes. Looking over the code snippet above, you can see that there are three environment variables that you can set in your `~/.profile` that (if found) will override the default locations automatically. Here's a quick example showing how you might customize these in your own `~/.profile`
 
 ```bash
 export WP_PROJECTS_DIR=~/my-projects/wordpress;
 export WP_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
 export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
+```
+
+It is also possible to define hostname-specific environment variables. Note `_MY_VM` in the examples below. This correlates with `my.vm` (the hostname you are locking these to), and then converted to all uppercase with dots and hyphens now as `_` underscores instead.
+
+```bash
+export WP_MY_VM_PROJECTS_DIR=~/my-projects/wordpress;
+export WP_MY_VM_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
+export WP_MY_VM_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 ```
 
 ---
@@ -272,6 +286,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 ---
 
 - `--CFG_INSTALL_POSTFIX=0|1` Install Postfix?
+- `--CFG_INSTALL_MAILHOG=0|1` Install MailHog instead of Postfix?
 
 ---
 

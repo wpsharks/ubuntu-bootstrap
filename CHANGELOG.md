@@ -1,3 +1,11 @@
+## v160501
+
+- Now automatically disabling HSTS whenever the installer runs on a VM. Since browsers like Chrome will lock-onto `https://` only with this enabled, it was impossible to access any development tools over the `http://` protocol; e.g., MailHog. If you install this latest version of the Ubuntu Bootstrap on a `.vm` domain that you have used in the past, **be sure to follow these instructions**. See: <http://classically.me/blogs/how-clear-hsts-settings-major-browsers>. For instance, remove the `my.vm` or any other `.vm` domains from your HSTS cache. In Google Chrome you can do this from: `chrome://net-internals/#hsts`
+
+- Adding [MailHog](https://github.com/mailhog/MailHog) installation directive: `CFG_INSTALL_MAILHOG`. For VMs, this is now on by default. Instead of installing Postfix, MailHog is now installed as a recommended default. With MailHog running, all outgoing mail sent via PHP scripts (regardless of destination) will instead be sent to a test mailbox that can be accessed in the sandbox UI here: <http://my.vm:8025>. **Note:** If you are unable to access that location, see the note above about clearing HSTS first. The <http://my.vm:8025> URL is available only over `http://`.
+
+- Updating [README.md](README.md) after recent changes to the Ubuntu Bootstrap. Documented the new hostname-specific environment variables for WordPress theme/plugin mounts. Added a new optional step to the installation instructions that documents the installation of our root CA in order to avoid SSL certificate warnings.
+
 ## v160430
 
 - Changing the default PHP installation directive (`CFG_INSTALL_PHP_VERSION`) to `7.0` (via PPA) instead of `custom`. The PPA is an official package and it can be upgraded easily using `apt-get` whereas `custom` (from source) cannot. The `custom` installer will remain for local testing and for future implementation; e.g., it is useful for beta versions of PHP installed from source.
