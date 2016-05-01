@@ -84,8 +84,8 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
 
   . /bootstrap/src/setups/resources;
 
-  if [[ -f /bootstrap-app/post-install ]]; then
-    . /bootstrap-app/post-install; fi;
+  if [[ -f /bootstrap-app/src/post-install ]]; then
+    . /bootstrap-app/src/post-install; fi;
 
   . /bootstrap/src/version; # Update.
   CFG_INSTALLED_VERSION="${CFG_VERSION}";

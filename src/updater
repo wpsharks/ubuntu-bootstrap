@@ -31,8 +31,8 @@ if [[ -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/repos-up;
   . /bootstrap/src/setups/vs-ups;
 
-  if [[ -f /bootstrap-app/post-update ]]; then
-    . /bootstrap-app/post-update; fi;
+  if [[ -f /bootstrap-app/src/post-update ]]; then
+    . /bootstrap-app/src/post-update; fi;
 
   . /bootstrap/src/version; # Update.
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
