@@ -53,6 +53,8 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/postfix;
   . /bootstrap/src/setups/mailhog;
 
+  . /bootstrap/src/setups/mailcatcher;
+
   . /bootstrap/src/setups/nginx;
   . /bootstrap/src/setups/apache;
 

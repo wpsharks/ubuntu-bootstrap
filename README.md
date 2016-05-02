@@ -290,6 +290,10 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
+- `--CFG_INSTALL_MAILCATCHER=0|1` Install Mailcatcher?
+
+---
+
 - `--CFG_INSTALL_NGINX=0|1` Install Nginx?
 - `--CFG_INSTALL_APACHE=0|1` Install Apache?
 
