@@ -22,6 +22,9 @@ define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 define('WP_DEBUG_DISPLAY', true);
 
+@ini_set('zend.assertions', '1');
+ini_set('assert.exception', 'yes');
+
 $table_prefix = 'wp_';
 
 if (!defined('ABSPATH')) {
