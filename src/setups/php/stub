@@ -24,6 +24,10 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   fi;
   if [[ "${CFG_ENABLE_PHP_PHAR_READONLY}" != 1 ]]; then
     perl -i -wpe 's/^(\s*)phar\.readonly\s*=\s*(?:yes|1|on|true)$/$1phar.readonly = no/u' /bootstrap/src/php/.ini;
-  fi; # Allow full PHAR functionality on a VM.
+  fi;
+  if [[ "${CFG_ENABLE_PHP_ASSERTIONS}" != 1 ]]; then
+    perl -i -wpe 's/^(\s*)zend\.assertions\s*=\s*(?:no|0|-1|off|false)$/$1zend.assertions = 1/u' /bootstrap/src/php/.ini;
+    perl -i -wpe 's/^(\s*)assert\.exception\s*=\s*(?:no|0|off|false)$/$1assert.exception = yes/u' /bootstrap/src/php/.ini;
+  fi;
 
 else echo 'Skipping PHP installation.'; fi;
