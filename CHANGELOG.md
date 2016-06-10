@@ -1,5 +1,8 @@
-## $v
+## v160610
 
+- Updating MIME types for compressed archives.
+- Retain ability to alter `zend.assertions` at runtime.
+- Nginx + WooCommerce uploads folder now automaticall guarded by Nginx/Apache.
 - Removing `xmlrpc.php` from the list of forbidden locations in the Nginx config file. This is needed by JetPack for WordPress.
 
 ## v160501
