@@ -1,3 +1,7 @@
+## $v
+
+- Removing `xmlrpc.php` from the list of forbidden locations in the Nginx config file. This is needed by JetPack for WordPress.
+
 ## v160501
 
 - Now automatically disabling HSTS whenever the installer runs on a VM. Since browsers like Chrome will lock-onto `https://` only with this enabled, it was impossible to access any development tools over the `http://` protocol; e.g., MailHog. If you install this latest version of the Ubuntu Bootstrap on a `.vm` domain that you have used in the past, **be sure to follow these instructions**. See: <http://classically.me/blogs/how-clear-hsts-settings-major-browsers>. For instance, remove the `my.vm` or any other `.vm` domains from your HSTS cache. In Google Chrome you can do this from: `chrome://net-internals/#hsts`
