@@ -19,10 +19,10 @@ $ vagrant plugin install vagrant-cachier # Suggested only (optional).
 $ vagrant plugin install vagrant-triggers # This is optional also.
 ```
 
-You need to install the `ubuntu/xenial64` Box.
+You need to install the `websharks/ubuntu-xenial64` Box.
 
 ```bash
-$ vagrant box add ubuntu/xenial64
+$ vagrant box add websharks/ubuntu-xenial64
 ```
 
 #### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
