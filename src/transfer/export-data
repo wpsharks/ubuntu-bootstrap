@@ -34,3 +34,7 @@ tar --create --gzip --preserve-permissions --verbose --file=/exported-data.tar.g
   /tmp/exported-data.sql;
 
 sharefile /exported-data.tar.gz.gpg symmetric;
+
+rm --force /tmp/exported-data.sql;
+rm --force /tmp/exported-data.tar.gz;
+rm --force /tmp/exported-data.tar.gz.gpg;
