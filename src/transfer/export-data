@@ -26,7 +26,7 @@ rm --force /tmp/exported-data.tar.gz.gpg;
 
 if can-run mysql; then
   mysqldump --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --all-databases > /tmp/exported-data.sql;
-else touch /tmp/exported-data.tar.gz; fi;
+else touch /tmp/exported-data.sql; fi;
 
 tar --create --gzip --preserve-permissions --verbose --file=/exported-data.tar.gz \
   /app \
