@@ -68,6 +68,8 @@ If you'd like to always see a green SSL status for your local test sites (i.e., 
 
 Any SSL certificates created by the Ubuntu Bootstrap will use that root CA certificate. Trusting the root CA (it's fake, and only for the Ubuntu Bootstrap project), will green-light all of your local `.vm` domains when accessing them over `https://`. On a Mac, you can simply download, then drag n' drop the certificate file onto your Keychain.app. Open up the settings for that certification in Keychain.app and choose "Always Trust" at the top. Done! :-)
 
+**↑ UPDATE (WARNING):** If you're on a Mac, there is a nasty bug in the Keychain application that can lock your system when attempting to 'Always Trust'. Until that bug is fixed in the Mac OS, please see the command-line alternatives demonstrated [here](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224305268) by @jaswsinc and @raamdev. I suggest using [the example given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504).
+
 #### Step 7: Add Files to: `~/VMs/my.vm/app/src/`
 
 The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/VMs/my.vm/app/src/phpBB`
