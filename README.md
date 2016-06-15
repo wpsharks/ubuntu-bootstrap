@@ -1,4 +1,4 @@
-## VirtualBox + Vagrant + Landrush; running Ubuntu w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of custom 7.0+, 7.0, 5.6, 5.5), and WordPress
+## VirtualBox + Vagrant + Landrush; running Ubuntu 16.04 LTS w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of PHP 7.0, PHP 5.6, PHP 5.5), and WordPress
 
 ![](http://cdn.websharks-inc.com/jaswsinc/uploads/2015/03/os-x-vagrant-virtualbox.png)
 
@@ -19,10 +19,10 @@ $ vagrant plugin install vagrant-cachier # Suggested only (optional).
 $ vagrant plugin install vagrant-triggers # This is optional also.
 ```
 
-You need to install the `ubuntu/trusty64` Box.
+You need to install the `ubuntu/xenial64` Box.
 
 ```bash
-$ vagrant box add ubuntu/trusty64
+$ vagrant box add ubuntu/xenial64
 ```
 
 #### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
@@ -296,7 +296,6 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 ---
 
 - `--CFG_INSTALL_MYSQL=0|1` Install MySQL?
-- `--CFG_INSTALL_MYSQL_DB_IMPORT_FILE=[file path on the VM]` Import SQL tables?
 
 ---
 
@@ -307,7 +306,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_INSTALL_PHP_CLI=0|1` Install PHP command-line interpreter?
 - `--CFG_INSTALL_PHP_FPM=0|1` Install PHP-FPM process manager for Apache/Nginx?
-- `--CFG_INSTALL_PHP_VERSION=[custom-src|custom|7.0|5.6|5.5]` Which PHP version?
+- `--CFG_INSTALL_PHP_VERSION=[7.0|5.6|5.5]` Which PHP version to install?
 - `--CFG_ENABLE_PHP_OPCACHE=0|1` Enable the PHP OPcache extension?
 - `--CFG_ENABLE_PHP_PHAR_READONLY=0|1` Force PHAR readonly mode?
 - `--CFG_ENABLE_PHP_ASSERTIONS=0|1` Enable PHP assertions?

@@ -6,6 +6,8 @@ declare -A ___app_related_services;
 declare -a ___app_related_services_order;
 
 # Listed in restart order; stopped in reverse order.
+# - `___app_related_services`: Array keys are binaries; values are service names.
+# - `___app_related_services_order`: Array values are references to the 'binary' service key.
 
 ___app_related_services[ssh]=ssh; ___app_related_services_order+=('ssh');
 
@@ -22,9 +24,9 @@ ___app_related_services[memcached]=memcached; ___app_related_services_order+=('m
 
 ___app_related_services[mysql]=mysql; ___app_related_services_order+=('mysql');
 
-___app_related_services[php-fpm]=php-fpm; ___app_related_services_order+=('php-fpm');
-___app_related_services[php5-fpm]=php5-fpm; ___app_related_services_order+=('php5-fpm');
-___app_related_services[php-fpm7.0]=php7.0-fpm; ___app_related_services_order+=('php-fpm7.0');
+___app_related_services[php5.5-fpm]=php5.5-fpm; ___app_related_services_order+=('php5.5-fpm');
+___app_related_services[php5.6-fpm]=php5.6-fpm; ___app_related_services_order+=('php5.6-fpm');
+___app_related_services[php7.0-fpm]=php7.0-fpm; ___app_related_services_order+=('php7.0-fpm');
 
 ___app_related_services[nginx]=nginx; ___app_related_services_order+=('nginx');
 ___app_related_services[apache2]=apache2; ___app_related_services_order+=('apache2');

@@ -11,6 +11,10 @@ if [[ "${CFG_INSTALL_MEMCACHE}" == 1 ]]; then
   rm --force /etc/memcached.conf;
   ln --symbolic /bootstrap/src/memcache/.conf /etc/memcached.conf;
 
+  # Enable automatic startup.
+
+  systemctl enable memcached;
+
   # Maybe create an RUnit startup script.
 
   maybe-add-runit-service memcached;

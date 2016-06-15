@@ -4,15 +4,22 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   # Install Apache web server.
 
+  add-apt-repository ppa:ondrej/apache2 --yes;
+  apt-get update; # Update after adding repo.
+
   apt-get install apache2 --yes;
-  apt-get install libapache2-mod-fastcgi --yes;
+  apt-get install apache2-dev --yes;
 
   # Configure Apache web server.
+
+  cd /etc/apache2/conf-enabled;
+  a2disconf * -f; # Disable all defaults.
 
   a2dismod autoindex -f;
   a2dismod negotiation -f;
   a2dissite 000-default;
 
+  a2enmod http2;
   a2enmod mpm_event;
 
   a2enmod auth_basic;
@@ -35,9 +42,11 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
   a2enmod vhost_alias;
   a2enmod rewrite;
 
+  a2enmod proxy;
+  a2enmod proxy_fcgi;
+
   a2enmod mime;
   a2enmod actions;
-  a2enmod fastcgi;
 
   a2enmod expires;
   a2enmod headers;
@@ -50,19 +59,58 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   a2enmod access_compat;
 
-  mkdir --parents /var/bootstrap/cgi-bin;
-  ln --symbolic /bootstrap/src/apache/.conf /etc/apache2/conf-enabled/z90.conf;
+  rm --force /etc/apache2/apache2.conf;
+
+  mkdir --parents /etc/apache2/conf.d/main;
+  mkdir --parents /etc/apache2/conf.d/http;
+  mkdir --parents /etc/apache2/conf.d/server;
+
+  ln --symbolic /bootstrap/src/apache/.conf /etc/apache2/apache2.conf;
+  cat /etc/apache2/~envvars >> /etc/apache2/envvars; rm /etc/apache2/~envvars;
+
+  ln --symbolic /bootstrap/src/apache/conf.d/main/_defaults.conf /etc/apache2/conf.d/main/_defaults.conf;
+  ln --symbolic /bootstrap/src/apache/conf.d/http/_defaults.conf /etc/apache2/conf.d/http/_defaults.conf;
+  ln --symbolic /bootstrap/src/apache/conf.d/server/_defaults.conf /etc/apache2/conf.d/server/_defaults.conf;
 
   if is-vm; then # Disable sendfile on VMs.
-    perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/.conf;
+    perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/snippets/http/_defaults/general.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
   if is-vm; then # Disable HSTS on VMs so that `http://` tools like MailHog will work.
-    perl -i -wpe 's/^(\s*)(Header\s+always\s+set\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/apache/.conf;
+    perl -i -wpe 's/^(\s*)(Header(?:\s+always)?\s+set\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/apache/snippets/server/_defaults/ssl-config.conf;
   fi; # See: <http://classically.me/blogs/how-clear-hsts-settings-major-browsers>
 
-  # Tack our `CFG_` vars onto the existing environment vars.
-  cat /etc/apache2/~envvars >> /etc/apache2/envvars; rm /etc/apache2/~envvars;
+  if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+    git clone https://github.com/cloudflare/mod_cloudflare.git /usr/local/src/mod-cloudflare --branch=master --depth=1;
+    /usr/local/src/mod-cloudflare; # Move into mod-cloudflare directory.
+    apxs -a -i -c mod_cloudflare.c; # Compile and enable module.
+
+    # See: <https://www.cloudflare.com/ips/>
+    _ips_v4="$(curl https://www.cloudflare.com/ips-v4 --location)";
+    _ips_v6="$(curl https://www.cloudflare.com/ips-v6 --location)";
+
+    : > /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+
+    _ips=''; # Initialize.
+
+    while read -ra _ip; do
+      _ip="$(trim "${_ip}")";
+      if [[ -n "${_ip}" ]]; then
+        _ips+='  '"${_ip}"' \'$'\n';
+      fi;
+    done <<< "${_ips_v4}"$'\n'"${_ips_v6}";
+
+    _ips="$(trim "${_ips}")"; _ips="$(trim "${_ips}" \\)";
+    echo 'CloudFlareRemoteIPTrustedProxy \'$'\n'"${_ips}" >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+    echo 'CloudFlareRemoteIPHeader cf-connecting-ip' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+
+    unset _ips_v4; unset _ips_v6; unset _ip; unset _ips; # Housekeeping.
+
+    ln --symbolic /bootstrap/src/apache/conf.d/server/cf-real-ip.conf /etc/apache2/conf.d/server/cf-real-ip.conf;
+  fi;
+  # Enable automatic startup.
+
+  systemctl enable apache2;
 
   # Maybe create an RUnit startup script.
 

@@ -24,7 +24,7 @@ chmod +x /usr/bin/hub; # Make `hub` executable now.
 # Install Git LFS for large file storage.
 
 curl https://packagecloud.io/gpg.key --location | sudo apt-key add -;
-apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ trusty main' --yes;
+apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ xenial main' --yes;
 apt-get update;
 apt-get install git-lfs --yes;
 

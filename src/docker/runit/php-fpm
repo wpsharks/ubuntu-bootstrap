@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-exec php-fpm --nodaemonize --fpm-config=/etc/php/fpm/fpm.conf 2>&1;

@@ -4,7 +4,7 @@ if can-run php && [[ "${CFG_INSTALL_PHPUNIT}" == 1 ]]; then
 
   # Install PHPUnit for tests.
 
-  if [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]] || version-compare "${CFG_INSTALL_PHP_VERSION}" ge 5.6; then
+  if version-compare "$(php -r 'echo PHP_VERSION;')" ge 5.6; then
     _url=https://phar.phpunit.de/phpunit.phar;
   else # Older version for older PHP installs.
     _url=https://phar.phpunit.de/phpunit-old.phar;

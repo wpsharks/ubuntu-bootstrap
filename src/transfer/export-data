@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Installation must have completed already.
+
+if [[ ! -f /etc/bootstrap/.installed ]]; then
+  echo 'Installation incomplete. Not yet possible.';
+  exit 1; # Failure status.
+fi;
+# Export data and upload via transfer.sh.
+
+cd /; # Move to drive base.
+
+rm --force /tmp/exported-data.sql;
+rm --force /tmp/exported-data.tar.gz;
+rm --force /tmp/exported-data.tar.gz.gpg;
+
+if can-run mysql; then
+  mysqldump --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --all-databases > /tmp/exported-data.sql;
+else touch /tmp/exported-data.tar.gz; fi;
+
+tar --create --gzip --preserve-permissions --verbose --file=/exported-data.tar.gz \
+  /app \
+  /repos \
+  /tmp/exported-data.sql;
+
+sharefile /exported-data.tar.gz.gpg symmetric;

@@ -1,5 +1,5 @@
 Vagrant.configure(2) do |config|
-  config.vm.box = 'ubuntu/trusty64';
+  config.vm.box = 'websharks/ubuntu-xenial64';
 
   # Configure the hostname for this VM.
   config.vm.hostname = 'ubuntu.vm'; # Default value.
@@ -9,6 +9,9 @@ Vagrant.configure(2) do |config|
   # Configure vars for the VM hostname (lower & upper).
   _vm_hostname_lc_var = config.vm.hostname.downcase.tr('.-', '_');
   _VM_HOSTNAME_UC_VAR = config.vm.hostname.upcase.tr('.-', '_');
+
+  # Mount bootstrap itself as `/vagrant` explicitly.
+  config.vm.synced_folder '.', '/vagrant', mount_options: ['defaults'];
 
   # Mount `/vagrant/src/app/src` in a specific way. See `src/setups/mkdirs` for details.
   config.vm.synced_folder './src/app/src', '/vagrant/src/app/src', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
@@ -31,24 +34,19 @@ Vagrant.configure(2) do |config|
   # Allow SSH keys that the user has to be used on the VM w/o copying them to the VM.
   config.ssh.forward_agent = true; # Does not work in scripts; shell only.
 
+  # Configure VB name & resources.
+  config.vm.provider 'virtualbox' do |vb|
+    vb.name = "websharks-ubuntu-xenial-16.04-lts-#{config.vm.hostname}";
+    vb.customize ['modifyvm', :id, '--memory', '512'];
+    vb.customize ['modifyvm', :id, '--vram', '128'];
+    vb.customize ['modifyvm', :id, '--cpus', '1'];
+  end;
+
   # Configure DNS automatically? Exclude when building a base image.
   if Vagrant.has_plugin?('landrush') && ENV['VM_4CI'] != '1' && ENV['VM_4PKG'] != '1'
     config.landrush.enabled = true; # Enable landrush plugin.
     config.landrush.tld = 'vm'; # Set landrush TLD for this VM.
     config.landrush.upstream '8.8.8.8'; # Google public DNS.
-  end;
-
-  # Configure box-specific caching.
-  if Vagrant.has_plugin?('vagrant-cachier')
-    config.cache.scope = :box;
-    config.cache.enable :apt;
-  end;
-
-  # Configure resource allocations.
-  config.vm.provider 'virtualbox' do |vb|
-    vb.customize ['modifyvm', :id, '--memory', '512'];
-    vb.customize ['modifyvm', :id, '--vram', '128'];
-    vb.customize ['modifyvm', :id, '--cpus', '1'];
   end;
 
   # When building a VM that is going to be packaged-up.

@@ -13,19 +13,24 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
   rm --force /etc/nginx/nginx.conf;
   rm --force /etc/nginx/sites-enabled/default;
 
+  mkdir --parents /etc/nginx/conf.d/main;
   mkdir --parents /etc/nginx/conf.d/http;
   mkdir --parents /etc/nginx/conf.d/server;
+
   ln --symbolic /bootstrap/src/nginx/.conf /etc/nginx/nginx.conf;
+  cat /etc/nginx/~env.conf >> /etc/nginx/env.conf; rm /etc/nginx/~env.conf;
+
+  ln --symbolic /bootstrap/src/nginx/conf.d/main/_defaults.conf /etc/nginx/conf.d/main/_defaults.conf;
+  ln --symbolic /bootstrap/src/nginx/conf.d/http/_defaults.conf /etc/nginx/conf.d/http/_defaults.conf;
+  ln --symbolic /bootstrap/src/nginx/conf.d/server/_defaults.conf /etc/nginx/conf.d/server/_defaults.conf;
 
   if is-vm; then # Disable sendfile on VMs.
-    perl -i -wpe 's/^(\s*)sendfile\s+.*$/$1sendfile off;/u' /bootstrap/src/nginx/.conf;
+    perl -i -wpe 's/^(\s*)sendfile\s+.*$/$1sendfile off;/u' /bootstrap/src/nginx/snippets/http/_defaults/general.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
   if is-vm; then # Disable HSTS on VMs so that `http://` tools like MailHog will work.
-    perl -i -wpe 's/^(\s*)(add_header\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/nginx/.conf;
+    perl -i -wpe 's/^(\s*)(add_header\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/nginx/snippets/server/_defaults/ssl-config.conf;
   fi; # See: <http://classically.me/blogs/how-clear-hsts-settings-major-browsers>
-
-  perl -i -0wpe 's/%%cookie_maintenance_bypass_value%%/'"${CFG_MAINTENANCE_BYPASS_KEY}"'/uig' /bootstrap/src/nginx/.conf;
 
   if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
     # See: <https://www.cloudflare.com/ips/>
@@ -44,6 +49,17 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
 
     ln --symbolic /bootstrap/src/nginx/conf.d/server/cf-real-ip.conf /etc/nginx/conf.d/server/cf-real-ip.conf;
   fi;
+  # Bug fix. See: <https://bugs.launchpad.net/ubuntu/+source/nginx/+bug/1581864>
+
+  mkdir --parents /etc/systemd/system/nginx.service.d;
+  echo '[Service]' >> /etc/systemd/system/nginx.service.d/override.conf;
+  echo 'ExecStartPost=/bin/sleep 0.1' >> /etc/systemd/system/nginx.service.d/override.conf;
+  systemctl daemon-reload; # Restart systemd.
+
+  # Enable automatic startup.
+
+  systemctl enable nginx;
+
   # Maybe create an RUnit startup script.
 
   maybe-add-runit-service nginx;

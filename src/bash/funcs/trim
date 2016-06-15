@@ -3,9 +3,21 @@
 # Trim utility.
 
 function trim() {
+  local chars;
+
   if [[ -p /dev/stdin ]]; then
-    echo -n "$(perl -0wpe 's/(^\s+|\s+\$)//ug')";
+    if [[ -n "${1:-}" ]]; then
+      chars="$(esc-regex "${1}")";
+      echo -n "$(perl -0wpe 's/(^['"${chars}"']+|['"${chars}"']+$)//ug')";
+    else
+      echo -n "$(perl -0wpe 's/(^\s+|\s+$)//ug')";
+    fi;
   else
-    echo -n "$(echo "${1:-}" | perl -0wpe 's/(^\s+|\s+\$)//ug')";
+    if [[ -n "${2:-}" ]]; then
+      chars="$(esc-regex "${2}")";
+      echo -n "$(echo "${1:-}" | perl -0wpe 's/(^['"${chars}"']+|['"${chars}"']+$)//ug')";
+    else
+      echo -n "$(echo "${1:-}" | perl -0wpe 's/(^\s+|\s+$)//ug')";
+    fi;
   fi;
 };

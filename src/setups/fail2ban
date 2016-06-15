@@ -11,6 +11,10 @@ if [[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]]; then
   ln --symbolic /bootstrap/src/fail2ban/.conf /etc/fail2ban/jail.local;
   perl -i -wpe 's/^(\s*)destemail\s*\=.*$/$1destemail = '"$(esc-regex-rv "${CFG_ADMIN_EMAIL}")"'/u' /bootstrap/src/fail2ban/.conf;
 
+  # Enable automatic startup.
+
+  systemctl enable fail2ban;
+
   # Restart service.
 
   service fail2ban restart;

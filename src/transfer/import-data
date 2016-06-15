@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Installation must have completed already.
+
+if [[ ! -f /etc/bootstrap/.installed ]]; then
+  echo 'Installation incomplete. Not yet possible.';
+  exit 1; # Failure status.
+fi;
+# Must have a URL pointing to import data.
+
+url="${1:-}"; # Initialize.
+
+if [[ -z "${url}" ]]; then
+  echo 'Expecting input URL w/ import data.';
+  exit 1; # Hard failure.
+fi;
+# Download & import the remote data.
+
+cd /; # Move to drive base.
+
+rm --force /tmp/exported-data.sql;
+rm --force /tmp/exported-data.tar.gz;
+rm --force /tmp/exported-data.tar.gz.gpg;
+
+curl "${url}" --location --output /tmp/exported-data.tar.gz.gpg;
+gpg --decrypt --output /tmp/exported-data.tar.gz /tmp/exported-data.tar.gz.gpg;
+
+tar --extract --gzip --preserve-permissions --overwrite --unlink-first --verbose /tmp/exported-data.tar.gz;
+
+if [[ -f /tmp/exported-data.sql ]] && can-run mysql; then
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" < /tmp/exported-data.sql;
+fi;

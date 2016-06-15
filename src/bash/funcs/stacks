@@ -3,62 +3,62 @@
 # Nginx, MySQL, PHP, Memcached.
 
 function is-nginx-mysql-php-fpm-memcached-stack() (
-  if can-run nginx && ! can-run apache2 && can-run mysql && (can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0) && can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if can-run nginx && ! can-run apache2 && can-run mysql && (can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm) && can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Apache, MySQL, PHP, Memcached.
 
 function is-apache-mysql-php-fpm-memcached-stack() (
-  if can-run apache2 && ! can-run nginx && can-run mysql && (can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0) && can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if can-run apache2 && ! can-run nginx && can-run mysql && (can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm) && can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Nginx, MySQL, PHP.
 
 function is-nginx-mysql-php-fpm-stack() (
-  if can-run nginx && ! can-run apache2 && can-run mysql && (can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0) && ! can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if can-run nginx && ! can-run apache2 && can-run mysql && (can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm) && ! can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Apache, MySQL, PHP.
 
 function is-apache-mysql-php-fpm-stack() (
-  if can-run apache2 && ! can-run nginx && can-run mysql && (can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0) && ! can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if can-run apache2 && ! can-run nginx && can-run mysql && (can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm) && ! can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Nginx, PHP.
 
 function is-nginx-php-fpm-stack() (
-  if can-run nginx && ! can-run apache2 && ! can-run mysql && (can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0) && ! can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if can-run nginx && ! can-run apache2 && ! can-run mysql && (can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm) && ! can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Apache, PHP.
 
 function is-apache-php-fpm-stack() (
-  if can-run apache2 && ! can-run nginx && ! can-run mysql && (can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0) && ! can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if can-run apache2 && ! can-run nginx && ! can-run mysql && (can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm) && ! can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # MySQL stand-alone stack.
 
 function is-mysql-stack() (
-  if ! can-run nginx && ! can-run apache2 && can-run mysql && ! can-run php-fpm && ! can-run php5-fpm && ! can-run php-fpm7.0 && ! can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if ! can-run nginx && ! can-run apache2 && can-run mysql && ! can-run php5.5-fpm && ! can-run php5.6-fpm && ! can-run php7.0-fpm && ! can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Memcached stand-alone stack.
 
 function is-memcached-stack() (
-  if ! can-run nginx && ! can-run apache2 && ! can-run mysql && ! can-run php-fpm && ! can-run php5-fpm && ! can-run php-fpm7.0 && can-run memcached && ! can-run docker && [[ ! -d /discourse ]]; then
+  if ! can-run nginx && ! can-run apache2 && ! can-run mysql && ! can-run php5.5-fpm && ! can-run php5.6-fpm && ! can-run php7.0-fpm && can-run memcached && [[ ! -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
 
 # Discourse stand-alone stack.
 
 function is-discourse-stack() (
-  if ! can-run nginx && ! can-run apache2 && ! can-run mysql && ! can-run php-fpm && ! can-run php5-fpm && ! can-run php-fpm7.0 && ! can-run memcached && can-run docker && [[ -d /discourse ]]; then
+  if ! can-run nginx && ! can-run apache2 && ! can-run mysql && ! can-run php5.5-fpm && ! can-run php5.6-fpm && ! can-run php7.0-fpm && ! can-run memcached && [[ -d /discourse ]]; then
     exit 0; else exit 1; fi;
 );
