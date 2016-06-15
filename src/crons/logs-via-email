@@ -5,7 +5,7 @@ namespace WebSharks\Ubuntu\Bootstrap\Crons;
 
 use WebSharks\Core\Classes\CoreFacades as c;
 
-require_once '/usr/local/src/wsc/src/includes/app-stub.php';
+require_once '/usr/local/src/websharks-core/src/includes/app-stub.php';
 
 $Config        = c::app()->Config;
 $php_error_log = '/var/log/php/errors.log';

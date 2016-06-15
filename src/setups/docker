@@ -5,14 +5,22 @@ if [[ "${CFG_INSTALL_DOCKER}" == 1 ]]; then
   # Install Docker.
 
   apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D;
-  apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-trusty main' --yes;
+  apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main' --yes;
   apt-get update; # Update APT & install now.
 
   apt-get install linux-image-extra-"$(uname -r)" --yes;
   apt-get install docker-engine --yes;
 
+  # Configure Docker.
+
   perl -i -wpe 's/^(\s*)DOCKER_OPTS\s*\=.*$/$1DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"/u' /etc/default/docker;
 
-  service docker restart; # Restart docker.
+  # Enable automatic startup.
+
+  systemctl enable docker;
+
+  # Restart service.
+
+  service docker restart;
 
 else echo 'Skipping Docker installation.'; fi;

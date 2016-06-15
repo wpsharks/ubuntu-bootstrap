@@ -4,6 +4,7 @@
 
 apt-get install g++ --yes;
 apt-get install cmake --yes;
+apt-get install libtool --yes;
 apt-get install autoconf --yes;
 apt-get install pkg-config --yes;
 apt-get install libssl-dev --yes;

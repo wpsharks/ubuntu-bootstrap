@@ -1,0 +1,8 @@
+[Unit]
+Description=MailHog for SMTP Testing
+
+[Service]
+ExecStart=/usr/bin/mailhog &>>/var/log/mailhog.log
+
+[Install]
+WantedBy=multi-user.target

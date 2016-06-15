@@ -5,22 +5,22 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   # Install PHP CLI and/or PHP process manager.
 
   if [[ "${CFG_INSTALL_PHP_VERSION}" == 7.0 ]]; then
-    . /bootstrap/src/setups/php/via-ppa/v7.0;
+    . /bootstrap/src/setups/php/v7.0;
 
   elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.6 ]]; then
-    . /bootstrap/src/setups/php/via-ppa/v5.6;
+    . /bootstrap/src/setups/php/v5.6;
 
   elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
-    . /bootstrap/src/setups/php/via-ppa/v5.5;
-
-  elif [[ "${CFG_INSTALL_PHP_VERSION}" =~ ^custom ]]; then
-    . /bootstrap/src/setups/php/custom;
+    . /bootstrap/src/setups/php/v5.5;
   fi;
   # PHP ini file alterations based on other config values.
 
   if [[ "${CFG_ENABLE_PHP_OPCACHE}" != 1 ]]; then
     perl -i -wpe 's/^(\s*)opcache\.enable\s*=\s*(?:yes|1|on|true)$/$1opcache.enable = no/u' /bootstrap/src/php/.ini;
     perl -i -wpe 's/^(\s*)opcache\.enable_cli\s*=\s*(?:yes|1|on|true)$/$1opcache.enable_cli = no/u' /bootstrap/src/php/.ini;
+  fi;
+  if is-vm; then # On a VM, revalidate the OPcache on every request to avoid developer headaches.
+    perl -i -wpe 's/^(\s*)opcache\.revalidate_freq\s*=.*$/$1opcache.revalidate_freq = 0/u' /bootstrap/src/php/.ini;
   fi;
   if [[ "${CFG_ENABLE_PHP_PHAR_READONLY}" != 1 ]]; then
     perl -i -wpe 's/^(\s*)phar\.readonly\s*=\s*(?:yes|1|on|true)$/$1phar.readonly = no/u' /bootstrap/src/php/.ini;

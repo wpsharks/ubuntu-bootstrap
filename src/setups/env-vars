@@ -2,8 +2,8 @@
 
 # Global environment variables.
 
+mkdir --parents /etc/nginx;
 mkdir --parents /etc/apache2;
-
 mkdir --parents /etc/php/fpm;
 echo '[www]' > /etc/php/fpm/env.conf;
 

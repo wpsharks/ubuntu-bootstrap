@@ -8,7 +8,7 @@ if in-docker && can-run sv; then
 
   mkdir --parents /etc/service;
 
-  ## Create an Upstart `service` alias.
+  ## Create a `service` alias.
 
   ln --symbolic --force /bootstrap/src/bin/runit-service /usr/sbin/service;
 

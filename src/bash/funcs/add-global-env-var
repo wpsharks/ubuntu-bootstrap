@@ -32,12 +32,21 @@ function add-global-env-var() {
       else echo "env[${key}] = '${value}'" >> /etc/php/fpm/~env.conf; fi;
     fi;
   fi;
+  ## Adds environment variables for Nginx also.
+
+  if [[ -d /etc/nginx ]]; then
+    if [[ -f /etc/nginx/env.conf ]]; then
+      echo "set \$${key} '${value}';" >> /etc/nginx/env.conf;
+    else # Adds a file that our Nginx installer can work with later.
+      echo "set \$${key} '${value}';" >> /etc/nginx/~env.conf;
+    fi;
+  fi;
   ## Adds environment variables for Apache also.
 
   if [[ -d /etc/apache2 ]]; then
     if [[ -f /etc/apache2/envvars ]]; then
       echo "export ${key}='${value}'" >> /etc/apache2/envvars;
-    else # Adds a file that our Apache installer can read from.
+    else # Adds a file that our Apache installer can work with later.
       echo "export ${key}='${value}'" >> /etc/apache2/~envvars;
     fi;
   fi;

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Enable startup.
+
+systemctl enable ssh;
+
 # Maybe harden SSH security.
 
 if ! is-vm && ! in-docker; then

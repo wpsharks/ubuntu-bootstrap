@@ -161,7 +161,7 @@ if can-run nginx; then
   echo 'Nginx worker_connections: '"${nginx_worker_connections}";
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)worker_connections\s+.*$/$1worker_connections '"$(esc-regex-rv "${nginx_worker_connections}")"';/u' /bootstrap/src/nginx/.conf;
+  perl -i -wpe 's/^(\s*)worker_connections\s+.*$/$1worker_connections '"$(esc-regex-rv "${nginx_worker_connections}")"';/u' /bootstrap/src/nginx/snippets/main/_defaults/general.conf;
 fi;
 
 # Set Apache resource limits.
@@ -187,9 +187,9 @@ if can-run apache2; then
   echo 'Apache MaxRequestWorkers: '"${apache_max_request_workers}";
   echo '----------------------------------------------------------------------';
 
-  perl -i -wpe 's/^(\s*)StartServers\s+.*$/$1StartServers '"$(esc-regex-rv "${apache_start_servers}")"'/u' /bootstrap/src/apache/.conf;
-  perl -i -wpe 's/^(\s*)ServerLimit\s+.*$/$1ServerLimit '"$(esc-regex-rv "${apache_server_limit}")"'/u' /bootstrap/src/apache/.conf;
-  perl -i -wpe 's/^(\s*)MaxRequestWorkers\s+.*$/$1MaxRequestWorkers '"$(esc-regex-rv "${apache_max_request_workers}")"'/u' /bootstrap/src/apache/.conf;
+  perl -i -wpe 's/^(\s*)StartServers\s+.*$/$1StartServers '"$(esc-regex-rv "${apache_start_servers}")"'/u' /bootstrap/src/apache/snippets/main/_defaults/general.conf;
+  perl -i -wpe 's/^(\s*)ServerLimit\s+.*$/$1ServerLimit '"$(esc-regex-rv "${apache_server_limit}")"'/u' /bootstrap/src/apache/snippets/main/_defaults/general.conf;
+  perl -i -wpe 's/^(\s*)MaxRequestWorkers\s+.*$/$1MaxRequestWorkers '"$(esc-regex-rv "${apache_max_request_workers}")"'/u' /bootstrap/src/apache/snippets/main/_defaults/general.conf;
 fi;
 
 # Set MySQL resource limits.
@@ -209,7 +209,7 @@ fi;
 
 # Set PHP process manager resource limits.
 
-if can-run php-fpm || can-run php5-fpm || can-run php-fpm7.0; then
+if can-run php5.5-fpm || can-run php5.6-fpm || can-run php7.0-fpm; then
   allowing_php_fpm_ram="${php_fpm_ram}";
   [[ "${allowing_php_fpm_ram}" -lt 128 ]] && allowing_php_fpm_ram=128;
   remaining_ram=$((remaining_ram-allowing_php_fpm_ram));
@@ -274,7 +274,7 @@ fi;
 # Note: Discourse should run on a server w/ 1GB+ of RAM.
 #   If less than 2GB of RAM, swap is necessary.
 
-if can-run docker && [[ -d /discourse ]]; then
+if [[ -d /discourse ]]; then
   allowing_discourse_ram="${discourse_ram}";
   [[ "${allowing_discourse_ram}" -lt 768 ]] && allowing_discourse_ram=768;
   remaining_ram=$((remaining_ram-allowing_discourse_ram));

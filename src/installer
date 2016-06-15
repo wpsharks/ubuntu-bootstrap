@@ -71,8 +71,8 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
   . /bootstrap/src/setups/composer;
   . /bootstrap/src/setups/wp-cli;
   . /bootstrap/src/setups/wp-i18n-tools;
+  . /bootstrap/src/setups/websharks-core;
   . /bootstrap/src/setups/cachetool;
-  . /bootstrap/src/setups/wsc;
 
   . /bootstrap/src/setups/app-repo;
   . /bootstrap/src/setups/discourse;
