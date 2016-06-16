@@ -14,9 +14,7 @@ You need to have VirtualBox, Vagrant, and Landrush installed.
 $ brew cask install virtualbox
 $ brew cask install vagrant
 $ vagrant plugin install landrush
-
-$ vagrant plugin install vagrant-cachier # Suggested only (optional).
-$ vagrant plugin install vagrant-triggers # This is optional also.
+$ vagrant plugin install vagrant-triggers # optional (recommended).
 ```
 
 You need to install the `websharks/ubuntu-xenial64` Box.
