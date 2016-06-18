@@ -48,6 +48,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
     echo 'UMask=0002' >> /etc/systemd/system/php7.0-fpm.service.d/override.conf;
     systemctl daemon-reload; # Restart systemd after updating umask.
 
+    systemctl enable php7.0-fpm; # Enable automatic startup.
+
     maybe-add-runit-service php7.0-fpm; # Maybe create an RUnit startup script.
 
     service php7.0-fpm restart; # Restart service; PHP process manager.

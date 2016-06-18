@@ -57,14 +57,17 @@ fi;
 
 if [[ "${recipient}" == symmetric ]]; then
 
-  echo 'Uploading encrypted file w/ symmetric encryption.';
+  echo 'Uploading encrypted file w/ symmetric key.';
 
-	gpg --armor --symmetric --cipher-algo AES256 --output /tmp/sharefile-"${basename}".gpg "${file}";
+	gpg --armor --symmetric --cipher-algo AES256 \
+		--output /tmp/sharefile-"${basename}".gpg "${file}";
+
   link="$(cat /tmp/sharefile-"${basename}".gpg \
     | curl --request PUT --upload-file '-' https://transfer.sh/"${basename}".gpg \
     )";
-  echo -n "${link}" | pbcopy; echo "${link}";
-  echo 'Copied to clipboard; expires in 14 days';
+	rm /tmp/sharefile-"${basename}".gpg; # Cleanup `.gpg` file.
+
+  echo "${link}"; echo 'Link expires in 14 days.';
 
 # Upload for sharing via transfer.sh.
 
@@ -76,8 +79,7 @@ elif [[ -n "${recipient}" ]]; then
     | keybase pgp encrypt "${recipient}" \
     | curl --request PUT --upload-file '-' https://transfer.sh/"${basename}".gpg \
     )";
-  echo -n "${link}" | pbcopy; echo "${link}";
-  echo 'Copied to clipboard; expires in 14 days';
+  echo "${link}"; echo 'Link expires in 14 days.';
 
 else # Unencrypted file (default behavior w/ no recipient).
 
@@ -86,6 +88,5 @@ else # Unencrypted file (default behavior w/ no recipient).
   link="$(cat "${file}" \
     | curl --request PUT --upload-file '-' https://transfer.sh/"${basename}" \
     )";
-  echo -n "${link}" | pbcopy; echo "${link}";
-  echo 'Copied to clipboard; expires in 14 days';
+  echo "${link}"; echo 'Link expires in 14 days.';
 fi;

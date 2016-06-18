@@ -42,7 +42,7 @@ if can-run php && [[ "${CFG_INSTALL_WORDPRESS}" == 1 ]]; then
   find /app/src -type f -exec chmod 664 {} \;
 
   # Build symlinks to development files when run via Vagrant.
-  # Note: These are read-only mounts; to avoid inadvertent changes.
+  # Note: These are read-only mounts to avoid inadvertent changes.
 
   if [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]]; then
 

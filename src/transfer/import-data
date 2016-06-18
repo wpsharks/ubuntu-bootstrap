@@ -40,3 +40,6 @@ tar --extract --gzip --preserve-permissions --overwrite --unlink-first --verbose
 if [[ -f /tmp/exported-data.sql ]] && can-run mysql; then
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" < /tmp/exported-data.sql;
 fi;
+rm --force /tmp/exported-data.sql;
+rm --force /tmp/exported-data.tar.gz;
+rm --force /tmp/exported-data.tar.gz.gpg;

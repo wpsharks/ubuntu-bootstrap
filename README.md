@@ -8,27 +8,39 @@
 
 #### Step 1: Satisfy Software Requirements
 
-You need to have VirtualBox, Vagrant, and Landrush installed.
+You need to have VirtualBox, Vagrant, and one of two DNS plugin options.
 
 ```bash
-$ brew cask install virtualbox
-$ brew cask install vagrant
-$ vagrant plugin install landrush
-$ vagrant plugin install vagrant-triggers # optional (recommended).
+$ brew cask install virtualbox;
+$ brew cask install vagrant;
+
+# Also tweak VirtualBox by running this line please:
+# See: <https://github.com/mitchellh/vagrant/issues/3083> for details.
+VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
+
+# ---------------------------------------------
+
+# You need only one of these. Please choose:
+$ vagrant plugin install landrush; # Best option w/ most flexibility.
+$ vagrant plugin install vagrant-hostsupdater; # Or this one (not as powerful).
+
+# ---------------------------------------------
+
+$ vagrant plugin install vagrant-triggers; # Optional (recommended).
+# This allows for special event handling. Helpful, but not required at this time.
 ```
 
-You need to install the `websharks/ubuntu-xenial64` Box.
+_**Note:** If you don't install Landrush and instead you go with the alternate DNS plugin `vagrant-hostsupdater` (or you choose not to install a DNS plugin at all), it will mean that your VM will have a static IP address of: `192.168.42.42`_
 
-```bash
-$ vagrant box add websharks/ubuntu-xenial64
-```
+_This also means that you can only run a single VM at one time, because the static IP is the same for each VM. If you go this route and also want to run multiple VM instances at the same time you will need to change the IP address in the [`Vagrantfile`](Vagrantfile) for each additional VM that you bring up._
+
+_You can just edit the [`Vagrantfile`](Vagrantfile) and bump the IP from `192.168.42.42` (default),  to `192.168.42.43`, `192.168.42.44`, etc (for each of your additional VMS)._
 
 #### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
 
 ```bash
-$ mkdir ~/VMs && cd ~/VMs
-$ git clone https://github.com/websharks/ubuntu-bootstrap my.vm
-$ cd ~/VMs/my.vm && git lfs pull # Pull large file storage.
+$ mkdir ~/VMs && cd ~/VMs;
+$ git clone https://github.com/websharks/ubuntu-bootstrap my.vm;
 ```
 
 _Note that `my.vm` becomes your domain name. Change it if you like. Must end with `.vm` please._
@@ -36,16 +48,16 @@ _Note that `my.vm` becomes your domain name. Change it if you like. Must end wit
 #### Step 3: Vagrant Up!
 
 ```bash
-$ cd ~/VMs/my.vm
-$ vagrant up
+$ cd ~/VMs/my.vm;
+$ vagrant up;
 ```
 
 #### Step 4: Install software :-)
 
 ```bash
-$ vagrant ssh
-$ sudo /bootstrap/src/installer # Presents a configuration dialog.
-# Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
+$ vagrant ssh;
+$ sudo /bootstrap/src/installer; # Presents a configuration dialog.
+# Tip: To bypass the dialog use `--CFG_USE_WIZARD=0` argument to installer.
 ```
 
 #### Step 5: Confirm it is Working!
@@ -104,8 +116,8 @@ Available Tools (Using Any of These is Optional):
 #### Step 10: Tear it Down and Customize
 
 ```bash
-$ cd ~/VMs/my.vm
-$ vagrant destroy
+$ cd ~/VMs/my.vm;
+$ vagrant destroy;
 ```
 
 In the project directory you'll find a `/src/vagrant/bootstrap-custom` file. This bash script runs as the `root` user during `vagrant up`. Therefore, you can install software and configure anything you like in this script. By default, this script does nothing. All of the software installation and system configuration takes place whenever you run `/bootstrap/src/installer` inside the VM.
@@ -119,14 +131,14 @@ In the project directory you'll find a `/src/vagrant/bootstrap-custom` file. Thi
 ##### When you're done with your customizations, type:
 
 ```bash
-$ vagrant up
+$ vagrant up;
 ```
 
 ###### If you decided to use the `/bootstrap/src/installer` option, also type:
 
 ```bash
-$ vagrant ssh
-$ sudo /bootstrap/src/installer # Presents a configuration dialog.
+$ vagrant ssh;
+$ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 # Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
@@ -137,11 +149,11 @@ $ sudo /bootstrap/src/installer # Presents a configuration dialog.
 #### Creating a Second VM w/ a Different Domain Name
 
 ```bash
-$ git clone https://github.com/jaswsinc/vagrant-ubuntu-lemp my-second.vm
-$ cd my-second.vm
-$ vagrant up
-$ vagrant ssh
-$ sudo /bootstrap/src/installer # Presents a configuration dialog.
+$ git clone https://github.com/jaswsinc/vagrant-ubuntu-lemp my-second.vm;
+$ cd my-second.vm;
+$ vagrant up;
+$ vagrant ssh;
+$ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 # Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
@@ -363,7 +375,7 @@ When building a base image that is going to be repackaged, please be sure to dis
 
 ```bash
 $ export VM_4PKG=1;
-$ vagrant up
+$ vagrant up;
 ```
 
 After running `$ vagrant up`, SSH into the VM and run `$ /bootstrap/src/installer`. The installer itself will also be aware of the `VM_4PKG` environment variable, which enables repackaging-specific routines in the bootstrap installer; i.e.., better defaults, additional cleanups, drive compression, etc.
