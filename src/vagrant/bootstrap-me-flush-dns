@@ -14,6 +14,6 @@ unset _bootstrap_dir; # Housekeeping.
 # Maybe flush the DNS cache to avoid problems.
 
 if [[ "${OSTYPE}" == 'darwin'* ]]; then
-  echo 'Flushing DNS on Mac OS X; requires sudo...';
+  echo 'Flushing DNS on Mac OS X; requires sudo ...';
   sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder;
 fi;

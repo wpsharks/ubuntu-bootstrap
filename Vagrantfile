@@ -1,12 +1,17 @@
 Vagrant.configure(2) do |config|
 
+  # Static IP; if not using Landrush.
+
+  _static_ip = '192.168.42.42';
+
   # Required box configuration.
 
   config.vm.box = 'websharks/ubuntu-xenial64';
 
   # Configure hostname for this VM.
 
-  config.vm.hostname = 'ubuntu.vm'; # Initialize.
+  config.vm.hostname = 'ubuntu.vm'; # Default value.
+  # Changed below if the directory containing this file ends with `.vm`.
 
   if !File.dirname(File.expand_path(__FILE__)).scan(/\.vm$/i).empty?
     config.vm.hostname = File.basename(File.dirname(File.expand_path(__FILE__)));
@@ -28,24 +33,22 @@ Vagrant.configure(2) do |config|
 
   # Enable SSH agent forwarding on the VM.
 
-  config.ssh.forward_agent = true; # Works at command line only.
+  config.ssh.forward_agent = true; # Forwards SSH keys.
 
   # Mount shared/synced directories on the VM.
 
   config.vm.synced_folder '.', '/vagrant', mount_options: ['defaults'];
   config.vm.synced_folder './src/app/src', '/vagrant/src/app/src', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
 
-  if ENV['VM_4CI'] != '1' && ENV['VM_4PKG'] != '1'
-    if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
-      config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['defaults', 'ro'];
-    end;
-    if File.directory?(wp_personal_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
-      config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['defaults', 'ro'];
-    end;
-    if File.directory?(wp_business_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUSINESS_PROJECTS_DIR"] || ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
-      config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['defaults', 'ro'];
-    end;
-  end; # ↑ See: <https://github.com/websharks/ubuntu-bootstrap#testing-wordpress-themesplugins-easily>
+  if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
+    config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['defaults', 'ro'];
+  end;
+  if File.directory?(wp_personal_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
+    config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['defaults', 'ro'];
+  end;
+  if File.directory?(wp_business_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUSINESS_PROJECTS_DIR"] || ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
+    config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['defaults', 'ro'];
+  end;
 
   # Configure DNS using one of two compatible plugins.
 
@@ -56,10 +59,10 @@ Vagrant.configure(2) do |config|
     config.landrush.guest_redirect_dns = false;
 
   elsif Vagrant.has_plugin?('vagrant-hostsupdater')
-    config.vm.network :private_network, id: 'wubs-primary', ip: '192.168.42.42'; # Static IP is far less flexible.
+    config.vm.network :private_network, ip: _static_ip; # Static IP is far less flexible.
     config.hostsupdater.aliases = ['sub.'+"#{config.vm.hostname}", 'sub1.'+"#{config.vm.hostname}", 'sub2.'+"#{config.vm.hostname}", 'sub3.'+"#{config.vm.hostname}"]
 
-  else config.vm.network :private_network, id: 'wubs-primary', ip: '192.168.42.42'; end;
+  else config.vm.network :private_network, ip: _static_ip; end;
 
   # Configure provisioners for this VM.
 
@@ -73,14 +76,16 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision :shell, path: 'src/vagrant/bootstrap', run: 'always';
 
-  if Vagrant.has_plugin?('vagrant-triggers')
+  if Vagrant.has_plugin?('landrush') && Vagrant.has_plugin?('vagrant-triggers')
     config.trigger.after [:up, :resume], :append_to_path => File.dirname(File.expand_path(__FILE__)) do
-      run 'src/vagrant/bootstrap-me';
+      run 'src/vagrant/bootstrap-me-flush-dns';
     end;
   end;
 
   # Message to display after a `vagrant up` is complete.
 
-  config.vm.post_up_message = 'Welcome to the WUBS (WebSharks Ubuntu Bootstrap).' + "\n" +
-    'If this is your first `vagrant up`, please type: `vagrant ssh` to log into the VM. Then type: `sudo /bootstrap/src/installer` to install software.';
+  if !File.file?(File.dirname(File.expand_path(__FILE__))+'/.installed-version')
+    config.vm.post_up_message = 'Welcome to the WebSharks Ubuntu Bootstrap :-)' + "\n" +
+      'Type: `vagrant ssh` to log into the VM. Then type: `sudo /bootstrap/src/installer` to install software.';
+  end;
 end;

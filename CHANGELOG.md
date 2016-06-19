@@ -1,3 +1,16 @@
+## 160619
+
+- Adding support for `vagrant-hostsupdater` as an alternative to Landrush for Vagrant. See [this README section](https://github.com/websharks/ubuntu-bootstrap#step-1-satisfy-software-requirements) for details.
+- Adding support for no DNS plugin at all, which results in a static IP that you can add to `/etc/hosts` if you don't want to run Landrush. See [this README section](https://github.com/websharks/ubuntu-bootstrap#step-1-satisfy-software-requirements) for details.
+- Adding a welcome message for new users that instructs them to run `vagrant ssh` and `sudo /bootstrap/src/installer` after they do a `vagrant up`.
+- Improving the `Vagrantfile`; i.e., making it a little more dynamic, and more compatible with a variety of DNS plugins for Vagrant.
+- Moving internal `/etc/bootstrap/.installed` flag to `/bootstrap/.installed-version` so the `Vagrantfile` can read this also.
+- Adding `systemctl enable phpX.X-fpm` calls to make sure PHP-FPM always restarts automatically on reboot in Ubuntu XX.
+- Enhancing package-related wrappers that deal with directory symlinks (internally).
+- Adding `gnupg2` utility; called as `gpg2` from command-line.
+- Updating `sharefile` utility. Now using `gpg2`.
+- Enhancing `/bootstrap/src/transfer/export-data`. Excluding `mysql` database with permissions. Not necessary to export this DB.
+
 ## v160616
 
 This release includes a LOT of changes. Please read carefully before upgrading. Having said that, the installation and bootstrap installer workflow remain the same as they were. So the way in which you _use_ the WUBS hasn't changed, but reviewing the details below is still important.

@@ -16,13 +16,13 @@ trap auto-warn-about-app-related-services-on-error ERR;
 
 # Maybe run update routines; i.e., if installed already.
 
-if [[ -f /etc/bootstrap/.installed ]]; then
+if [[ -f /bootstrap/.installed-version ]]; then
 
   export CFG_IS_INSTALLER='0';
   export CFG_IS_UPDATER='1';
 
   export CFG_INSTALLED_VERSION; # Read file.
-  CFG_INSTALLED_VERSION="$(cat /etc/bootstrap/.installed)";
+  CFG_INSTALLED_VERSION="$(cat /bootstrap/.installed-version)";
 
   set -o xtrace; # Print each command that is run.
 
@@ -36,7 +36,7 @@ if [[ -f /etc/bootstrap/.installed ]]; then
 
   . /bootstrap/src/version; # Update.
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
-  echo "${CFG_VERSION}" > /etc/bootstrap/.installed;
+  echo "${CFG_VERSION}" > /bootstrap/.installed-version;
 
   . /bootstrap/src/setups/cleanup;
 

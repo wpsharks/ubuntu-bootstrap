@@ -17,7 +17,7 @@ if [[ ! -d /bootstrap && -d /vagrant ]]; then
 
 # Restart app-related services if installation is complete.
 
-if [[ -f /etc/bootstrap/.installed ]]; then
+if [[ -f /bootstrap/.installed-version ]]; then
   restart-app-related-services; fi;
 
 # Run any custom code now.

@@ -12,7 +12,7 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 # Installation must have completed already.
 
-if [[ ! -f /etc/bootstrap/.installed ]]; then
+if [[ ! -f /bootstrap/.installed-version ]]; then
   echo 'Installation incomplete. Not yet possible.';
   exit 1; # Failure status.
 fi;
@@ -28,18 +28,20 @@ fi;
 
 cd /; # Move to drive base.
 
-rm --force /tmp/exported-data.sql;
-rm --force /tmp/exported-data.tar.gz;
-rm --force /tmp/exported-data.tar.gz.gpg;
-
 curl "${url}" --location --output /tmp/exported-data.tar.gz.gpg;
-gpg --decrypt --output /tmp/exported-data.tar.gz /tmp/exported-data.tar.gz.gpg;
 
-tar --extract --gzip --preserve-permissions --overwrite --unlink-first --verbose /tmp/exported-data.tar.gz;
+gpg2 --decrypt --output /tmp/exported-data.tar.gz \
+   /tmp/exported-data.tar.gz.gpg;
+
+tar \
+  --verbose \
+  --extract --gzip \
+  --absolute-names \
+  --preserve-permissions \
+  --overwrite --recursive-unlink \
+  --file=/tmp/exported-data.tar.gz;
 
 if [[ -f /tmp/exported-data.sql ]] && can-run mysql; then
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" < /tmp/exported-data.sql;
 fi;
-rm --force /tmp/exported-data.sql;
-rm --force /tmp/exported-data.tar.gz;
-rm --force /tmp/exported-data.tar.gz.gpg;
+rm --force /tmp/exported-data.*; # Cleanup temporary files.

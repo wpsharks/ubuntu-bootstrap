@@ -12,7 +12,7 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 # Installation must have completed already.
 
-if [[ ! -f /etc/bootstrap/.installed ]]; then
+if [[ ! -f /bootstrap/.installed-version ]]; then
   echo 'Installation incomplete. Not yet possible.';
   exit 1; # Failure status.
 fi;
@@ -20,21 +20,29 @@ fi;
 
 cd /; # Move to drive base.
 
-rm --force /tmp/exported-data.sql;
-rm --force /tmp/exported-data.tar.gz;
-rm --force /tmp/exported-data.tar.gz.gpg;
+if [[ ! -f /etc/git-crypt.app.key ]]; then
+  touch /etc/git-crypt.app.key; fi;
 
-if can-run mysql; then
-  mysqldump --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --all-databases > /tmp/exported-data.sql;
+if can-run mysql; then # Export all databases except `mysql` and schema tables.
+  echo 'SHOW DATABASES' | mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --skip-column-names \
+    | grep --perl-regexp --invert-match '^(?:(?:information|performance)_schema|mysql)$' \
+    | xargs mysqldump --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --databases > /tmp/exported-data.sql;
 else touch /tmp/exported-data.sql; fi;
 
-tar --create --gzip --preserve-permissions --verbose --file=/tmp/exported-data.tar.gz \
+tar \
+  --verbose \
+  --create --gzip \
+  --absolute-names \
+  --dereference \
+  --hard-dereference \
+  --preserve-permissions \
+  --file=/tmp/exported-data.tar.gz \
+  \
   /app \
   /repos \
+  /etc/git-crypt.app.key \
   /tmp/exported-data.sql;
 
 sharefile /tmp/exported-data.tar.gz symmetric;
 
-rm --force /tmp/exported-data.sql;
-rm --force /tmp/exported-data.tar.gz;
-rm --force /tmp/exported-data.tar.gz.gpg;
+rm --force /tmp/exported-data.*; # Cleanup temporary files.

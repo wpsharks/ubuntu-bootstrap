@@ -12,7 +12,7 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 # Maybe run setup routines; i.e., once only.
 
-if [[ ! -f /etc/bootstrap/.installed ]]; then
+if [[ ! -f /bootstrap/.installed-version ]]; then
 
   export CFG_IS_INSTALLER='1';
   export CFG_IS_UPDATER='0';
@@ -89,7 +89,7 @@ if [[ ! -f /etc/bootstrap/.installed ]]; then
 
   . /bootstrap/src/version; # Update.
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
-  echo "${CFG_VERSION}" > /etc/bootstrap/.installed;
+  echo "${CFG_VERSION}" > /bootstrap/.installed-version;
 
   . /bootstrap/src/setups/cleanup;
 

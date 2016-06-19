@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# Install GPGv2.
-
-apt-get install gnupg2 --yes;
-ln --symbolic --force /usr/bin/gpg2 /usr/bin/gpg;
-
 # Install Keybase utility.
 
 mkdir --parents /usr/local/src/keybase;

@@ -59,7 +59,7 @@ if [[ "${recipient}" == symmetric ]]; then
 
   echo 'Uploading encrypted file w/ symmetric key.';
 
-	gpg --armor --symmetric --cipher-algo AES256 \
+	gpg2 --armor --symmetric --cipher-algo AES256 \
 		--output /tmp/sharefile-"${basename}".gpg "${file}";
 
   link="$(cat /tmp/sharefile-"${basename}".gpg \
