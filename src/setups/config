@@ -60,13 +60,14 @@ CFG_ENABLE_PHP_OPCACHE='1';
 CFG_ENABLE_PHP_PHAR_READONLY='1'; is-vm && CFG_ENABLE_PHP_PHAR_READONLY='0';
 CFG_ENABLE_PHP_ASSERTIONS='0'; is-vm && CFG_ENABLE_PHP_ASSERTIONS='1';
 
-CFG_INSTALL_PHPCS='1';
 CFG_INSTALL_PHING='1';
+CFG_INSTALL_WP_CLI='1';
+
+CFG_INSTALL_PHPCS='1';
 CFG_INSTALL_PHPUNIT='1';
 CFG_INSTALL_APIGEN='1';
 CFG_INSTALL_CASPERJS='1';
 CFG_INSTALL_COMPOSER='1';
-CFG_INSTALL_WP_CLI='1';
 CFG_INSTALL_WP_I18N_TOOLS='1';
 
 CFG_INSTALL_APP_REPO='1';
@@ -281,13 +282,6 @@ function validate-cfgs() {
     cfg_warning+='If you install an app repo you must also install Phing.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_PHING}" == 1 && ( "${CFG_INSTALL_PHPCS}" != 1 || "${CFG_INSTALL_PHPUNIT}" != 1 \
-    || "${CFG_INSTALL_CASPERJS}" != 1 || "${CFG_INSTALL_COMPOSER}" != 1 ) ]]; then
-
-    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='Phing requires PHPCS, PHPUnit, CasperJS, and Composer.'$'\n';
-    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
-
   elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && "${CFG_INSTALL_DOCKER}" != 1 ]]; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
@@ -421,13 +415,14 @@ function cfgs-wizard() {
         'CFG_ENABLE_PHP_PHAR_READONLY' 'Enable?' "$([[ "${CFG_ENABLE_PHP_PHAR_READONLY}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_ENABLE_PHP_ASSERTIONS' 'Enable?' "$([[ "${CFG_ENABLE_PHP_ASSERTIONS}" == 1 ]] && echo 'on' || echo 'off')" \
         \
-        'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHPUNIT' 'Install?' "$([[ "${CFG_INSTALL_PHPUNIT}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APIGEN' 'Install?' "$([[ "${CFG_INSTALL_APIGEN}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_COMPOSER' 'Install?' "$([[ "${CFG_INSTALL_COMPOSER}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WP_I18N_TOOLS' 'Install?' "$([[ "${CFG_INSTALL_WP_I18N_TOOLS}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -467,13 +462,14 @@ function cfgs-wizard() {
       CFG_ENABLE_PHP_PHAR_READONLY='0';
       CFG_ENABLE_PHP_ASSERTIONS='0';
 
-      CFG_INSTALL_PHPCS='0';
       CFG_INSTALL_PHING='0';
+      CFG_INSTALL_WP_CLI='0';
+
+      CFG_INSTALL_PHPCS='0';
       CFG_INSTALL_PHPUNIT='0';
       CFG_INSTALL_APIGEN='0';
       CFG_INSTALL_CASPERJS='0';
       CFG_INSTALL_COMPOSER='0';
-      CFG_INSTALL_WP_CLI='0';
       CFG_INSTALL_WP_I18N_TOOLS='0';
 
       CFG_INSTALL_APP_REPO='0';
