@@ -20,15 +20,20 @@ fi;
 
 cd /; # Move to drive base.
 
-if [[ ! -f /etc/git-crypt.app.key ]]; then
-  touch /etc/git-crypt.app.key; fi;
+data_to_export='/app';
+data_to_export+=' /repos';
 
+if [[ -f /etc/git-crypt.app.key ]]; then
+  data_to_export+=' /etc/git-crypt.app.key';
+fi;
 if can-run mysql; then # Export all databases except `mysql` and schema tables.
   echo 'SHOW DATABASES' | mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --skip-column-names \
     | grep --perl-regexp --invert-match '^(?:(?:information|performance)_schema|mysql)$' \
     | xargs mysqldump --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --databases > /tmp/exported-data.sql;
-else touch /tmp/exported-data.sql; fi;
-
+fi;
+if [[ -f /tmp/exported-data.sql ]]; then
+  data_to_export+=' /tmp/exported-data.sql';
+fi;
 tar \
   --verbose \
   --create --gzip \
@@ -38,10 +43,7 @@ tar \
   --preserve-permissions \
   --file=/tmp/exported-data.tar.gz \
   \
-  /app \
-  /repos \
-  /etc/git-crypt.app.key \
-  /tmp/exported-data.sql;
+  ${data_to_export};
 
 sharefile /tmp/exported-data.tar.gz symmetric;
 
