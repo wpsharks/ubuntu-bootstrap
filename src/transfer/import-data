@@ -41,6 +41,9 @@ tar \
   --overwrite --recursive-unlink \
   --file=/tmp/exported-data.tar.gz;
 
+ln --symbolic --force /bootstrap/src/git/repos/app/hooks/pre-receive /repos/app.git/hooks/pre-receive;
+ln --symbolic --force /bootstrap/src/git/repos/app/hooks/post-receive /repos/app.git/hooks/post-receive;
+
 if [[ -f /tmp/exported-data.sql ]] && can-run mysql; then
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" < /tmp/exported-data.sql;
 fi;
