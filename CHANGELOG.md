@@ -1,3 +1,8 @@
+## $v
+
+- Adding `proxies.conf` to Nginx configuration in support of proxy configurations and proxy caching.
+- Adding `proxy-xar-locations.conf` in support of `/software/` proxies via CDN.
+
 ## 160619
 
 - Adding support for `vagrant-hostsupdater` as an alternative to Landrush for Vagrant. See [this README section](https://github.com/websharks/ubuntu-bootstrap#step-1-satisfy-software-requirements) for details.

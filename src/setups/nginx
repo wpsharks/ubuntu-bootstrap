@@ -16,6 +16,7 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
   mkdir --parents /etc/nginx/conf.d/main;
   mkdir --parents /etc/nginx/conf.d/http;
   mkdir --parents /etc/nginx/conf.d/server;
+  mkdir --parents /var/nginx/proxy-cache;
 
   ln --symbolic /bootstrap/src/nginx/.conf /etc/nginx/nginx.conf;
   cat /etc/nginx/~env.conf >> /etc/nginx/env.conf; rm /etc/nginx/~env.conf;
