@@ -16,7 +16,7 @@ $ brew cask install vagrant;
 
 # Also tweak VirtualBox by running this line please:
 # See: <https://github.com/mitchellh/vagrant/issues/3083> for details.
-VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
+$ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 
 # ---------------------------------------------
 
