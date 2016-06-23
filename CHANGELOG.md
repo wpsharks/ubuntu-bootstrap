@@ -1,4 +1,4 @@
-## $v
+## 160622
 
 - Adding `proxies.conf` to Nginx configuration in support of proxy configurations and proxy caching.
 - Adding `proxy-xar-locations.conf` in support of `/software/` proxies via CDN.
