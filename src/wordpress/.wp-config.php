@@ -1,6 +1,7 @@
 <?php
+// @codingStandardsIgnoreFile
+
 define('WP_ALLOW_MULTISITE', true);
-define('WP_CACHE', is_file(__DIR__.'/wp-content/advanced-cache.php'));
 
 define('DB_NAME', $_SERVER['CFG_MYSQL_DB_NAME']);
 define('DB_USER', $_SERVER['CFG_MYSQL_DB_USERNAME']);
