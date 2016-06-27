@@ -47,6 +47,7 @@ CFG_INSTALL_MAILHOG='0'; is-vm && CFG_INSTALL_MAILHOG='1';
 
 CFG_INSTALL_NGINX='1'; is-4ci && CFG_INSTALL_NGINX='0';
 CFG_INSTALL_APACHE='0'; is-4ci && CFG_INSTALL_APACHE='1';
+CFG_WEB_SERVER_SSL_ONLY='1'; is-vm && CFG_WEB_SERVER_SSL_ONLY='0';
 
 CFG_INSTALL_MYSQL='1';
 
@@ -403,6 +404,7 @@ function cfgs-wizard() {
         \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_WEB_SERVER_SSL_ONLY' 'SSL only?' "$([[ "${CFG_WEB_SERVER_SSL_ONLY}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_MYSQL' 'Install?' "$([[ "${CFG_INSTALL_MYSQL}" == 1 ]] && echo 'on' || echo 'off')" \
         \
@@ -450,6 +452,7 @@ function cfgs-wizard() {
 
       CFG_INSTALL_NGINX='0';
       CFG_INSTALL_APACHE='0';
+      CFG_WEB_SERVER_SSL_ONLY='0';
 
       CFG_INSTALL_MYSQL='0';
 

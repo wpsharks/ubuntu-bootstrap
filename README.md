@@ -304,6 +304,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_INSTALL_NGINX=0|1` Install Nginx?
 - `--CFG_INSTALL_APACHE=0|1` Install Apache?
+- `--CFG_WEB_SERVER_SSL_ONLY=0|1` Require https:// ?
 
 ---
 
