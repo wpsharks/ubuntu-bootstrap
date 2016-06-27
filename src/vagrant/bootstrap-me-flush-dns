@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
-# Include strict mode & functions.
+# Strict mode.
 
-_bootstrap_dir="$(dirname "${BASH_SOURCE[0]}")";
-_bootstrap_dir="$(dirname "${_bootstrap_dir}")";
-_bootstrap_dir="$(dirname "${_bootstrap_dir}")";
+set -o nounset;
+set -o errexit;
+set -o errtrace;
+set -o pipefail;
 
-. "${_bootstrap_dir}"/src/bash/strict-mode;
-. "${_bootstrap_dir}"/src/bash/functions;
-
-unset _bootstrap_dir; # Housekeeping.
-
-# Maybe flush the DNS cache to avoid problems.
+# Maybe flush the DNS cache.
 
 if [[ "${OSTYPE}" == 'darwin'* ]]; then
   echo 'Flushing DNS on Mac OS X; requires sudo ...';
