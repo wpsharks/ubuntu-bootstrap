@@ -1,4 +1,4 @@
-## $v
+## v160628.22003
 
 - Branch rename; i.e., `000000-dev` became `dev`.
 - Drop dependencies from local bootstrap. See: #14
