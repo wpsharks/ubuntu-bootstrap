@@ -25,6 +25,9 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
   ln --symbolic /bootstrap/src/nginx/conf.d/http/_defaults.conf /etc/nginx/conf.d/http/_defaults.conf;
   ln --symbolic /bootstrap/src/nginx/conf.d/server/_defaults.conf /etc/nginx/conf.d/server/_defaults.conf;
 
+  # WordPress multisite network support. Not enabled by default; just for reference.
+  #ln --symbolic /bootstrap/src/nginx/conf.d/server/wp-ms.conf /etc/nginx/conf.d/server/wp-ms.conf;
+
   if is-vm; then # Disable sendfile on VMs.
     perl -i -wpe 's/^(\s*)sendfile\s+.*$/$1sendfile off;/u' /bootstrap/src/nginx/snippets/http/_defaults/general.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
