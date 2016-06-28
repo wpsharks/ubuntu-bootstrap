@@ -1,4 +1,4 @@
-## $v
+## v160628.31873
 
 - Enhancing Nginx config files with respect to WordPress.
 - Adding [instructions for WP multisite on Nginx](https://github.com/websharks/ubuntu-bootstrap/wiki/WordPress-Multisite-on-Nginx).
