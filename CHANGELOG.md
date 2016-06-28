@@ -1,3 +1,11 @@
+## $v
+
+- Branch rename; i.e., `000000-dev` became `dev`.
+- Drop dependencies from local bootstrap. See: #14
+- Remove `WP_CACHE` from default `wp-config.php` template file. See: #16
+- Copy `.wp-config.php` into place instead of creating a symlink. See: #15
+- New configuration option: `CFG_WEB_SERVER_SSL_ONLY` defaults to being off when the WUB is used together with Vagrant. When this is off it allows for a VM to be accessed over `http://` or `https://` and HSTS is completely disabled also. Props at @raamdev ~ See: https://github.com/websharks/ubuntu-bootstrap/issues/11
+
 ## 160622
 
 - Adding `proxies.conf` to Nginx configuration in support of proxy configurations and proxy caching.
