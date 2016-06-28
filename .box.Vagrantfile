@@ -64,4 +64,8 @@ Vagrant.configure(2) do |config|
     config.hostsupdater.aliases = ['sub.'+"#{config.vm.hostname}", 'sub1.'+"#{config.vm.hostname}", 'sub2.'+"#{config.vm.hostname}", 'sub3.'+"#{config.vm.hostname}"]
 
   else config.vm.network :private_network, ip: _static_ip; end;
+
+  # Configure provisioners for this VM.
+
+  config.vm.provision :shell, inline: '/bootstrap/src/vagrant/bootstrap;', run: 'always';
 end;

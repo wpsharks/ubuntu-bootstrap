@@ -375,15 +375,4 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 #### Bootstrapping Base Images for Custom Vagrant Boxes
 
-When building a base image that is going to be repackaged, please be sure to disable the Vagrant Landrush plugin beforehand; i.e., you don't want its configuration to become a part of any base image. Disabling Landrush can be accomplished by exporting the following environment variable before you run `$ vagrant up`. See [`Vagrantfile`](Vagrantfile) for details.
-
-```bash
-$ export VM_4PKG=1;
-$ vagrant up;
-```
-
-After running `$ vagrant up`, SSH into the VM and run `$ /bootstrap/src/installer`. The installer itself will also be aware of the `VM_4PKG` environment variable, which enables repackaging-specific routines in the bootstrap installer; i.e.., better defaults, additional cleanups, drive compression, etc.
-
-```bash
-$ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0 --CFG_INSTALL_PHP_VERSION=7.0;
-```
+Please see: [Packaging a Custom Box](https://github.com/websharks/ubuntu-bootstrap/wiki/Packaging-a-Custom-Box) for full instructions.
