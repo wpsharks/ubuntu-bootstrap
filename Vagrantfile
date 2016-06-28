@@ -68,7 +68,6 @@ Vagrant.configure(2) do |config|
 
   if ENV['VM_4CI'] == '1' || ENV['VM_4PKG'] == '1'
     config.vm.provision :shell, inline: 'touch /etc/vm-4pkg.cfg;';
-    config.ssh.insert_key = false; # Exclude unique SSH key.
   end;
   if ENV['VM_4CI'] == '1' # Avoids problems when packaging a box.
     config.vm.provision :shell, inline: 'touch /etc/vm-4ci.cfg;';

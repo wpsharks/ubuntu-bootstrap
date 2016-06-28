@@ -1,3 +1,8 @@
+## $v
+
+- Enhancing 'Packaging Mode' for custom Boxes built on top of the WUB.
+- **New Wiki Article:** https://github.com/websharks/ubuntu-bootstrap/wiki/Packaging-a-Custom-Box
+
 ## v160628.31873
 
 - Enhancing Nginx config files with respect to WordPress.
