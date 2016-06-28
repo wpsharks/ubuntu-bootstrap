@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-export CFG_VERSION='160628.24514'; # //version//
+export CFG_VERSION='160628.25992'; # //version//
