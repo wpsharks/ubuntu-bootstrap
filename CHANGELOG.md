@@ -1,4 +1,4 @@
-## $v
+## v160628.57417
 
 - Enhancing 'Packaging Mode' for custom Boxes built on top of the WUB.
 - **New Wiki Article:** https://github.com/websharks/ubuntu-bootstrap/wiki/Packaging-a-Custom-Box
