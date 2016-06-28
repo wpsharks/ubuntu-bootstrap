@@ -1,0 +1,13 @@
+project_title                               = WebSharks Ubuntu Bootstrap
+
+project_owner                               = websharks
+project_slug                                = ubuntu-bootstrap
+project_text_domain                         = websharks-ubuntu-bootstrap
+
+project_namespace                           = WebSharks\\Ubuntu\\Bootstrap
+project_sub_namespace                       = UbuntuBootstrap
+
+project_version                             = %y%m%d.%now
+
+project_php_required_version                = 5.5
+project_php_tested_up_to_version            = ${php.version}
