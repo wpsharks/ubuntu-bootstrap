@@ -30,7 +30,7 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
   if is-vm; then # Disable HSTS on VMs so that `http://` tools like MailHog will work.
-    perl -i -wpe 's/^(\s*)(add_header\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/nginx/snippets/server/_defaults/ssl-config.conf;
+    perl -i -wpe 's/^(\s*)(add_header\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/nginx/snippets/http/_defaults/hsts.conf;
   fi; # See: <http://classically.me/blogs/how-clear-hsts-settings-major-browsers>
 
   if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
