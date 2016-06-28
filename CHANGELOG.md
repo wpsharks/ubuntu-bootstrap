@@ -1,4 +1,4 @@
-## $v
+## v160628.24514
 
 - Updating to latest `phings` dev branch.
 - Integrating with `phings` so that `CFG_VERSION` is bumped automatically.
