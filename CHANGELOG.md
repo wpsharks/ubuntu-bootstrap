@@ -1,3 +1,8 @@
+## $v
+
+- Updating to latest `phings` dev branch.
+- Integrating with `phings` so that `CFG_VERSION` is bumped automatically.
+
 ## v160628.22003
 
 - Branch rename; i.e., `000000-dev` became `dev`.

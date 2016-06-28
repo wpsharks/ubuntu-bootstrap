@@ -88,7 +88,7 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   if [[ -f /bootstrap-app/src/post-install ]]; then
     . /bootstrap-app/src/post-install; fi;
 
-  . /bootstrap/src/version; # Update.
+  . /bootstrap/src/version.bash;
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
   echo "${CFG_VERSION}" > /bootstrap/.installed-version;
 
