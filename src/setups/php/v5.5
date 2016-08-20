@@ -23,6 +23,9 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   apt-get install php-memcached --yes;
   apt-get install php-pear --yes;
 
+  if [[ "${CFG_INSTALL_PHP_XDEBUG}" == 1 ]]; then
+    apt-get install php-xdebug --yes; fi;
+
   ## Create PHP config file symlink.
 
   if [[ "${CFG_INSTALL_PHP_CLI}" == 1 ]]; then

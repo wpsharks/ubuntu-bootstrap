@@ -1,3 +1,7 @@
+## $v
+
+- Adding support for XDebug in PHP.
+
 ## v160628.57417
 
 - Enhancing 'Packaging Mode' for custom Boxes built on top of the WUB.

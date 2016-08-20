@@ -15,6 +15,9 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   fi;
   # PHP ini file alterations based on other config values.
 
+  if [[ "${CFG_INSTALL_PHP_XDEBUG}" != 1 ]]; then
+    perl -i -wpe 's/^\s*xdebug\..*$/;$0/uig' /bootstrap/src/php/.ini;
+  fi;
   if [[ "${CFG_ENABLE_PHP_OPCACHE}" != 1 ]]; then
     perl -i -wpe 's/^(\s*)opcache\.enable\s*=\s*(?:yes|1|on|true)$/$1opcache.enable = no/u' /bootstrap/src/php/.ini;
     perl -i -wpe 's/^(\s*)opcache\.enable_cli\s*=\s*(?:yes|1|on|true)$/$1opcache.enable_cli = no/u' /bootstrap/src/php/.ini;

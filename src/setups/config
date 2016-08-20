@@ -56,6 +56,7 @@ CFG_INSTALL_RAMDISK='1'; in-docker && CFG_INSTALL_RAMDISK='0';
 
 CFG_INSTALL_PHP_CLI='1';
 CFG_INSTALL_PHP_FPM='1';
+CFG_INSTALL_PHP_XDEBUG='0'; is-vm && CFG_INSTALL_PHP_XDEBUG='1';
 CFG_INSTALL_PHP_VERSION='7.0';
 CFG_ENABLE_PHP_OPCACHE='1';
 CFG_ENABLE_PHP_PHAR_READONLY='1'; is-vm && CFG_ENABLE_PHP_PHAR_READONLY='0';
@@ -413,6 +414,7 @@ function cfgs-wizard() {
         \
         'CFG_INSTALL_PHP_CLI' 'Install?' "$([[ "${CFG_INSTALL_PHP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHP_FPM' 'Install?' "$([[ "${CFG_INSTALL_PHP_FPM}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHP_XDEBUG' 'Install?' "$([[ "${CFG_INSTALL_PHP_XDEBUG}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_ENABLE_PHP_OPCACHE' 'Enable?' "$([[ "${CFG_ENABLE_PHP_OPCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_ENABLE_PHP_PHAR_READONLY' 'Enable?' "$([[ "${CFG_ENABLE_PHP_PHAR_READONLY}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_ENABLE_PHP_ASSERTIONS' 'Enable?' "$([[ "${CFG_ENABLE_PHP_ASSERTIONS}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -461,6 +463,7 @@ function cfgs-wizard() {
 
       CFG_INSTALL_PHP_CLI='0';
       CFG_INSTALL_PHP_FPM='0';
+      CFG_INSTALL_PHP_XDEBUG='0';
       CFG_ENABLE_PHP_OPCACHE='0';
       CFG_ENABLE_PHP_PHAR_READONLY='0';
       CFG_ENABLE_PHP_ASSERTIONS='0';
