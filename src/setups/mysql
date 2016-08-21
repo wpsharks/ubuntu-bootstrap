@@ -25,7 +25,10 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
 
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;";
+
+  if is-vm; then # Don't require SSL for external connections to a VM.
+    mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  else mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;"; fi;
 
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
 
@@ -35,7 +38,7 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
 
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="FLUSH PRIVILEGES;";
 
-  ln --symbolic /bootstrap/src/mysql/.cnf /etc/mysql/conf.d/z90.cnf;
+  ln --symbolic /bootstrap/src/mysql/.cnf /etc/mysql/mariadb.conf.d/z90.cnf;
 
   if [[ -f /etc/apparmor.d/local/usr.sbin.mysqld ]]; then
   echo '/bootstrap/src/mysql/.cnf r,' >> /etc/apparmor.d/local/usr.sbin.mysqld; fi;
