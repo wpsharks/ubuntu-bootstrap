@@ -21,8 +21,8 @@ $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 # ---------------------------------------------
 
 # You need only one of these. Please choose:
-$ vagrant plugin install landrush; # Best option w/ most flexibility.
-$ vagrant plugin install vagrant-hostsupdater; # Or this one (not as powerful).
+$ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
+$ vagrant plugin install landrush; # More difficult, but greater flexibility.
 
 # ---------------------------------------------
 
@@ -30,7 +30,7 @@ $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 # This allows for special event handling. Helpful, but not required at this time.
 ```
 
-_**Note:** If you don't install Landrush and instead you go with the alternate DNS plugin `vagrant-hostsupdater` (or you choose not to install a DNS plugin at all), it will mean that your VM will have a static IP address of: `192.168.42.42`_
+_**Note:** If you don't install Landrush and instead you go with the simpler DNS plugin `vagrant-hostsupdater` (or you choose not to install a DNS plugin at all), it will mean that your VM will have a static IP address of: `192.168.42.42`_
 
 _This also means that you can only run a single VM at one time, because the static IP is the same for each VM. If you go this route and also want to run multiple VM instances at the same time you will need to change the IP address in the [`Vagrantfile`](Vagrantfile) for each additional VM that you bring up._
 
@@ -80,9 +80,9 @@ Any SSL certificates created by the Ubuntu Bootstrap will use that root CA certi
 
 **↑ UPDATE (WARNING):** If you're on a Mac, there is a nasty bug in the Keychain application that can lock your system when attempting to 'Always Trust'. Until that bug is fixed in the Mac OS, please see the command-line alternatives demonstrated [here](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224305268) by @jaswsinc and @raamdev. I suggest using [the example given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504).
 
-#### Step 7: Add Files to: `~/vms/my.vm/app/src/`
+#### Step 7: Add Files to: `~/vms/my.vm/src/app/src/`
 
-The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/vms/my.vm/app/src/phpBB`
+The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/vms/my.vm/src/app/src/phpBB`
 
 #### Step 8: Understanding Environment Variables
 

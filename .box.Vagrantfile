@@ -12,10 +12,10 @@ Vagrant.configure(2) do |config|
 
   # Configure hostname for this VM.
 
-  config.vm.hostname = 'ubuntu.vm'; # Default value.
+  config.vm.hostname = 'my.vm'; # Default value.
   # Changed below if the directory containing this file ends with `.my.vm`.
 
-  if !File.dirname(File.expand_path(__FILE__)).scan(/\.vm$/i).empty?
+  if !File.dirname(File.expand_path(__FILE__)).scan(/\.my\.vm$/i).empty?
     config.vm.hostname = File.basename(File.dirname(File.expand_path(__FILE__)));
   end; # If in a `.vm` directory, set a matching hostname.
 
