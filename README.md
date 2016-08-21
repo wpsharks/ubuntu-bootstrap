@@ -39,7 +39,7 @@ _You can just edit the [`Vagrantfile`](Vagrantfile) and bump the IP from `192.16
 #### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
 
 ```bash
-$ mkdir ~/VMs && cd ~/VMs;
+$ mkdir ~/vms && cd ~/vms;
 $ git clone https://github.com/websharks/ubuntu-bootstrap my.vm;
 ```
 
@@ -48,7 +48,7 @@ _Note that `my.vm` becomes your domain name. Change it if you like. Must end wit
 #### Step 3: Vagrant Up!
 
 ```bash
-$ cd ~/VMs/my.vm;
+$ cd ~/vms/my.vm;
 $ vagrant up;
 ```
 
@@ -80,9 +80,9 @@ Any SSL certificates created by the Ubuntu Bootstrap will use that root CA certi
 
 **↑ UPDATE (WARNING):** If you're on a Mac, there is a nasty bug in the Keychain application that can lock your system when attempting to 'Always Trust'. Until that bug is fixed in the Mac OS, please see the command-line alternatives demonstrated [here](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224305268) by @jaswsinc and @raamdev. I suggest using [the example given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504).
 
-#### Step 7: Add Files to: `~/VMs/my.vm/app/src/`
+#### Step 7: Add Files to: `~/vms/my.vm/app/src/`
 
-The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/VMs/my.vm/app/src/phpBB`
+The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/vms/my.vm/app/src/phpBB`
 
 #### Step 8: Understanding Environment Variables
 
@@ -116,7 +116,7 @@ Available Tools (Using Any of These is Optional):
 #### Step 10: Tear it Down and Customize
 
 ```bash
-$ cd ~/VMs/my.vm;
+$ cd ~/vms/my.vm;
 $ vagrant destroy;
 ```
 
@@ -161,7 +161,7 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 
 The URL which leads to your VM is based on the name of the directory that you cloned the repo into; e.g., `my.vm` or `my-second.vm` in the above examples. However, the directory that you clone into MUST end with `.vm` for this to work as expected. If the directory you cloned into doesn't end with `.vm`, the default domain name will be `http://ubuntu.vm`. You can change this hard-coded default by editing `config.vm.hostname` in `Vagrantfile`.
 
-In either case, the domain name is also wildcarded; i.e., `my.vm`, `www.my.vm`, `wordpress.my.vm` all map to the exact same location: `~/VMs/my.vm/app/src/`. This is helpful when testing WordPress Multisite Networks, because you can easily setup a sub-domain network, or even an MU domain mapping plugin.
+In either case, the domain name is also wildcarded; i.e., `my.vm`, `www.my.vm`, `wordpress.my.vm` all map to the exact same location: `~/vms/my.vm/app/src/`. This is helpful when testing WordPress Multisite Networks, because you can easily setup a sub-domain network, or even an MU domain mapping plugin.
 
 ---
 
