@@ -1,3 +1,8 @@
+## $v
+
+- Bug fix. Some MySQL config options were not overwriting upstream defaults.
+- Bug fix. Do not require SSL for external connections to a MySQL server running on a VM.
+
 ## v160821.9818
 
 - Improving mounts in `Vagrantfile` by now mounting both `/app` and `/app/src` as their own directories instead of these being symlinks as seen in previous releases. This makes it easier to deal with path mapping in various applications and it reduces confusion by making the paths to these important locations shorter/simpler.
