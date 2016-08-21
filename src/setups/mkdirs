@@ -6,19 +6,17 @@ if is-vagrant && is-4pkg && [[ -d /vagrant && -L /bootstrap ]]; then
   rm /bootstrap; mkdir /bootstrap;
   cp --force --recursive --preserve=all /vagrant/. /bootstrap;
   rm --force --recursive /bootstrap/.vagrant;
-elif in-docker && is-4pkg && [[ -d /docker && -L /bootstrap ]]; then
-  rm /bootstrap; mkdir /bootstrap;
-  cp --force --recursive --preserve=all /docker/. /bootstrap;
 fi;
-# App directory (including the `src` sub-dir).
+# App web directories.
+
+if is-vm && [[ ! -d /app ]]; then
+  ln --symbolic /bootstrap/src/app /app;
+fi; # Uses `/bootstrap/src/app` symlink as a fallback.
+# On Vagrant, `/app` and `/app/src` should be mounted already.
 
 mkdir --parents /app;
 mkdir --parents /app/src;
 
-if is-vm; then # VM symlink.
-  rm --force --recursive /app;
-  ln --symbolic /bootstrap/src/app /app;
-fi;
 chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;
 find /app -type f -exec chmod 664 {} \;

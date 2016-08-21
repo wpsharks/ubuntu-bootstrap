@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Start from a clean `/app/src`.
+
+mkdir --parents /app/src;
+rm --force --recursive /app/src/*;
+
+# Install the latest version of WordPress.
+
+curl http://wordpress.org/latest.zip --location --output /tmp/wordpress-latest.zip;
+unzip -qq -d /tmp/wordpress-latest /tmp/wordpress-latest.zip;
+cp --force --recursive --preserve=all /tmp/wordpress-latest/wordpress/. /app/src;
+
+rm --force --recursive /tmp/wordpress-latest;
+rm /tmp/wordpress-latest.zip;
+
+# Setup the `/wp-config.php` file on VMs.
+
+if is-vm; then # Only for VMs.
+  cp /bootstrap/src/wordpress/.wp-config.vm.php /app/src/wp-config.php;
+  perl -i -wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%LOGGED_IN_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%NONCE_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+  perl -i -wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+fi;
+# Set permissions in the `/app/src` directory.
+
+chown --recursive www-data /app/src;
+find /app/src -type d -exec chmod 2775 {} \;
+find /app/src -type f -exec chmod 664 {} \;

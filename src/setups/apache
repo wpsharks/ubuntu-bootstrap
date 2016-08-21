@@ -116,7 +116,7 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   maybe-add-runit-service apache2;
 
-  # Put live sites into maintenance mode by default.
+  # Put live sites into maintenance mode.
 
   if ! is-vm; then
     touch /app/.maintenance; fi;

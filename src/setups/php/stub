@@ -2,6 +2,11 @@
 
 if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
 
+  # Log directory.
+
+  mkdir --parents /var/log/php;
+  chmod 0777 /var/log/php;
+
   # Install PHP CLI and/or PHP process manager.
 
   if [[ "${CFG_INSTALL_PHP_VERSION}" == 7.0 ]]; then

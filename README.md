@@ -168,12 +168,12 @@ In either case, the domain name is also wildcarded; i.e., `my.vm`, `www.my.vm`, 
 ### Testing WordPress Themes/Plugins Easily!
 
 See `/Vagrantfile` where you will find this section already implemented.
-_~ See also: `/src/setups/wordpress`_
+_~ See also: `src/wordpress/install-symlinks`_
 
 ```ruby
 # Mount WordPress projects directory.
 if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
-  config.vm.synced_folder wp_projects_dir, '/wordpress', mount_options: ['defaults', 'ro'];
+  config.vm.synced_folder wp_projects_dir, '/wp-projects', mount_options: ['defaults', 'ro'];
 end;
 
 # Mount WordPress personal projects directory.
@@ -189,17 +189,17 @@ end;
 
 #### ↑ What is happening here w/ these WordPress directories?
 
-The `Vagrantfile` is automatically mounting drives on your VM that are sourced by your local `~/projects` directory (if you have one). Thus, if you have your WordPress themes/plugins in `~/projects/wordpress` (i.e., in your local filesystem), it will be mounted on the VM automatically, as `/wordpress`.
+The `Vagrantfile` is automatically mounting drives on your VM that are sourced by your local `~/projects` directory (if you have one). Thus, if you have your WordPress themes/plugins in `~/projects/wordpress` (i.e., in your local filesystem), it will be mounted on the VM automatically as `/wp-projects`.
 
-In the `src/setups/wordpress` file, we iterate `/wordpress` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<https://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
+In the `src/wordpress/install-symlinks` file, we iterate `/wp-projects` and build symlinks for each of your themes/plugins automatically. This means that when you log into your WordPress Dashboard (<https://my.vm/wp-admin/>), you will have all of your themes/plugins available for testing. If you make edits locally in your favorite editor, they are updated in real-time on the VM. Very cool!
 
-The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `src/setups/wordpress` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
+The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `src/wordpress/install-symlinks` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
 
 #### The default WordPress mapping looks like this:
 
 - `~/projects/wordpress` on your local system.
-  - Is mounted on the VM, as: `/wordpress`
-- Then (on the VM) the `/src/setups/wordpress` script symlinks each theme/plugin into:
+  - Is mounted on the VM as: `/wp-projects`
+- Then (on the VM) the `src/wordpress/install-symlinks` script symlinks each theme/plugin into:
   - `/app/src/wp-content/[themes|plugins]` appropriately.
 
 #### What directory structure do I need exactly?
@@ -213,7 +213,7 @@ Now, whenever you run `/bootstrap/src/installer` from the VM, your local copy of
 
 #### Can I override the default source directories for WordPress?
 
-Yes. Looking over the code snippet above, you can see that there are three environment variables that you can set in your `~/.profile` that (if found) will override the default locations automatically. Here's a quick example showing how you might customize these in your own `~/.profile`
+Yes. Looking over the code snippet above, you can see that there are three environment variables that you can set in your `~/.profile` that, if found, will override the default locations automatically. Here's a quick example showing how you might customize these in your own `~/.profile`
 
 ```bash
 export WP_PROJECTS_DIR=~/my-projects/wordpress;
@@ -221,7 +221,7 @@ export WP_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
 export WP_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 ```
 
-It is also possible to define hostname-specific environment variables. Note `_MY_VM` in the examples below. This correlates with `my.vm` (the hostname you are locking these to), and then converted to all uppercase with dots and hyphens now as `_` underscores instead.
+It is also possible to define hostname-specific environment variables. Take note of `_MY_VM` in the examples below. This correlates with `my.vm` (the hostname you are locking these to), and then converted to all uppercase with dots and hyphens now as `_` underscores instead.
 
 ```bash
 export WP_MY_VM_PROJECTS_DIR=~/my-projects/wordpress;
