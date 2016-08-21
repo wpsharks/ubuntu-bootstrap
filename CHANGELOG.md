@@ -1,4 +1,4 @@
-## $v
+## v160821.17673
 
 - Bug fix. Some MySQL config options were not overwriting upstream defaults.
 - Bug fix. Do not require SSL for external connections to a MySQL server running on a VM.
