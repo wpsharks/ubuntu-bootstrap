@@ -41,10 +41,10 @@ Vagrant.configure(2) do |config|
 
   config.vm.synced_folder '.', '/vagrant', mount_options: ['defaults'];
 
-  if File.directory?(app_dir = File.expand_path('./src/app'))
+  if File.directory?(app_dir = File.expand_path('./app'))
     config.vm.synced_folder app_dir, '/app', mount_options: ['defaults', 'uid=nobody', 'gid=app', 'umask=002'];
   end;
-  if File.directory?(app_src_dir = File.expand_path('./src/app/src'))
+  if File.directory?(app_src_dir = File.expand_path('./app/src'))
     config.vm.synced_folder app_src_dir, '/app/src', mount_options: ['defaults', 'uid=www-data', 'gid=app', 'umask=002'];
   end;
   if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
