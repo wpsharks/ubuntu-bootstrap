@@ -21,7 +21,7 @@ chown --recursive nobody:app /app;
 find /app -type d -exec chmod 2775 {} \;
 find /app -type f -exec chmod 664 {} \;
 
-chown --recursive www-data /app/src;
+chown --recursive www-data:app /app/src;
 find /app/src -type d -exec chmod 2775 {} \;
 find /app/src -type f -exec chmod 664 {} \;
 

@@ -14,7 +14,7 @@ if [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
   # Install systemd configuration file.
 
   cp /bootstrap/src/mailhog/.service /etc/systemd/system/mailhog.service;
-  systemctl daemon-reload; # Restart systemd after updating umask.
+  systemctl daemon-reload; # Restart systemd after adding service.
 
   # Enable automatic startup.
 
