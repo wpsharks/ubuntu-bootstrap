@@ -17,9 +17,9 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
     ufw allow 22/tcp; # No limitations.
   elif [[ -n "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
     ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
+    # limit = max of 6 connections every 30 seconds.
+    # See: `/lib/ufw/user.rules` for details.
   else ufw limit 22/tcp; fi; # SSH, SFTP, Git, etc.
-  # limit = max of 6 connections every 30 seconds.
-  # See: `/lib/ufw/user.rules` for details.
 
   # Open the VPN port if installing OpenVPN.
   # See: <http://jas.xyz/2cuqxDM>
@@ -29,15 +29,37 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
     # limit = max of 6 connections every 30 seconds.
     # See: `/lib/ufw/user.rules` for details.
 
-    cat /bootstrap/src/openvpn/ufw.tpl.rules > /tmp/before.rules;
-    cat /etc/ufw/before.rules >> /tmp/before.rules;
+    echo '1' > /proc/sys/net/ipv4/ip_forward;
+    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf;
 
-    cat /tmp/before.rules > /etc/ufw/before.rules;
-    rm --force /tmp/before.rules; # Remove temporary file.
+    if is-do && do-has-floating-ip; then # A floating IP is better.
 
-    perl -i -0wpe 's/%%interface%%/'"$(esc-regex-rv "$(default-interface)")"'/ug' /etc/ufw/before.rules;
-    perl -i -wpe 's/^(\s*)#?DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
+      perl -i -0wpe 's/\nCOMMIT\s*$//u' /etc/ufw/before.rules;
+      perl -i -0wpe 's/\n#.+$//u' /etc/ufw/before.rules;
+
+      echo $'\n''# FWD for OpenVPN' >> /etc/ufw/before.rules;
+      echo '-A ufw-before-forward -m state --state RELATED,ESTABLISHED -j ACCEPT' >> /etc/ufw/before.rules;
+      echo '-A ufw-before-forward -s 10.8.0.0/24 -o '"$(default-interface)"' -j ACCEPT' >> /etc/ufw/before.rules;
+      echo '-A ufw-before-forward -j REJECT' >> /etc/ufw/before.rules;
+      echo $'\n''COMMIT' >> /etc/ufw/before.rules;
+
+      echo $'\n''# NAT for OpenVPN' >> /etc/ufw/before.rules;
+      echo '*nat' >> /etc/ufw/before.rules;
+      echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
+      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"$(default-interface)"' -j SNAT --to-source '"$(do-anchor-ip)" >> /etc/ufw/before.rules;
+      echo 'COMMIT' >> /etc/ufw/before.rules;
+
+    else # Default case handler; i.e., no special considerations.
+      perl -i -wpe 's/^(\s*)#?DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
+
+      echo '# NAT for OpenVPN' >> /etc/ufw/before.rules;
+      echo '*nat' >> /etc/ufw/before.rules;
+      echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
+      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"$(default-interface)"' -j MASQUERADE' >> /etc/ufw/before.rules;
+      echo 'COMMIT' >> /etc/ufw/before.rules;
+    fi;
   fi;
+
   # Open MySQL port 3306 to all VPN connections?
 
   if can-run mysql && [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
@@ -47,6 +69,7 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
       ufw allow in on eth1 to any port 3306 proto tcp;
     fi;
   fi;
+
   # Open up the HTTP/HTTPS port numbers `80` and `443`?
 
   if can-run nginx || can-run apache2 || [[ -d /discourse ]]; then
@@ -68,6 +91,7 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
       ufw allow 80/tcp; ufw allow 443/tcp;
     fi;
   fi;
+
   # Open up the HTTP/HTTPS port number `8025` for MailHog.
 
   if is-vm && [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then

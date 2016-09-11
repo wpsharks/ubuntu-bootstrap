@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Is DigitalOcean?
+
+function is-do() {
+  if ! is-vm && [[ -f /var/run/cloud-init/.instance-id ]]; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};

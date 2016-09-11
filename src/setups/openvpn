@@ -12,15 +12,21 @@ if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
   mkdir --parents /var/log/openvpn;
   mkdir --parents /etc/bootstrap/openvpn;
 
-  echo '1' > /proc/sys/net/ipv4/ip_forward;
-  echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf;
-
   openvpn --genkey --secret /etc/bootstrap/openvpn/tls-auth.key;
   ln --symbolic /bootstrap/src/openvpn/.conf /etc/openvpn/server.conf;
 
+  if is-do && do-has-floating-ip; then
+    perl -i -wpe 's/^%%local%%$/local '"$(esc-regex-rv "$(do-anchor-ip)")"'/u' /etc/openvpn/server.conf;
+  else perl -i -0wpe 's/\n%%local%%\n/\n/u' /etc/openvpn/server.conf; fi;
+
   # Build client configuration file.
 
-  cat /bootstrap/src/openvpn/client.tpl.conf > /etc/bootstrap/openvpn/client.ovpn;
+  ln --symbolic /bootstrap/src/openvpn/.ovpn /etc/bootstrap/openvpn/client.ovpn;
+
+  if is-do && do-has-floating-ip; then
+    perl -i -0wpe 's/%%remote%%/'"$(esc-regex-rv "$(do-floating-ip)")"'/ug' /etc/bootstrap/openvpn/client.ovpn;
+  else perl -i -0wpe 's/%%remote%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' /etc/bootstrap/openvpn/client.ovpn; fi;
+
   perl -i -0wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' /etc/bootstrap/openvpn/client.ovpn;
 
   echo $'\n''# Certificate files (inline).'$'\n' >> /etc/bootstrap/openvpn/client.ovpn;
@@ -49,6 +55,13 @@ if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
   # Enable automatic startup.
 
   systemctl enable openvpn@server;
+
+  # Add extra startup specs for better compatibility.
+  # i.e., Compatibility with the `local` directive for OpenVPN.
+  # The `local` directive requires networking dependency so it can bind correctly.
+
+  mkdir /etc/systemd/system/openvpn@.service.d;
+  cat /bootstrap/src/openvpn/.service > /etc/systemd/system/openvpn@.service.d/z90.conf;
 
   # Restart service.
 
