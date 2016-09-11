@@ -1,4 +1,4 @@
-## $v
+## v160911.84308
 
 - Adding OpenVPN firewall rules for DigitalOcean Droplets that use a floating IP. This makes it possible for the OpenVPN to take advantage of the floating IP and use it instead of the local public IP that comes with each Droplet. The effect is that when you're connected to the VPN, you appear to have the floating (static) IP. Props to [Programster](http://blog.programster.org/openvpn-digitalocean-ip-alias/).
 
