@@ -20,7 +20,7 @@
   br = branch
   co = checkout
   mas = checkout master
-  dev = checkout 000000-dev
+  dev = checkout dev
 
   cl = clone
   clr = clone --recurse-submodules
@@ -28,9 +28,11 @@
   lr = ls-remote --heads
   lrt = ls-remote --tags
 
+	fs = !phing feature-start -D
+	ff = !phing feature-finish -D
+
   lg = log --since=3.months --abbrev-commit --pretty=oneline --decorate --graph --all
 
-  ; Shows all of my configured aliases.
   aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
 [filter "lfs"]
 	clean = git-lfs clean %f

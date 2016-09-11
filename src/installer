@@ -48,10 +48,12 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   . /bootstrap/src/setups/ssl-certs;
   . /bootstrap/src/setups/htpasswd;
 
-  . /bootstrap/src/setups/docker;
-
   . /bootstrap/src/setups/postfix;
   . /bootstrap/src/setups/mailhog;
+
+  . /bootstrap/src/setups/openvpn;
+
+  . /bootstrap/src/setups/docker;
 
   . /bootstrap/src/setups/nginx;
   . /bootstrap/src/setups/apache;
@@ -63,10 +65,9 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   . /bootstrap/src/setups/php/stub;
 
-  . /bootstrap/src/setups/phing;
-  . /bootstrap/src/setups/wp-cli;
-
+  . /bootstrap/src/setups/psysh;
   . /bootstrap/src/setups/phpcs;
+  . /bootstrap/src/setups/phing;
   . /bootstrap/src/setups/phpunit;
   . /bootstrap/src/setups/apigen;
   . /bootstrap/src/setups/casperjs;
@@ -77,6 +78,8 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   . /bootstrap/src/setups/app-repo;
   . /bootstrap/src/setups/discourse;
+
+  . /bootstrap/src/setups/wp-cli;
   . /bootstrap/src/setups/wordpress;
 
   . /bootstrap/src/setups/ssh-config;

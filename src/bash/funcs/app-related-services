@@ -9,13 +9,14 @@ declare -a ___app_related_services_order;
 # - `___app_related_services`: Array keys are binaries; values are service names.
 # - `___app_related_services_order`: Array values are references to the 'binary' service key.
 
+___app_related_services[ufw]=ufw; ___app_related_services_order+=('ufw');
+___app_related_services[fail2ban-client]=fail2ban; ___app_related_services_order+=('fail2ban-client');
+
 ___app_related_services[ssh]=ssh; ___app_related_services_order+=('ssh');
+___app_related_services[openvpn]=openvpn@server; ___app_related_services_order+=('openvpn');
 
 ___app_related_services[postfix]=postfix; ___app_related_services_order+=('postfix');
 ___app_related_services[mailhog]=mailhog; ___app_related_services_order+=('mailhog');
-
-___app_related_services[ufw]=ufw; ___app_related_services_order+=('ufw');
-___app_related_services[fail2ban-client]=fail2ban; ___app_related_services_order+=('fail2ban-client');
 
 ___app_related_services[docker]=docker; ___app_related_services_order+=('docker');
 ___app_related_services[discourse]=discourse; ___app_related_services_order+=('discourse');

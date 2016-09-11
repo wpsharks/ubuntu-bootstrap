@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if can-run php && [[ "${CFG_INSTALL_PSYSH}" == 1 ]]; then
+
+  # Install Psysh.
+
+  curl https://git.io/psysh --location --output /usr/bin/psysh;
+  chmod +x /usr/bin/psysh; # Make it executable.
+
+else echo 'Skipping Psysh installation.'; fi;

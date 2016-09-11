@@ -1,3 +1,12 @@
+## $v
+
+- Adding OpenVPN server as an installation option.
+- Adding Psysh (PHP interactive debugger) as a new installation option.
+- Adding new options: `CFG_ADMIN_STATIC_IP_ADDRESS`, `CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22`.
+- Bug fix. Initial upgrade sometimes requires an attended installation. Now using `Dpkg::Options::=--force-confnew` to avoid this.
+- Bug fix. Firewall rules now declare `proto tcp` in all appropriate cases, even when using `to any` declarations.
+- Adding a new/improved default `secure_path` when using `sudo` to make `sudo` more intuitive.
+
 ## v160821.17673
 
 - Bug fix. Some MySQL config options were not overwriting upstream defaults.

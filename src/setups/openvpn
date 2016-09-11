@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
+
+  # Install OpenVPN.
+
+  apt-get install openvpn --yes;
+
+  # Configure OpenVPN.
+  # See: <http://jas.xyz/2cuqxDM>
+
+  mkdir --parents /var/log/openvpn;
+  mkdir --parents /etc/bootstrap/openvpn;
+
+  echo '1' > /proc/sys/net/ipv4/ip_forward;
+  echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf;
+
+  openvpn --genkey --secret /etc/bootstrap/openvpn/tls-auth.key;
+  ln --symbolic /bootstrap/src/openvpn/.conf /etc/openvpn/server.conf;
+
+  # Build client configuration file.
+
+  cat /bootstrap/src/openvpn/client.tpl.conf > /etc/bootstrap/openvpn/client.ovpn;
+  perl -i -0wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' /etc/bootstrap/openvpn/client.ovpn;
+
+  echo $'\n''# Certificate files (inline).'$'\n' >> /etc/bootstrap/openvpn/client.ovpn;
+
+  echo '<ca>' >> /etc/bootstrap/openvpn/client.ovpn; # Server CA certificate.
+  cat /etc/bootstrap/ssl/server-ca-crt.pem >> /etc/bootstrap/openvpn/client.ovpn;
+  echo '</ca>'$'\n' >> /etc/bootstrap/openvpn/client.ovpn;
+
+  echo '<cert>' >> /etc/bootstrap/openvpn/client.ovpn; # Client certificate.
+  cat /etc/bootstrap/ssl/client-crt.pem >> /etc/bootstrap/openvpn/client.ovpn;
+  echo '</cert>'$'\n' >> /etc/bootstrap/openvpn/client.ovpn;
+
+  echo '<key>' >> /etc/bootstrap/openvpn/client.ovpn; # Client private key.
+  cat /etc/bootstrap/ssl/client-private-key.pem >> /etc/bootstrap/openvpn/client.ovpn;
+  echo '</key>'$'\n' >> /etc/bootstrap/openvpn/client.ovpn;
+
+  echo '<tls-auth>' >> /etc/bootstrap/openvpn/client.ovpn; # TLS auth key.
+  cat /etc/bootstrap/openvpn/tls-auth.key >> /etc/bootstrap/openvpn/client.ovpn;
+  echo '</tls-auth>' >> /etc/bootstrap/openvpn/client.ovpn;
+
+  # Email details for easy client setup.
+
+  mail --subject='OpenVPN Client Setup' --attach=/etc/bootstrap/openvpn/client.ovpn \
+    "${CFG_ADMIN_EMAIL}" <<< 'Configuration file for OpenVPN @'"${CFG_HOST}";
+
+  # Enable automatic startup.
+
+  systemctl enable openvpn@server;
+
+  # Restart service.
+
+  service openvpn@server restart;
+
+else echo 'Skipping OpenVPN installation.'; fi;

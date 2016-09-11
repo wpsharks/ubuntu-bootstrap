@@ -41,6 +41,9 @@ if is-vagrant; then
   usermod --append --groups=ssh-access vagrant;
   usermod --append --groups=www-data vagrant;
 
+  # In case `/etc/sudoers` is modified by initial `upgrade`.
+  echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
+
 fi; # On vagrant boxes only.
 
 # Setup the root user also.

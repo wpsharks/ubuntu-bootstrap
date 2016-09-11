@@ -14,11 +14,13 @@ CFG_VAR="${CFG_SLUG//-/_}";
 
 CFG_ADMIN_USERNAME=''; is-vm && CFG_ADMIN_USERNAME='admin';
 CFG_ADMIN_PASSWORD=''; is-vm && CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
+
 CFG_ADMIN_NAME=''; is-vm && CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
 CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com'; is-vm && CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
 CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com'; is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
-CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
 
+CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
+CFG_ADMIN_STATIC_IP_ADDRESS=''; # A dedicated static IP address.
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
 ! is-vm && [[ -f /root/.ssh/authorized_keys ]] && CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
 
@@ -40,10 +42,12 @@ CFG_INSTALL_SWAP='1'; in-docker && CFG_INSTALL_SWAP='0';
 
 CFG_INSTALL_WS_CA_FILES='1'; is-vm && CFG_INSTALL_WS_CA_FILES='0';
 
-CFG_INSTALL_DOCKER='0'; is-vm && ! in-docker && CFG_INSTALL_DOCKER='1';
-
 CFG_INSTALL_POSTFIX='1'; is-vm && CFG_INSTALL_POSTFIX='0';
 CFG_INSTALL_MAILHOG='0'; is-vm && CFG_INSTALL_MAILHOG='1';
+
+CFG_INSTALL_OPENVPN='0'; # This is always off by default.
+
+CFG_INSTALL_DOCKER='0'; is-vm && ! in-docker && CFG_INSTALL_DOCKER='1';
 
 CFG_INSTALL_NGINX='1'; is-4ci && CFG_INSTALL_NGINX='0';
 CFG_INSTALL_APACHE='0'; is-4ci && CFG_INSTALL_APACHE='1';
@@ -62,10 +66,9 @@ CFG_ENABLE_PHP_OPCACHE='1';
 CFG_ENABLE_PHP_PHAR_READONLY='1'; is-vm && CFG_ENABLE_PHP_PHAR_READONLY='0';
 CFG_ENABLE_PHP_ASSERTIONS='0'; is-vm && CFG_ENABLE_PHP_ASSERTIONS='1';
 
-CFG_INSTALL_PHING='1';
-CFG_INSTALL_WP_CLI='1';
-
+CFG_INSTALL_PSYSH='1';
 CFG_INSTALL_PHPCS='1';
+CFG_INSTALL_PHING='1';
 CFG_INSTALL_PHPUNIT='1';
 CFG_INSTALL_APIGEN='1';
 CFG_INSTALL_CASPERJS='1';
@@ -81,12 +84,14 @@ CFG_DISCOURSE_SMTP_AUTH_TYPE='login';
 CFG_DISCOURSE_SMTP_USERNAME='';
 CFG_DISCOURSE_SMTP_PASSWORD='';
 
+CFG_INSTALL_WP_CLI='1';
 CFG_INSTALL_WORDPRESS='1'; ( is-4ci || is-4pkg ) && CFG_INSTALL_WORDPRESS='0';
 CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0'; is-vagrant && ! is-4pkg && CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
 
 CFG_INSTALL_FIREWALL='1'; in-docker && CFG_INSTALL_FIREWALL='0';
 CFG_INSTALL_FAIL2BAN='1'; in-docker && CFG_INSTALL_FAIL2BAN='0';
 
+CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='1'; is-vm && CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='0';
 CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
 CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1'; is-vm && CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
 
@@ -143,14 +148,20 @@ function fill-clean-sanitize-cfgs() {
 
   fill-cfg-rcs; # All!
 
+  # Trim all values.
+
   for _cfg_key in "${cfgs[@]}"; do
     export "${_cfg_key}"="$(trim "${!_cfg_key}")";
   done;
 
+  # Lowercase these.
+
   CFG_HOST="${CFG_HOST,,}";
   CFG_ROOT_HOST="${CFG_ROOT_HOST,,}";
+
   CFG_OTHER_HOSTS="${CFG_OTHER_HOSTS,,}";
   CFG_OTHER_HOSTS="$(echo "${CFG_OTHER_HOSTS}" | tr ',' ' ')";
+
   CFG_SLUG="${CFG_SLUG,,}";
   CFG_VAR="${CFG_VAR,,}";
 
@@ -290,13 +301,14 @@ function validate-cfgs() {
     cfg_warning+='If you install Discourse you must also install Docker.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
-  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && ( "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 \
-    || "${CFG_INSTALL_MYSQL}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 || "${CFG_INSTALL_MEMCACHE}" == 1 \
+  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && ( "${CFG_INSTALL_OPENVPN}" == 1 \
+    || "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 || "${CFG_INSTALL_MYSQL}" == 1 \
+    || "${CFG_INSTALL_PHP_FPM}" == 1 || "${CFG_INSTALL_MEMCACHE}" == 1 \
     || "${CFG_INSTALL_APP_REPO}" == 1 || "${CFG_INSTALL_WORDPRESS}" == 1 ) ]]; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='If you install Discourse, services like Nginx, Apache, MySQL, PHP-FPM, and WordPress';
-    cfg_warning+=' should be excluded. Discourse is almost entirely self-contained—via Docker.'$'\n';
+    cfg_warning+='If you install Discourse, services like OpenVPN, Nginx, Apache, MySQL, PHP-FPM,';
+    cfg_warning+=' WordPress, etc. should be excluded. Discourse should run on a server by itself.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif [[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vm; then
@@ -312,11 +324,11 @@ function validate-cfgs() {
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   elif in-docker && [[ "${CFG_INSTALL_DOCKER}" == 1 \
-    || "${CFG_INSTALL_SWAP}" == 1 || "${CFG_INSTALL_RAMDISK}" == 1 \
+    || "${CFG_INSTALL_OPENVPN}" == 1 || "${CFG_INSTALL_SWAP}" == 1 || "${CFG_INSTALL_RAMDISK}" == 1 \
     || "${CFG_INSTALL_FIREWALL}" == 1 || "${CFG_INSTALL_FAIL2BAN}" == 1 ]]; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
-    cfg_warning+='Inside Docker, please exclude: Docker, Swap, RAM Disk, Firewall, and Fail2Ban.'$'\n';
+    cfg_warning+='Inside Docker, please exclude: Docker, OpenVPN, Swap, RAM Disk, Firewall, and Fail2Ban.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
   fi; # End conflicts/validation.
@@ -398,10 +410,12 @@ function cfgs-wizard() {
         \
         'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
         \
-        'CFG_INSTALL_DOCKER' 'Install?' "$([[ "${CFG_INSTALL_DOCKER}" == 1 ]] && echo 'on' || echo 'off')" \
-        \
         'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_MAILHOG' 'Install?' "$([[ "${CFG_INSTALL_MAILHOG}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_OPENVPN' 'Install?' "$([[ "${CFG_INSTALL_OPENVPN}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_DOCKER' 'Install?' "$([[ "${CFG_INSTALL_DOCKER}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -419,10 +433,9 @@ function cfgs-wizard() {
         'CFG_ENABLE_PHP_PHAR_READONLY' 'Enable?' "$([[ "${CFG_ENABLE_PHP_PHAR_READONLY}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_ENABLE_PHP_ASSERTIONS' 'Enable?' "$([[ "${CFG_ENABLE_PHP_ASSERTIONS}" == 1 ]] && echo 'on' || echo 'off')" \
         \
-        'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
-        'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
-        \
+        'CFG_INSTALL_PSYSH' 'Install?' "$([[ "${CFG_INSTALL_PSYSH}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHPUNIT' 'Install?' "$([[ "${CFG_INSTALL_PHPUNIT}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APIGEN' 'Install?' "$([[ "${CFG_INSTALL_APIGEN}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -433,6 +446,7 @@ function cfgs-wizard() {
         \
         'CFG_INSTALL_DISCOURSE' 'Install?' "$([[ "${CFG_INSTALL_DISCOURSE}" == 1 ]] && echo 'on' || echo 'off')" \
         \
+        'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
         \
@@ -447,10 +461,12 @@ function cfgs-wizard() {
 
       CFG_INSTALL_WS_CA_FILES='0';
 
-      CFG_INSTALL_DOCKER='0';
-
       CFG_INSTALL_POSTFIX='0';
       CFG_INSTALL_MAILHOG='0';
+
+      CFG_INSTALL_OPENVPN='0';
+
+      CFG_INSTALL_DOCKER='0';
 
       CFG_INSTALL_NGINX='0';
       CFG_INSTALL_APACHE='0';
@@ -468,10 +484,9 @@ function cfgs-wizard() {
       CFG_ENABLE_PHP_PHAR_READONLY='0';
       CFG_ENABLE_PHP_ASSERTIONS='0';
 
-      CFG_INSTALL_PHING='0';
-      CFG_INSTALL_WP_CLI='0';
-
+      CFG_INSTALL_PSYSH='0';
       CFG_INSTALL_PHPCS='0';
+      CFG_INSTALL_PHING='0';
       CFG_INSTALL_PHPUNIT='0';
       CFG_INSTALL_APIGEN='0';
       CFG_INSTALL_CASPERJS='0';
@@ -482,6 +497,7 @@ function cfgs-wizard() {
 
       CFG_INSTALL_DISCOURSE='0';
 
+      CFG_INSTALL_WP_CLI='0';
       CFG_INSTALL_WORDPRESS='0';
       CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
 
@@ -509,6 +525,7 @@ function cfgs-wizard() {
             'CFG_OTHER_HOSTS' \
             \
             'CFG_ADMIN_PREFERRED_SHELL' \
+            'CFG_ADMIN_STATIC_IP_ADDRESS' \
             'CFG_ADMIN_AUTHORIZED_SSH_KEYS' \
             \
             'CFG_TOOLS_USERNAME' \
@@ -534,6 +551,7 @@ function cfgs-wizard() {
             'CFG_DISCOURSE_SMTP_USERNAME' \
             'CFG_DISCOURSE_SMTP_PASSWORD' \
             \
+            'CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22' \
             'CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN' \
             'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' \
             \

@@ -15,17 +15,36 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   if is-vm; then
     ufw allow 22/tcp; # No limitations.
+  elif [[ -n "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
+    ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
   else ufw limit 22/tcp; fi; # SSH, SFTP, Git, etc.
   # limit = max of 6 connections every 30 seconds.
   # See: `/lib/ufw/user.rules` for details.
 
+  # Open the VPN port if installing OpenVPN.
+  # See: <http://jas.xyz/2cuqxDM>
+
+  if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
+    ufw limit 1194/udp; # OpenVPN service.
+    # limit = max of 6 connections every 30 seconds.
+    # See: `/lib/ufw/user.rules` for details.
+
+    cat /bootstrap/src/openvpn/ufw.tpl.rules > /tmp/before.rules;
+    cat /etc/ufw/before.rules >> /tmp/before.rules;
+
+    cat /tmp/before.rules > /etc/ufw/before.rules;
+    rm --force /tmp/before.rules; # Remove temporary file.
+
+    perl -i -0wpe 's/%%interface%%/'"$(esc-regex-rv "$(default-interface)")"'/ug' /etc/ufw/before.rules;
+    perl -i -wpe 's/^(\s*)#?DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
+  fi;
   # Open MySQL port 3306 to all VPN connections?
 
   if can-run mysql && [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
     if is-vm; then # On a VM this has a slightly different meaning.
       ufw allow 3306/tcp; # Wide open on a VM.
     else # On the private network interface only.
-      ufw allow in on eth1 to any port 3306;
+      ufw allow in on eth1 to any port 3306 proto tcp;
     fi;
   fi;
   # Open up the HTTP/HTTPS port numbers `80` and `443`?
@@ -40,8 +59,8 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
       while read -ra _ip; do
         _ip="$(trim "${_ip}")";
         if [[ -n "${_ip}" ]]; then
-          sudo ufw allow from "${_ip}" to any port 80;
-          sudo ufw allow from "${_ip}" to any port 443;
+          sudo ufw allow from "${_ip}" to any port 80 proto tcp;
+          sudo ufw allow from "${_ip}" to any port 443 proto tcp;
         fi;
       done <<< "${_ips_v4}"$'\n'"${_ips_v6}"; unset _ips_v4; unset _ips_v6; unset _ip;
 
@@ -52,7 +71,8 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
   # Open up the HTTP/HTTPS port number `8025` for MailHog.
 
   if is-vm && [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
-    ufw allow 8025/tcp; fi; # MailHog does not support HTTPS at this time.
+    ufw allow 8025/tcp; # Requires `http://`.
+  fi; # MailHog does not support HTTPS at this time.
 
   # Enable automatic startup.
 

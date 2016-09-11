@@ -3,6 +3,7 @@ project_title                               = WebSharks Ubuntu Bootstrap
 project_owner                               = websharks
 project_slug                                = ubuntu-bootstrap
 project_text_domain                         = websharks-ubuntu-bootstrap
+project_slack_channel                       = ubuntu-bootstrap
 
 project_namespace                           = WebSharks\\Ubuntu\\Bootstrap
 project_sub_namespace                       = UbuntuBootstrap

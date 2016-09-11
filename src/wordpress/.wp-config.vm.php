@@ -21,7 +21,9 @@ define('NONCE_SALT', '%%NONCE_SALT%%');
 
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_EDGE', true);
 define('WP_DEBUG_DISPLAY', true);
+define('JETPACK_DEV_DEBUG', true);
 
 if (version_compare(PHP_VERSION, '7.0.4', '>=')) {
     @ini_set('zend.assertions', '1');

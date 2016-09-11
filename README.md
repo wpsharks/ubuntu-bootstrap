@@ -262,8 +262,12 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_ADMIN_NAME='Admin Istrator'` Display name.
 - `--CFG_ADMIN_EMAIL='admin@my.cool.vm'` Admin email address.
 - `--CFG_ADMIN_PUBLIC_EMAIL='hostnamster@my.cool.vm'` Public email address.
+
+---
+
 - `--CFG_ADMIN_PREFERRED_SHELL=/bin/zsh` Or `/bin/bash`.
-- `--CFG_ADMIN_AUTHORIZED_SSH_KEYS=` e.g., `/authorized_keys`
+- `--CFG_ADMIN_STATIC_IP_ADDRESS=[ip]` e.g., `123.456.789.0`
+- `--CFG_ADMIN_AUTHORIZED_SSH_KEYS=[file]` e.g., `/authorized_keys`
 
 ---
 
@@ -293,12 +297,16 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_INSTALL_DOCKER=0|1` Install Docker?
+- `--CFG_INSTALL_POSTFIX=0|1` Install Postfix?
+- `--CFG_INSTALL_MAILHOG=0|1` Install MailHog instead of Postfix?
 
 ---
 
-- `--CFG_INSTALL_POSTFIX=0|1` Install Postfix?
-- `--CFG_INSTALL_MAILHOG=0|1` Install MailHog instead of Postfix?
+- `--CFG_INSTALL_OPENVPN=0|1` Install OpenVPN server?
+
+---
+
+- `--CFG_INSTALL_DOCKER=0|1` Install Docker?
 
 ---
 
@@ -327,12 +335,9 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_INSTALL_PHING=0|1` Install Phing?
-- `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
-
----
-
+- `--CFG_INSTALL_PSYSH=0|1` Install Psysh?
 - `--CFG_INSTALL_PHPCS=0|1` Install PHP Code Sniffer?
+- `--CFG_INSTALL_PHING=0|1` Install Phing?
 - `--CFG_INSTALL_PHPUNIT=0|1` Install PHPUnit?
 - `--CFG_INSTALL_APIGEN=0|1` Install APIGen?
 - `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
@@ -354,6 +359,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
+- `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
 - `--CFG_INSTALL_WORDPRESS=0|1` Install WordPress?
 - `--CFG_INSTALL_WORDPRESS_VM_SYMLINKS=0|1` Install WordPress theme/plugin symlinks?
 
@@ -361,6 +367,10 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_INSTALL_FIREWALL=0|1` Install firewall?
 - `--CFG_INSTALL_FAIL2BAN=0|1` Install Fail2Ban?
+
+---
+
+- `--CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22=0|1` Allow admin only? Requires `--CFG_ADMIN_STATIC_IP_ADDRESS`. Production only.
 - `--CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN=0|1` Allow network-based connections?
 - `--CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443=0|1` Allow only CloudFlare?
 

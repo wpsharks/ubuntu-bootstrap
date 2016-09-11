@@ -15,9 +15,12 @@ for _cfg_key in \
   'CFG_VAR' \
   \
   'CFG_ADMIN_USERNAME' \
+  \
   'CFG_ADMIN_NAME' \
   'CFG_ADMIN_EMAIL' \
   'CFG_ADMIN_PUBLIC_EMAIL' \
+  \
+  'CFG_ADMIN_STATIC_IP_ADDRESS' \
   \
   'CFG_WEB_SERVER_SSL_ONLY' \
   \
@@ -36,3 +39,6 @@ for _cfg_key in \
   'CFG_CONFIG_FILE' \
   ; do add-global-env-var "${_cfg_key}" "${!_cfg_key}";
 done; unset _cfg_key;
+
+# Default secure path applies when doing a `sudo` command as root.
+echo 'Defaults secure_path="/root/.bin:/bootstrap/src/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' >> /etc/sudoers.d/secure-path;

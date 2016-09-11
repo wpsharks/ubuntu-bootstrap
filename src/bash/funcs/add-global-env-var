@@ -50,8 +50,4 @@ function add-global-env-var() {
       echo "export ${key}='${value}'" >> /etc/apache2/~envvars;
     fi;
   fi;
-  ## Keep these environment variables when running `sudo`.
-  ## Note that double quotes are required here.
-
-  echo "Defaults env_keep += \"${key}\"" >> /etc/sudoers.d/env-vars;
 };

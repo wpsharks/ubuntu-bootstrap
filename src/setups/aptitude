@@ -3,7 +3,8 @@
 # Update.
 
 apt-get update --yes;
-apt-get upgrade --yes;
+# Force new config files; see: <http://jas.xyz/2cDOeXI>
+apt-get upgrade --yes --option 'Dpkg::Options::=--force-confnew';
 
 # Install APT dependencies.
 

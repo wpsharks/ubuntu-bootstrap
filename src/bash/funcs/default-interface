@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Default interface name.
+
+function default-interface() {
+  local route;
+  route=($(ip route | grep default));
+  echo "${route[4]}"; # e.g., `eth0`
+};

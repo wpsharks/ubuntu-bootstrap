@@ -104,9 +104,9 @@ function setup-user() {
   ## WP-CLI configuration for this user.
 
   if [[ "${user}" == 'root' || "${user}" == 'vagrant' ]]; then
-    perl -i -wpe 's/%%user%%/admin/u' "${home_dir}"/.wp-cli/config.yml;
+    perl -i -0wpe 's/%%user%%/admin/ug' "${home_dir}"/.wp-cli/config.yml;
   else # Use this particular username in all other cases.
-    perl -i -wpe 's/%%user%%/'"$(esc-regex-rv "${user}")"'/u' "${home_dir}"/.wp-cli/config.yml;
+    perl -i -0wpe 's/%%user%%/'"$(esc-regex-rv "${user}")"'/ug' "${home_dir}"/.wp-cli/config.yml;
   fi;
-  perl -i -wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/u' "${home_dir}"/.wp-cli/config.yml;
+  perl -i -0wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' "${home_dir}"/.wp-cli/config.yml;
 };
