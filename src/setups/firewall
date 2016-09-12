@@ -15,7 +15,7 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   if is-vm; then
     ufw allow 22/tcp; # No limitations.
-  elif [[ -n "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
+  elif [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
     ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
     # limit = max of 6 connections every 30 seconds.
     # See: `/lib/ufw/user.rules` for details.
