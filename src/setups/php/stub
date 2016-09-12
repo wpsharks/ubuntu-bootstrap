@@ -18,24 +18,31 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
   elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
     . /bootstrap/src/setups/php/v5.5;
   fi;
-  # PHP ini file alterations based on other config values.
+  # Handle OPcache being enabled or disabled.
 
-  if [[ "${CFG_INSTALL_PHP_XDEBUG}" != 1 ]]; then
-    perl -i -wpe 's/^\s*xdebug\..*$/;$0/uig' /bootstrap/src/php/.ini;
-  fi;
-  if [[ "${CFG_ENABLE_PHP_OPCACHE}" != 1 ]]; then
-    perl -i -wpe 's/^(\s*)opcache\.enable\s*=\s*(?:yes|1|on|true)$/$1opcache.enable = no/u' /bootstrap/src/php/.ini;
-    perl -i -wpe 's/^(\s*)opcache\.enable_cli\s*=\s*(?:yes|1|on|true)$/$1opcache.enable_cli = no/u' /bootstrap/src/php/.ini;
-  fi;
-  if is-vm; then # On a VM, revalidate the OPcache on every request to avoid developer headaches.
-    perl -i -wpe 's/^(\s*)opcache\.revalidate_freq\s*=.*$/$1opcache.revalidate_freq = 0/u' /bootstrap/src/php/.ini;
-  fi;
-  if [[ "${CFG_ENABLE_PHP_PHAR_READONLY}" != 1 ]]; then
-    perl -i -wpe 's/^(\s*)phar\.readonly\s*=\s*(?:yes|1|on|true)$/$1phar.readonly = no/u' /bootstrap/src/php/.ini;
-  fi;
-  if [[ "${CFG_ENABLE_PHP_ASSERTIONS}" != 1 ]]; then
-    perl -i -wpe 's/^(\s*)zend\.assertions\s*=\s*(?:no|0|-1|off|false)$/$1zend.assertions = 1/u' /bootstrap/src/php/.ini;
-    perl -i -wpe 's/^(\s*)assert\.exception\s*=\s*(?:no|0|off|false)$/$1assert.exception = yes/u' /bootstrap/src/php/.ini;
-  fi;
+  if [[ "${CFG_ENABLE_PHP_OPCACHE}" == 1 ]]; then
+    perl -i -wpe 's/^(\s*)opcache\.enable\s*\=.*$/$1opcache.enable = yes/u' /bootstrap/src/php/.ini;
+  else perl -i -wpe 's/^(\s*)opcache\.enable\s*\=.*$/$1opcache.enable = no/u' /bootstrap/src/php/.ini; fi;
+
+  if is-vm || is-dev; then # Revalidate OPcache on every request to avoid developer headaches.
+    perl -i -wpe 's/^(\s*)opcache\.revalidate_freq\s*\=.*$/$1opcache.revalidate_freq = 0/u' /bootstrap/src/php/.ini; fi;
+
+  # Handle XDebug being enabled or disabled.
+
+  if [[ "${CFG_INSTALL_PHP_XDEBUG}" == 1 ]] && is-vagrant; then
+    perl -i -wpe 's/^(\s*)xdebug\.remote_connect_back\s*\=.*$/$1xdebug.remote_connect_back = yes/u' /bootstrap/src/php/.ini;
+  elif [[ "${CFG_INSTALL_PHP_XDEBUG}" != 1 ]]; then perl -i -wpe 's/^\s*xdebug\..*$/;$0/ug' /bootstrap/src/php/.ini; fi;
+
+  # Handle PHAR read-only being enabled or disabled.
+
+  if [[ "${CFG_ENABLE_PHP_PHAR_READONLY}" == 1 ]]; then
+    perl -i -wpe 's/^(\s*)phar\.readonly\s*\=.*$/$1phar.readonly = yes/u' /bootstrap/src/php/.ini;
+  else perl -i -wpe 's/^(\s*)phar\.readonly\s*\=.*$/$1phar.readonly = no/u' /bootstrap/src/php/.ini; fi;
+
+  # Handle PHP assertions being enabled or disabled.
+
+  if [[ "${CFG_ENABLE_PHP_ASSERTIONS}" == 1 ]]; then # Disable softly; i.e., allow use of assertions.
+    perl -i -wpe 's/^(\s*)zend\.assertions\s*\=.*$/$1zend.assertions = 0/u' /bootstrap/src/php/.ini;
+  else perl -i -wpe 's/^(\s*)zend\.assertions\s*\=.*$/$1zend.assertions = -1/u' /bootstrap/src/php/.ini; fi;
 
 else echo 'Skipping PHP installation.'; fi;

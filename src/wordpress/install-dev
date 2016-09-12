@@ -73,8 +73,20 @@ perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_
 mkdir --parents "${php_v_src_dir}"/---tools;
 echo '<?php phpinfo();' > "${php_v_src_dir}"/---tools/info.php;
 
+# Setup an `.htaccess` file.
+
+rm --force "${php_v_src_dir}"/.htaccess;
+
+if is-vagrant; then # Security not an issue.
+  echo '# PHP XDebug connects back.' >> "${php_v_src_dir}"/.htaccess;
+  echo 'php_value xdebug.remote_connect_back yes' >> "${php_v_src_dir}"/.htaccess;
+else
+  echo '# PHP XDebug security.' >> "${php_v_src_dir}"/.htaccess;
+  echo '# Uncomment & set your IP address.' >> "${php_v_src_dir}"/.htaccess;
+  echo '# php_value xdebug.remote_host MY.IP.ADDRESS' >> "${php_v_src_dir}"/.htaccess;
+fi;
 # Set permissions in the web directory.
-# Owned by `www-data` that exists on both the host & guest boxes.
+# Owned by `www-data`; who exists on both sides.
 
 chown --recursive www-data:app "${php_v_src_dir}";
 find "${php_v_src_dir}" -type d -exec chmod 2775 {} \;
@@ -87,8 +99,8 @@ mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABA
 
 # Start a new Docker container for this PHP/WP version.
 
-docker stop "${php_v_container_name}" || true;
-docker rm "${php_v_container_name}" || true;
+docker stop "${php_v_container_name}" &>/dev/null || true;
+docker rm "${php_v_container_name}" &>/dev/null || true;
 
 docker run --name="${php_v_container_name}" --detach \
   \
@@ -97,7 +109,9 @@ docker run --name="${php_v_container_name}" --detach \
   --volume=/bootstrap:/bootstrap \
   --volume="${php_v_src_dir}":/var/www/html \
   \
-  chialab/php-dev:"${php_v}"-apache;
+  chialab/php:"${php_v}"-apache;
+
+docker exec --tty "${php_v_container_name}" /bootstrap/src/wordpress/install-dev-extras;
 
 # Configure service for auto-start at boot time.
 
