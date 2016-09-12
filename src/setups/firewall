@@ -14,11 +14,11 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
   # Allow SSH access for admins.
 
   if is-vm; then
-    ufw allow 22/tcp; # No limitations.
+    ufw allow 22/tcp; # No firewall limitations on a VM.
   elif [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
-    ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
-    # limit = max of 6 connections every 30 seconds.
-    # See: `/lib/ufw/user.rules` for details.
+      ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
+      # limit = max of 6 connections every 30 seconds.
+      # See: `/lib/ufw/user.rules` for details.
   else ufw limit 22/tcp; fi; # SSH, SFTP, Git, etc.
 
   # Open the VPN port if installing OpenVPN.
@@ -79,7 +79,6 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   if can-run nginx || can-run apache2 || [[ -d /discourse ]]; then
     if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
-
       # See: <https://www.cloudflare.com/ips/>
       _ips_v4="$(curl https://www.cloudflare.com/ips-v4 --location)";
       _ips_v6="$(curl https://www.cloudflare.com/ips-v6 --location)";

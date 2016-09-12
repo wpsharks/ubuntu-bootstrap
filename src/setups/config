@@ -111,7 +111,7 @@ CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='0'; ( ! in-docker && ( is-vm || is-dev ) )
 CFG_INSTALL_FIREWALL='1'; in-docker && CFG_INSTALL_FIREWALL='0';
 CFG_INSTALL_FAIL2BAN='1'; in-docker && CFG_INSTALL_FAIL2BAN='0';
 
-CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='1'; is-vm && CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='0';
+CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='1'; ( is-vm || is-dev ) && CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='0';
 CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='1';
 CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
 CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1'; is-vm && CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
@@ -662,7 +662,7 @@ function cfgs-wizard() {
       echo '-----------------------------------------';
 
       for _cfg_key in "${cfgs[@]}"; do
-        echo "${_cfg_key}"'='"${!_cfg_key}"; done;
+        echo '--'"${_cfg_key}"'='"'${!_cfg_key}'"' \'; done;
 
       ## Quick review; ask for confirmation.
 
