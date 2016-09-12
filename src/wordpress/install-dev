@@ -31,7 +31,9 @@ php_v_src_dir=/app-dev/"${php_v_dir_basename}"/src;
 # Start from a clean directory.
 
 mkdir --parents "${php_v_src_dir}";
-rm --force --recursive "${php_v_src:?}"/*;
+rm --force --recursive "${php_v_src_dir:?}"/*;
+# `:?` is important. It avoids an accidental empty variable.
+# i.e., This prevents `rm /*`, which would delete the entire server.
 
 # Install the latest version of WordPress.
 
