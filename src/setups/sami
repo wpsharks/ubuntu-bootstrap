@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if can-run php && [[ "${CFG_INSTALL_SAMI}" == 1 ]]; then
+
+  # Install Sami for codex generation.
+
+  git clone https://github.com/websharks/sami.git /usr/local/src/sami --branch=master --depth=1;
+  ln --symbolic /usr/local/src/sami/sami.php /usr/bin/sami;
+  chmod +x /usr/bin/sami;
+
+else echo 'Skipping Sami installation.'; fi;

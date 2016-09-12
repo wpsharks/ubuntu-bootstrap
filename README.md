@@ -259,6 +259,9 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_ADMIN_USERNAME=admin` Administrative username.
 - `--CFG_ADMIN_PASSWORD=admin` Administrative password.
+
+---
+
 - `--CFG_ADMIN_NAME='Admin Istrator'` Display name.
 - `--CFG_ADMIN_EMAIL='admin@my.cool.vm'` Admin email address.
 - `--CFG_ADMIN_PUBLIC_EMAIL='hostnamster@my.cool.vm'` Public email address.
@@ -273,6 +276,9 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_TOOLS_USERNAME=admin` Administrative username.
 - `--CFG_TOOLS_PASSWORD=admin` Administrative password.
+
+---
+
 - `--CFG_TOOLS_PMA_BLOWFISH_KEY=[key]` Secret key. Default is auto-generated.
 - `--CFG_MAINTENANCE_BYPASS_KEY=[key]` Secret key. Default is auto-generated.
 
@@ -280,12 +286,40 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_MYSQL_DB_HOST=127.0.0.1` MySQL DB host name.
 - `--CFG_MYSQL_DB_PORT=3306` MySQL DB port number.
+
+---
+
+- `--CFG_MYSQL_SSL_KEY=[file]` MySQL SSL key file.
+- `--CFG_MYSQL_SSL_CRT=[file]` MySQL SSL crt file.
+- `--CFG_MYSQL_SSL_CA=[file]` MySQL SSL ca file.
+- `--CFG_MYSQL_SSL_CIPHER=[cipher]` MySQL SSL cipher.
+
+---
+
 - `--CFG_MYSQL_SSL_ENABLE=0|1` MySQL DB supports SSL connections?
+
+---
+
 - `--CFG_MYSQL_DB_CHARSET=utf8mb4` MySQL DB charset.
 - `--CFG_MYSQL_DB_COLLATE=utf8mb4_unicode_ci` MySQL DB collation.
+
+---
+
 - `--CFG_MYSQL_DB_NAME=db0` MySQL DB name.
+
+---
+
 - `--CFG_MYSQL_DB_USERNAME=client` MySQL DB username.
 - `--CFG_MYSQL_DB_PASSWORD=[key]` Default is auto-generated.
+
+---
+
+- `--CFG_MYSQL_X_DB_USERNAME=x_client` MySQL external DB username.
+- `--CFG_MYSQL_X_DB_PASSWORD=[key]` Default is auto-generated.
+
+---
+
+- `--CFG_MYSQL_X_REQUIRES_SSL=0|1` External connection require SSL?
 
 ---
 
@@ -312,6 +346,9 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_INSTALL_NGINX=0|1` Install Nginx?
 - `--CFG_INSTALL_APACHE=0|1` Install Apache?
+
+---
+
 - `--CFG_WEB_SERVER_SSL_ONLY=0|1` Require https:// ?
 
 ---
@@ -339,7 +376,8 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_INSTALL_PHPCS=0|1` Install PHP Code Sniffer?
 - `--CFG_INSTALL_PHING=0|1` Install Phing?
 - `--CFG_INSTALL_PHPUNIT=0|1` Install PHPUnit?
-- `--CFG_INSTALL_APIGEN=0|1` Install APIGen?
+- `--CFG_INSTALL_SAMI=0|1` Install Sami codex generator?
+- `--CFG_INSTALL_APIGEN=0|1` Install APIGen codex generator?
 - `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
 - `--CFG_INSTALL_COMPOSER=0|1` Install Composer?
 - `--CFG_INSTALL_WP_I18N_TOOLS=0|1` Install WP i18n tools?
@@ -351,17 +389,34 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 ---
 
 - `--CFG_INSTALL_DISCOURSE=0|1` Install Discourse?
+
+---
+
 - `--CFG_DISCOURSE_SMTP_HOST=email-smtp.us-east-1.amazonaws.com` SMTP host name.
 - `--CFG_DISCOURSE_SMTP_PORT=587` SMTP port number.
+
+---
+
 - `--CFG_DISCOURSE_SMTP_AUTH_TYPE=login` SMTP authentication type.
+
+---
+
 - `--CFG_DISCOURSE_SMTP_USERNAME=[username]` SMTP username.
 - `--CFG_DISCOURSE_SMTP_PASSWORD=[password]` SMTP password.
 
 ---
 
 - `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
+
+---
+
 - `--CFG_INSTALL_WORDPRESS=0|1` Install WordPress?
-- `--CFG_INSTALL_WORDPRESS_VM_SYMLINKS=0|1` Install WordPress theme/plugin symlinks?
+- `--CFG_INSTALL_WORDPRESS_VM_SYMLINKS=0|1` Install symlinks?
+
+---
+
+- `--CFG_INSTALL_WORDPRESS_DEV_CONTAINERS=0|1` Install WordPress dev containers?
+  - This installs multiple versions of PHP (running WP in Docker containers) for additional testing.
 
 ---
 
@@ -370,7 +425,9 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22=0|1` Allow admin only? Requires `--CFG_ADMIN_STATIC_IP_ADDRESS`. Production only.
+- `--CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22=0|1` Allow admin only?
+  - Requires `--CFG_ADMIN_STATIC_IP_ADDRESS` ; for production use only.
+- `--CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306=0|1` Allow external connections to MySQL?
 - `--CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN=0|1` Allow network-based connections?
 - `--CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443=0|1` Allow only CloudFlare?
 

@@ -62,11 +62,16 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   # Open MySQL port 3306 to all VPN connections?
 
-  if can-run mysql && [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
-    if is-vm; then # On a VM this has a slightly different meaning.
-      ufw allow 3306/tcp; # Wide open on a VM.
-    else # On the private network interface only.
-      ufw allow in on eth1 to any port 3306 proto tcp;
+  if can-run mysql; then
+    if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306}" == 1 ]]; then
+      ufw allow 3306/tcp; # Allow external connections.
+    fi;
+    if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
+      if is-vm; then # On a VM this has a slightly different meaning.
+        ufw allow 3306/tcp; # Wide open on a VM.
+      elif is-do; then # Private network interface.
+        ufw allow in on eth1 to any port 3306 proto tcp;
+      fi;
     fi;
   fi;
 

@@ -20,23 +20,38 @@ CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com'; is-vm && CFG_ADMIN_EMAIL='
 CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com'; is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
-CFG_ADMIN_STATIC_IP_ADDRESS=''; # A dedicated static IP address.
+CFG_ADMIN_STATIC_IP_ADDRESS=''; # See `fill-clean-sanitize-cfgs()` below.
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
 ! is-vm && [[ -f /root/.ssh/authorized_keys ]] && CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
 
 CFG_TOOLS_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_TOOLS_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+
 CFG_TOOLS_PMA_BLOWFISH_KEY="$(keygen 64)";
 CFG_MAINTENANCE_BYPASS_KEY="$(keygen 64)";
 
 CFG_MYSQL_DB_HOST='127.0.0.1';
 CFG_MYSQL_DB_PORT='3306';
+
+CFG_MYSQL_SSL_KEY=/etc/bootstrap/ssl/client-private-key.pem;
+CFG_MYSQL_SSL_CRT=/etc/bootstrap/ssl/client-crt.pem;
+CFG_MYSQL_SSL_CA=/etc/bootstrap/ssl/server-ca-crt.pem;
+CFG_MYSQL_SSL_CIPHER=CAMELLIA256-SHA;
+
 CFG_MYSQL_SSL_ENABLE='1';
+
 CFG_MYSQL_DB_CHARSET='utf8mb4';
 CFG_MYSQL_DB_COLLATE='utf8mb4_unicode_ci';
+
 CFG_MYSQL_DB_NAME='db0';
+
 CFG_MYSQL_DB_USERNAME='client'; is-vm && CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_MYSQL_DB_PASSWORD="$(keygen 32)"; is-vm && CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+
+CFG_MYSQL_X_DB_USERNAME='x_client'; is-vm && CFG_MYSQL_X_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
+CFG_MYSQL_X_DB_PASSWORD="$(keygen 32)"; is-vm && CFG_MYSQL_X_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+
+CFG_MYSQL_X_REQUIRES_SSL='1'; ( is-vm || is-dev ) && CFG_MYSQL_X_REQUIRES_SSL='0';
 
 CFG_INSTALL_SWAP='1'; in-docker && CFG_INSTALL_SWAP='0';
 
@@ -45,13 +60,13 @@ CFG_INSTALL_WS_CA_FILES='1'; is-vm && CFG_INSTALL_WS_CA_FILES='0';
 CFG_INSTALL_POSTFIX='1'; is-vm && CFG_INSTALL_POSTFIX='0';
 CFG_INSTALL_MAILHOG='0'; is-vm && CFG_INSTALL_MAILHOG='1';
 
-CFG_INSTALL_OPENVPN='0'; # This is always off by default.
+CFG_INSTALL_OPENVPN='0'; is-dev && CFG_INSTALL_OPENVPN='1';
 
-CFG_INSTALL_DOCKER='0'; is-vm && ! in-docker && CFG_INSTALL_DOCKER='1';
+CFG_INSTALL_DOCKER='1'; in-docker && CFG_INSTALL_DOCKER='0';
 
 CFG_INSTALL_NGINX='1'; is-4ci && CFG_INSTALL_NGINX='0';
 CFG_INSTALL_APACHE='0'; is-4ci && CFG_INSTALL_APACHE='1';
-CFG_WEB_SERVER_SSL_ONLY='1'; is-vm && CFG_WEB_SERVER_SSL_ONLY='0';
+CFG_WEB_SERVER_SSL_ONLY='1'; ( is-vm || is-dev ) && CFG_WEB_SERVER_SSL_ONLY='0';
 
 CFG_INSTALL_MYSQL='1';
 
@@ -70,6 +85,7 @@ CFG_INSTALL_PSYSH='1';
 CFG_INSTALL_PHPCS='1';
 CFG_INSTALL_PHING='1';
 CFG_INSTALL_PHPUNIT='1';
+CFG_INSTALL_SAMI='1';
 CFG_INSTALL_APIGEN='1';
 CFG_INSTALL_CASPERJS='1';
 CFG_INSTALL_COMPOSER='1';
@@ -78,20 +94,25 @@ CFG_INSTALL_WP_I18N_TOOLS='1';
 CFG_INSTALL_APP_REPO='1';
 
 CFG_INSTALL_DISCOURSE='0';
+
 CFG_DISCOURSE_SMTP_HOST='email-smtp.us-east-1.amazonaws.com';
 CFG_DISCOURSE_SMTP_PORT='587';
+
 CFG_DISCOURSE_SMTP_AUTH_TYPE='login';
+
 CFG_DISCOURSE_SMTP_USERNAME='';
 CFG_DISCOURSE_SMTP_PASSWORD='';
 
 CFG_INSTALL_WP_CLI='1';
 CFG_INSTALL_WORDPRESS='1'; ( is-4ci || is-4pkg ) && CFG_INSTALL_WORDPRESS='0';
 CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0'; is-vagrant && ! is-4pkg && CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
+CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='0'; ( ! in-docker && ( is-vm || is-dev ) ) && CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='1';
 
 CFG_INSTALL_FIREWALL='1'; in-docker && CFG_INSTALL_FIREWALL='0';
 CFG_INSTALL_FAIL2BAN='1'; in-docker && CFG_INSTALL_FAIL2BAN='0';
 
 CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='1'; is-vm && CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='0';
+CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='1';
 CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
 CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1'; is-vm && CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
 
@@ -166,19 +187,34 @@ function fill-clean-sanitize-cfgs() {
   CFG_VAR="${CFG_VAR,,}";
 
   CFG_ADMIN_USERNAME="${CFG_ADMIN_USERNAME,,}";
+
   CFG_ADMIN_EMAIL="${CFG_ADMIN_EMAIL,,}";
   CFG_ADMIN_PUBLIC_EMAIL="${CFG_ADMIN_PUBLIC_EMAIL,,}";
 
   CFG_TOOLS_USERNAME="${CFG_TOOLS_USERNAME,,}";
 
   CFG_MYSQL_DB_HOST="${CFG_MYSQL_DB_HOST,,}";
+
   CFG_MYSQL_DB_CHARSET="${CFG_MYSQL_DB_CHARSET,,}";
   CFG_MYSQL_DB_COLLATE="${CFG_MYSQL_DB_COLLATE,,}";
+
   CFG_MYSQL_DB_NAME="${CFG_MYSQL_DB_NAME,,}";
+
   CFG_MYSQL_DB_USERNAME="${CFG_MYSQL_DB_USERNAME,,}";
+  CFG_MYSQL_X_DB_USERNAME="${CFG_MYSQL_X_DB_USERNAME,,}";
 
   CFG_DISCOURSE_SMTP_HOST="${CFG_DISCOURSE_SMTP_HOST,,}";
   CFG_DISCOURSE_SMTP_AUTH_TYPE="${CFG_DISCOURSE_SMTP_AUTH_TYPE,,}";
+
+  # Try to fill admin's static IP address.
+
+  if [[ -z "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
+    if [[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]]; then
+      CFG_ADMIN_STATIC_IP_ADDRESS='45.55.103.59';
+    elif is-dev && is-do; then
+      CFG_ADMIN_STATIC_IP_ADDRESS="$(do-floating-ip)";
+    fi;
+  fi;
 };
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -195,17 +231,20 @@ function validate-cfgs() {
   for _cfg_key in \
     'CFG_HOST' \
     'CFG_ROOT_HOST' \
+    \
     'CFG_SLUG' \
     'CFG_VAR' \
     \
     'CFG_ADMIN_USERNAME' \
     'CFG_ADMIN_PASSWORD' \
+    \
     'CFG_ADMIN_NAME' \
     'CFG_ADMIN_EMAIL' \
     'CFG_ADMIN_PUBLIC_EMAIL' \
     \
     'CFG_TOOLS_USERNAME' \
     'CFG_TOOLS_PASSWORD' \
+    \
     'CFG_TOOLS_PMA_BLOWFISH_KEY' \
     \
     'CFG_MAINTENANCE_BYPASS_KEY' \
@@ -221,11 +260,17 @@ function validate-cfgs() {
     for _cfg_key in \
       'CFG_MYSQL_DB_HOST' \
       'CFG_MYSQL_DB_PORT' \
+      \
       'CFG_MYSQL_DB_CHARSET' \
       'CFG_MYSQL_DB_COLLATE' \
+      \
       'CFG_MYSQL_DB_NAME' \
+      \
       'CFG_MYSQL_DB_USERNAME' \
       'CFG_MYSQL_DB_PASSWORD' \
+      \
+      'CFG_MYSQL_X_DB_USERNAME' \
+      'CFG_MYSQL_X_DB_PASSWORD' \
       ; do # None of these can be empty.
 
         if [[ -z "${!_cfg_key}" ]]; then
@@ -239,7 +284,9 @@ function validate-cfgs() {
     for _cfg_key in \
       'CFG_DISCOURSE_SMTP_HOST' \
       'CFG_DISCOURSE_SMTP_PORT' \
+      \
       'CFG_DISCOURSE_SMTP_AUTH_TYPE' \
+      \
       'CFG_DISCOURSE_SMTP_USERNAME' \
       'CFG_DISCOURSE_SMTP_PASSWORD' \
       ; do # None of these can be empty.
@@ -317,6 +364,12 @@ function validate-cfgs() {
     cfg_warning+='The installation of VM symlinks applies only when running a VM.'$'\n';
     cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
 
+  elif [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 && "${CFG_INSTALL_DOCKER}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install WordPress dev containers you must also install Docker.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
   elif [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vm; then
 
     cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
@@ -376,6 +429,7 @@ function cfgs-wizard() {
       for _cfg_key in \
         'CFG_ADMIN_USERNAME' \
         'CFG_ADMIN_PASSWORD' \
+        \
         'CFG_ADMIN_NAME' \
         'CFG_ADMIN_EMAIL' \
         'CFG_ADMIN_PUBLIC_EMAIL' \
@@ -419,6 +473,7 @@ function cfgs-wizard() {
         \
         'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_WEB_SERVER_SSL_ONLY' 'SSL only?' "$([[ "${CFG_WEB_SERVER_SSL_ONLY}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_MYSQL' 'Install?' "$([[ "${CFG_INSTALL_MYSQL}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -437,6 +492,7 @@ function cfgs-wizard() {
         'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_PHPUNIT' 'Install?' "$([[ "${CFG_INSTALL_PHPUNIT}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_SAMI' 'Install?' "$([[ "${CFG_INSTALL_SAMI}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_APIGEN' 'Install?' "$([[ "${CFG_INSTALL_APIGEN}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_COMPOSER' 'Install?' "$([[ "${CFG_INSTALL_COMPOSER}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -447,8 +503,11 @@ function cfgs-wizard() {
         'CFG_INSTALL_DISCOURSE' 'Install?' "$([[ "${CFG_INSTALL_DISCOURSE}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
         'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_WORDPRESS_DEV_CONTAINERS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]] && echo 'on' || echo 'off')" \
         \
         'CFG_INSTALL_FIREWALL' 'Install?' "$([[ "${CFG_INSTALL_FIREWALL}" == 1 ]] && echo 'on' || echo 'off')" \
         'CFG_INSTALL_FAIL2BAN' 'Install?' "$([[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]] && echo 'on' || echo 'off')" \
@@ -470,6 +529,7 @@ function cfgs-wizard() {
 
       CFG_INSTALL_NGINX='0';
       CFG_INSTALL_APACHE='0';
+
       CFG_WEB_SERVER_SSL_ONLY='0';
 
       CFG_INSTALL_MYSQL='0';
@@ -488,6 +548,7 @@ function cfgs-wizard() {
       CFG_INSTALL_PHPCS='0';
       CFG_INSTALL_PHING='0';
       CFG_INSTALL_PHPUNIT='0';
+      CFG_INSTALL_SAMI='0';
       CFG_INSTALL_APIGEN='0';
       CFG_INSTALL_CASPERJS='0';
       CFG_INSTALL_COMPOSER='0';
@@ -498,8 +559,11 @@ function cfgs-wizard() {
       CFG_INSTALL_DISCOURSE='0';
 
       CFG_INSTALL_WP_CLI='0';
+
       CFG_INSTALL_WORDPRESS='0';
       CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
+
+      CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='0';
 
       CFG_INSTALL_FIREWALL='0';
       CFG_INSTALL_FAIL2BAN='0';
@@ -530,28 +594,41 @@ function cfgs-wizard() {
             \
             'CFG_TOOLS_USERNAME' \
             'CFG_TOOLS_PASSWORD' \
+            \
             'CFG_TOOLS_PMA_BLOWFISH_KEY' \
             \
             'CFG_MAINTENANCE_BYPASS_KEY' \
             \
             'CFG_MYSQL_DB_HOST' \
             'CFG_MYSQL_DB_PORT' \
+            \
             'CFG_MYSQL_SSL_ENABLE' \
+            \
             'CFG_MYSQL_DB_CHARSET' \
             'CFG_MYSQL_DB_COLLATE' \
+            \
             'CFG_MYSQL_DB_NAME' \
+            \
             'CFG_MYSQL_DB_USERNAME' \
             'CFG_MYSQL_DB_PASSWORD' \
+            \
+            'CFG_MYSQL_X_DB_USERNAME' \
+            'CFG_MYSQL_X_DB_PASSWORD' \
+            \
+            'CFG_MYSQL_X_REQUIRES_SSL' \
             \
             'CFG_INSTALL_PHP_VERSION' \
             \
             'CFG_DISCOURSE_SMTP_HOST' \
             'CFG_DISCOURSE_SMTP_PORT' \
+            \
             'CFG_DISCOURSE_SMTP_AUTH_TYPE' \
+            \
             'CFG_DISCOURSE_SMTP_USERNAME' \
             'CFG_DISCOURSE_SMTP_PASSWORD' \
             \
             'CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22' \
+            'CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306' \
             'CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN' \
             'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' \
             \

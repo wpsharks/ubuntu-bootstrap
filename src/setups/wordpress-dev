@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+
+  # Install WordPress dev containers.
+
+  /bootstrap/src/wordpress/install-dev 5.4;
+  /bootstrap/src/wordpress/install-dev 5.5;
+  /bootstrap/src/wordpress/install-dev 5.6;
+  /bootstrap/src/wordpress/install-dev 7.0;
+
+  # When adding a new version, the following updates must occur.
+  # - Update `Vagrantfile` and `.box.Vagrantfile`.
+  # - Update `/bootstrap/src/bash/app-related-services`.
+
+else echo 'Skipping WordPress dev containers.'; fi;

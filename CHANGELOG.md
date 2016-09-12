@@ -1,3 +1,18 @@
+## $v
+
+- New Bash function: `is-dev()`
+- New Bash function: `gateway-ip()`
+- New config parameter: `CFG_INSTALL_SAMI`
+- New config parameter: `CFG_MYSQL_SSL_KEY`
+- New config parameter: `CFG_MYSQL_SSL_CRT`
+- New config parameter: `CFG_MYSQL_SSL_CA`
+- New config parameter: `CFG_MYSQL_SSL_CIPHER`
+- New config parameter: `CFG_MYSQL_X_DB_USERNAME`
+- New config parameter: `CFG_MYSQL_X_DB_PASSWORD`
+- New config parameter: `CFG_MYSQL_X_REQUIRES_SSL`
+- New config parameter: `CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306`
+- New config parameter: `CFG_INSTALL_WORDPRESS_DEV_CONTAINERS`
+
 ## v160911.84308
 
 - Adding OpenVPN firewall rules for DigitalOcean Droplets that use a floating IP. This makes it possible for the OpenVPN to take advantage of the floating IP and use it instead of the local public IP that comes with each Droplet. The effect is that when you're connected to the VPN, you appear to have the floating (static) IP. Props to [Programster](http://blog.programster.org/openvpn-digitalocean-ip-alias/).

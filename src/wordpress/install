@@ -22,20 +22,29 @@ unzip -qq -d /tmp/wordpress-latest /tmp/wordpress-latest.zip;
 cp --force --recursive --preserve=all /tmp/wordpress-latest/wordpress/. /app/src;
 
 rm --force --recursive /tmp/wordpress-latest;
-rm /tmp/wordpress-latest.zip;
+rm --force /tmp/wordpress-latest.zip;
 
 # Setup the `/wp-config.php` file on VMs.
 
 if is-vm; then # Only for VMs.
   cp /bootstrap/src/wordpress/.wp-config.vm.php /app/src/wp-config.php;
-  perl -i -wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%LOGGED_IN_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%NONCE_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
-  perl -i -wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/u' /app/src/wp-config.php;
+
+  perl -i -0wpe 's/%%MYSQL_DB_HOST%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_HOST}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%MYSQL_DB_COLLATE%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_COLLATE}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_USERNAME}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PASSWORD}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_NAME}")"'/ug' /app/src/wp-config.php;
+
+  perl -i -0wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%LOGGED_IN_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%NONCE_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
 fi;
 # Set permissions in the `/app/src` directory.
 

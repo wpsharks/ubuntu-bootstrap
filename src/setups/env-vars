@@ -11,6 +11,7 @@ for _cfg_key in \
   'CFG_HOST' \
   'CFG_ROOT_HOST' \
   'CFG_OTHER_HOSTS' \
+  \
   'CFG_SLUG' \
   'CFG_VAR' \
   \
@@ -29,12 +30,24 @@ for _cfg_key in \
   \
   'CFG_MYSQL_DB_HOST' \
   'CFG_MYSQL_DB_PORT' \
+  \
+  'CFG_MYSQL_SSL_KEY' \
+  'CFG_MYSQL_SSL_CRT' \
+  'CFG_MYSQL_SSL_CA' \
+  'CFG_MYSQL_SSL_CIPHER' \
+  \
   'CFG_MYSQL_SSL_ENABLE' \
+  \
   'CFG_MYSQL_DB_CHARSET' \
   'CFG_MYSQL_DB_COLLATE' \
+  \
   'CFG_MYSQL_DB_NAME' \
+  \
   'CFG_MYSQL_DB_USERNAME' \
   'CFG_MYSQL_DB_PASSWORD' \
+  \
+  'CFG_MYSQL_X_DB_USERNAME' \
+  'CFG_MYSQL_X_DB_PASSWORD' \
   \
   'CFG_CONFIG_FILE' \
   ; do add-global-env-var "${_cfg_key}" "${!_cfg_key}";

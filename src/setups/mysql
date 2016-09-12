@@ -24,11 +24,11 @@ if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
   mysql --user=root --execute="UPDATE \`mysql\`.\`user\` SET \`password\` = PASSWORD('${CFG_MYSQL_DB_PASSWORD}') WHERE \`user\` = 'root';";
 
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'localhost' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'${CFG_MYSQL_DB_HOST}' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
+  mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'127.0.0.1' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
 
-  if is-vm; then # Don't require SSL for external connections to a VM.
-    mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}';";
-  else mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_DB_PASSWORD}' REQUIRE SSL;"; fi;
+  if [[ "${CFG_MYSQL_X_REQUIRES_SSL}" == 1 ]]; then # Require SSL connection?
+    mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_X_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_X_DB_PASSWORD}' REQUIRE SSL;";
+  else mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="GRANT ALL ON *.* TO '${CFG_MYSQL_X_DB_USERNAME}'@'%' IDENTIFIED BY '${CFG_MYSQL_X_DB_PASSWORD}';"; fi;
 
   mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
 

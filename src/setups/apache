@@ -76,10 +76,6 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
     perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/snippets/http/_defaults/general.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
-  if is-vm; then # Disable HSTS on VMs so that `http://` tools like MailHog will work.
-    perl -i -wpe 's/^(\s*)(Header(?:\s+always)?\s+set\s+strict\-transport\-security\s+.*)$/$1#$2/ui' /bootstrap/src/apache/snippets/http/_defaults/hsts.conf;
-  fi; # See: <http://classically.me/blogs/how-clear-hsts-settings-major-browsers>
-
   if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
     git clone https://github.com/cloudflare/mod_cloudflare.git /usr/local/src/mod-cloudflare --branch=master --depth=1;
     /usr/local/src/mod-cloudflare; # Move into mod-cloudflare directory.

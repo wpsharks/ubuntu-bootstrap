@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Gateway IP address.
+
+function gateway-ip() {
+  route -n | awk '/\s+UG\s+/{print $2}';
+};
+
 # Default interface name.
 
 function default-interface() {

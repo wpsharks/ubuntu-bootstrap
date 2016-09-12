@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Must have a PHP version string.
+
+php_v="${1:-}"; # Initialize.
+
+if [[ -z "${php_v}" ]]; then
+  echo 'Expecting PHP version.';
+  exit 1; # Hard failure.
+fi;
+# Misc PHP vars.
+
+php_v_int="${php_v}";
+php_v_int="${php_v_int//./}";
+php_v_port=80"${php_v_int}";
+php_v_db=db0_php"${php_v_int}";
+php_v_dir_basename=php"${php_v}";
+php_v_container_name=app-dev-php"${php_v}";
+php_v_src_dir=/app-dev/"${php_v_dir_basename}"/src;
+
+# Start from a clean directory.
+
+mkdir --parents "${php_v_src_dir}";
+rm --force --recursive "${php_v_src:?}"/*;
+
+# Install the latest version of WordPress.
+
+curl http://wordpress.org/latest.zip --location --output /tmp/wordpress-latest.zip;
+unzip -qq -d /tmp/wordpress-latest /tmp/wordpress-latest.zip;
+cp --force --recursive --preserve=all /tmp/wordpress-latest/wordpress/. "${php_v_src_dir}";
+
+rm --force --recursive /tmp/wordpress-latest;
+rm --force /tmp/wordpress-latest.zip;
+
+# Setup the `/wp-config.php` file.
+
+cp /bootstrap/src/wordpress/.wp-config.vm.php "${php_v_src_dir}"/wp-config.php;
+
+perl -i -0wpe 's/%%MYSQL_DB_HOST%%/'"$(esc-regex-rv "$(gateway-ip)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+
+perl -i -0wpe 's/%%MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%MYSQL_DB_COLLATE%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_COLLATE}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+
+perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${php_v_db}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+
+perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_USERNAME}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_PASSWORD}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+
+perl -i -0wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%LOGGED_IN_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%NONCE_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+
+# Setup a PHP info file.
+
+mkdir --parents "${php_v_src_dir}"/---tools;
+echo '<?php phpinfo();' > "${php_v_src_dir}"/---tools/info.php;
+
+# Set permissions in the web directory.
+# Owned by `www-data` that exists on both the host & guest boxes.
+
+chown --recursive www-data:app "${php_v_src_dir}";
+find "${php_v_src_dir}" -type d -exec chmod 2775 {} \;
+find "${php_v_src_dir}" -type f -exec chmod 664 {} \;
+
+# Start with a brand new database; i.e., drop if exists and create.
+
+mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`${php_v_db}\`;";
+mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE IF NOT EXISTS \`${php_v_db}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
+
+# Start a new Docker container for this PHP/WP version.
+
+docker stop "${php_v_container_name}" || true;
+docker rm "${php_v_container_name}" || true;
+
+docker run --name="${php_v_container_name}" --detach \
+  \
+  --publish="${php_v_port}":80 \
+  \
+  --volume=/bootstrap:/bootstrap \
+  --volume="${php_v_src_dir}":/var/www/html \
+  \
+  chialab/php-dev:"${php_v}"-apache;
+
+# Configure service for auto-start at boot time.
+
+rm --force /etc/systemd/system/docker-"${php_v_container_name}".service;
+
+echo '[Unit]' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'Description=Docker ('"${php_v_container_name}"')' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'Requires=docker.service' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'After=docker.service' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+
+echo $'\n' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo '[Service]' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'Restart=always' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'ExecStart=/usr/bin/docker start --attach '"${php_v_container_name}" >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'ExecStop=/usr/bin/docker stop --time 2 '"${php_v_container_name}" >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+
+echo $'\n' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo '[Install]' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+echo 'WantedBy=default.target' >> /etc/systemd/system/docker-"${php_v_container_name}".service;
+
+# Create a binary for this service so our app-related service system will know it exists.
+
+touch /usr/bin/docker-"${php_v_container_name}";
+chmod +x /usr/bin/docker-"${php_v_container_name}";
+
+# Enable automatic startup.
+
+systemctl enable docker-"${php_v_container_name}";

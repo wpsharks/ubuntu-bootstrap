@@ -19,6 +19,11 @@ ___app_related_services[postfix]=postfix; ___app_related_services_order+=('postf
 ___app_related_services[mailhog]=mailhog; ___app_related_services_order+=('mailhog');
 
 ___app_related_services[docker]=docker; ___app_related_services_order+=('docker');
+___app_related_services[docker-app-dev-php5.4]=docker-app-dev-php5.4; ___app_related_services_order+=('docker-app-dev-php5.4');
+___app_related_services[docker-app-dev-php5.5]=docker-app-dev-php5.5; ___app_related_services_order+=('docker-app-dev-php5.5');
+___app_related_services[docker-app-dev-php5.6]=docker-app-dev-php5.6; ___app_related_services_order+=('docker-app-dev-php5.6');
+___app_related_services[docker-app-dev-php7.0]=docker-app-dev-php7.0; ___app_related_services_order+=('docker-app-dev-php7.0');
+
 ___app_related_services[discourse]=discourse; ___app_related_services_order+=('discourse');
 
 ___app_related_services[memcached]=memcached; ___app_related_services_order+=('memcached');

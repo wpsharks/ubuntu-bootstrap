@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Is dev machine?
+
+function is-dev() {
+  if ! is-vm && \
+    [[ "${CFG_HOST}" =~ ^dev\. || \
+       "${CFG_HOST}" == 'jaswsinc.com' || \
+       "${CFG_HOST}" =~ ^.+?\.wpsharks\.net$ || \
+       "${CFG_HOST}" =~ ^.+?\.websharks\-inc\.net$ \
+    ]]; then
+    return 0;
+  else # 1 = false.
+    return 1;
+  fi;
+};

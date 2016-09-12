@@ -49,9 +49,14 @@ if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
 
   # Email details for easy client setup.
 
-  mail --subject='OpenVPN Client Setup' --attach=/etc/bootstrap/openvpn/client.ovpn \
-    "${CFG_ADMIN_EMAIL}" <<< 'Configuration file for OpenVPN @'"${CFG_HOST}";
+  if can-run mail; then # Only available w/ Postfix.
+    cp /etc/bootstrap/openvpn/client.ovpn /tmp/"${CFG_HOST}".ovpn;
 
+    mail --subject='OpenVPN Client Setup' --attach=/tmp/"${CFG_HOST}".ovpn \
+      "${CFG_ADMIN_EMAIL}" <<< 'Configuration file for OpenVPN @'"${CFG_HOST}";
+
+      rm /tmp/"${CFG_HOST}".ovpn; # Remove temporary file now.
+  fi;
   # Enable automatic startup.
 
   systemctl enable openvpn@server;
@@ -61,7 +66,9 @@ if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
   # The `local` directive requires networking dependency so it can bind correctly.
 
   mkdir /etc/systemd/system/openvpn@.service.d;
-  cat /bootstrap/src/openvpn/.service > /etc/systemd/system/openvpn@.service.d/z90.conf;
+  echo '[Unit]' >> /etc/systemd/system/openvpn@.service.d/override.conf;
+  echo 'Requires=networking.service' >> /etc/systemd/system/openvpn@.service.d/override.conf;
+  echo 'After=networking.service' >> /etc/systemd/system/openvpn@.service.d/override.conf;
 
   # Restart service.
 

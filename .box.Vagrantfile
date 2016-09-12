@@ -66,9 +66,18 @@ Vagrant.configure(2) do |config|
     config.landrush.guest_redirect_dns = false;
 
   elsif Vagrant.has_plugin?('vagrant-hostsupdater')
-    config.vm.network :private_network, ip: _static_ip; # Static IP is far less flexible.
-    config.hostsupdater.aliases = ['sub.'+"#{config.vm.hostname}", 'sub1.'+"#{config.vm.hostname}", 'sub2.'+"#{config.vm.hostname}", 'sub3.'+"#{config.vm.hostname}"]
+    config.vm.network :private_network, ip: _static_ip;
+    config.hostsupdater.aliases = [
+      'sub.'+"#{config.vm.hostname}",
+      'sub1.'+"#{config.vm.hostname}",
+      'sub2.'+"#{config.vm.hostname}",
+      'sub3.'+"#{config.vm.hostname}",
 
+      'php54.'+"#{config.vm.hostname}",
+      'php55.'+"#{config.vm.hostname}",
+      'php56.'+"#{config.vm.hostname}",
+      'php70.'+"#{config.vm.hostname}",
+    ];
   else config.vm.network :private_network, ip: _static_ip; end;
 
   # Configure provisioners for this VM.
