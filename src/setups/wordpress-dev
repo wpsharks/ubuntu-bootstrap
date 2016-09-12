@@ -12,5 +12,6 @@ if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
   # When adding a new version, the following updates must occur.
   # - Update `Vagrantfile` and `.box.Vagrantfile`.
   # - Update `/bootstrap/src/bash/app-related-services`.
+  # CloudFlare DNS records should be added for all team members.
 
 else echo 'Skipping WordPress dev containers.'; fi;
