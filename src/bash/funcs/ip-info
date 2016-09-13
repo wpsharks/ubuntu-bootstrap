@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-# Gateway IP address.
-
-function gateway-ip() {
-  route -n | awk '/\s+UG\s+/{print $2}';
-};
-
 # Default interface name.
 
 function default-interface() {
   local route;
   route=($(ip route | grep default));
   echo "${route[4]}"; # e.g., `eth0`
+};
+
+# Docker bridge IP address.
+
+function docker-bridge-ip() {
+  ip route show | grep docker0 | awk '{print $9}';
 };

@@ -1,7 +1,7 @@
 ## $v
 
 - New Bash function: `is-dev()`
-- New Bash function: `gateway-ip()`
+- New Bash function: `docker-bridge-ip()`
 - New config parameter: `CFG_INSTALL_SAMI`
 - New config parameter: `CFG_MYSQL_SSL_KEY`
 - New config parameter: `CFG_MYSQL_SSL_CRT`

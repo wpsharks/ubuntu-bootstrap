@@ -10,15 +10,10 @@ if [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Log directory.
-
-mkdir --parents /var/log/php;
-chmod 0777 /var/log/php;
-
 # PHP configuration file.
 
 ln --symbolic /bootstrap/src/wordpress/install-dev-extras.ini "${PHP_INI_DIR}"/conf.d/z90.ini;
 
-# Must have a PHP version string.
+# Install the XDebug extension for testing.
 
 pecl install xdebug && echo 'zend_extension="'"$(php-config --extension-dir)"'/xdebug.so"' > "${PHP_INI_DIR}"/conf.d/xdebug.ini;

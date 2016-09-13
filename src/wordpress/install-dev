@@ -48,7 +48,7 @@ rm --force /tmp/wordpress-latest.zip;
 
 cp /bootstrap/src/wordpress/.wp-config.vm.php "${php_v_src_dir}"/wp-config.php;
 
-perl -i -0wpe 's/%%MYSQL_DB_HOST%%/'"$(esc-regex-rv "$(gateway-ip)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%MYSQL_DB_HOST%%/bridge/ug' "${php_v_src_dir}"/wp-config.php;
 perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
 perl -i -0wpe 's/%%MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' "${php_v_src_dir}"/wp-config.php;
@@ -107,7 +107,7 @@ docker stop "${php_v_container_name}" &>/dev/null || true;
 docker rm "${php_v_container_name}" &>/dev/null || true;
 
 docker run --name="${php_v_container_name}" --detach \
-  \
+  --add-host=bridge:"$(docker-bridge-ip)" \
   --publish="${php_v_port}":80 \
   \
   --volume=/bootstrap:/bootstrap \
