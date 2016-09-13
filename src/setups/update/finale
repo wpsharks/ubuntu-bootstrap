@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Grand finale; installation complete.
+# Grand finale; update complete.
 
 echo '---------------------------------------------------------------';
-echo '-- Bootstrap installation complete. ---------------------------';
+echo '-- Bootstrap update complete. ---------------------------------';
 echo '---------------------------------------------------------------';
 echo '  Log out & back in again to reload shell.';

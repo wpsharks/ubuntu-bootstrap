@@ -1,3 +1,9 @@
+## $v
+
+- Enhancing CloudFlare IP whitelisting routine.
+- Adding update routines for CloudFlare IP whitelisting.
+- Reorganized and refactored bootstrap updater for production servers.
+
 ## v160913.32760
 
 - Adding contributor SSH keys.

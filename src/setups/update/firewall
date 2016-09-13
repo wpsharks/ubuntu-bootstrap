@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+if [[ -f /etc/bootstrap/cloudflare/firewall-allows-cf-only-via-80-443 ]]; then
+
+  # Update whitelisted CloudFlare IPs.
+
+  _ips_v4="$(get-cloudflare-ips-v4)";
+  _ips_v6="$(get-cloudflare-ips-v6)";
+
+  while read -ra _ip; do
+    _ip="$(trim "${_ip}")";
+    if [[ -n "${_ip}" ]]; then
+      # Ignore output here in case a rule exists already.
+      ufw allow from "${_ip}" to any port 80 proto tcp &>/dev/null;
+      ufw allow from "${_ip}" to any port 443 proto tcp &>/dev/null;
+    fi;
+  done <<< "${_ips_v4}"$'\n'"${_ips_v6}"; unset _ips_v4; unset _ips_v6; unset _ip;
+
+  # Restart service.
+
+  service ufw restart;
+
+else echo 'Skipping CloudFlare IPs update.'; fi;

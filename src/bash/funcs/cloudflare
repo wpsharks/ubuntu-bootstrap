@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# CloudFlare IPs v4.
+
+function get-cloudflare-ips-v4() {
+  curl --fail --silent https://www.cloudflare.com/ips-v4 --location || cat /bootstrap/src/cloudflare/ips-v4;
+};
+
+# CloudFlare IPs v6.
+
+function get-cloudflare-ips-v6() {
+  curl --fail --silent https://www.cloudflare.com/ips-v6 --location || cat /bootstrap/src/cloudflare/ips-v6;
+};

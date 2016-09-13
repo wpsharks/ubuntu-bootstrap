@@ -2,10 +2,7 @@
 
 # Update bootstrap repo.
 
-bootstrap-repo-update \
-  /bootstrap \
-  https://github.com/websharks/ubuntu-bootstrap \
-  master;
+bootstrap-repo-update /bootstrap https://github.com/websharks/ubuntu-bootstrap master;
 
 # Update the websharks/core repo.
 

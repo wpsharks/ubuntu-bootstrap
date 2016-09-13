@@ -76,33 +76,38 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
     perl -i -wpe 's/^(\s*)EnableSendfile\s+.*$/$1EnableSendfile off/ui' /bootstrap/src/apache/snippets/http/_defaults/general.conf;
   fi; # See: <https://docs.vagrantup.com/v2/synced-folders/virtualbox.html>
 
+  # Set up CloudFlare real IP forwarding.
+
+  _ips_v4="$(get-cloudflare-ips-v4)";
+  _ips_v6="$(get-cloudflare-ips-v6)";
+
+  : > /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+  echo '# Cloudflare real IP.' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+  echo '# Filled by Apache installer.' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+  echo '# Uses the latest IP addresses.' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+  echo $'\n' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+
+  _ips=''; # Initialize.
+
+  while read -ra _ip; do
+    _ip="$(trim "${_ip}")";
+    if [[ -n "${_ip}" ]]; then
+      _ips+='  '"${_ip}"' \'$'\n';
+    fi;
+  done <<< "${_ips_v4}"$'\n'"${_ips_v6}";
+
+  _ips="$(trim "${_ips}")"; _ips="$(trim "${_ips}" \\)";
+
+  echo 'CloudFlareRemoteIPTrustedProxy \'$'\n'"${_ips}" >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+  echo 'CloudFlareRemoteIPHeader cf-connecting-ip' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
+
+  unset _ips_v4; unset _ips_v6; unset _ips; unset _ip; # Housekeeping.
+
   if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
+    ln --symbolic /bootstrap/src/apache/conf.d/server/cf-real-ip.conf /etc/apache2/conf.d/server/cf-real-ip.conf;
     git clone https://github.com/cloudflare/mod_cloudflare.git /usr/local/src/mod-cloudflare --branch=master --depth=1;
     /usr/local/src/mod-cloudflare; # Move into mod-cloudflare directory.
     apxs -a -i -c mod_cloudflare.c; # Compile and enable module.
-
-    # See: <https://www.cloudflare.com/ips/>
-    _ips_v4="$(curl https://www.cloudflare.com/ips-v4 --location)";
-    _ips_v6="$(curl https://www.cloudflare.com/ips-v6 --location)";
-
-    : > /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
-
-    _ips=''; # Initialize.
-
-    while read -ra _ip; do
-      _ip="$(trim "${_ip}")";
-      if [[ -n "${_ip}" ]]; then
-        _ips+='  '"${_ip}"' \'$'\n';
-      fi;
-    done <<< "${_ips_v4}"$'\n'"${_ips_v6}";
-
-    _ips="$(trim "${_ips}")"; _ips="$(trim "${_ips}" \\)";
-    echo 'CloudFlareRemoteIPTrustedProxy \'$'\n'"${_ips}" >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
-    echo 'CloudFlareRemoteIPHeader cf-connecting-ip' >> /bootstrap/src/apache/conf.d/server/cf-real-ip.conf;
-
-    unset _ips_v4; unset _ips_v6; unset _ip; unset _ips; # Housekeeping.
-
-    ln --symbolic /bootstrap/src/apache/conf.d/server/cf-real-ip.conf /etc/apache2/conf.d/server/cf-real-ip.conf;
   fi;
   # Enable automatic startup.
 

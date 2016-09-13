@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Cleanup archives.
+
+if ! is-vm; then
+  apt-get autoremove --yes;
+  apt-get clean --yes;
+fi;
+# Remove root SSH key (security).
+# Note that VMs don't generally require an SSH key.
+# If an administrator uploads them though, leave them there.
+
+if ! is-vm; then
+  rm --force /root/.ssh/id_rsa;
+  rm --force /root/.ssh/ws-bot-np;
+  rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/id_rsa;
+  rm --force /home/"${CFG_ADMIN_USERNAME}"/.ssh/ws-bot-np;
+fi;

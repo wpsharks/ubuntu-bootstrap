@@ -28,8 +28,9 @@ if [[ -f /bootstrap/.installed-version ]]; then
 
   stop-app-related-services; # Stop while updating.
 
-  . /bootstrap/src/setups/repos-up;
-  . /bootstrap/src/setups/vs-ups;
+  . /bootstrap/src/setups/update/repos;
+  . /bootstrap/src/setups/update/vs-updates;
+  . /bootstrap/src/setups/update/firewall;
 
   if [[ -f /bootstrap-app/src/post-update ]]; then
     . /bootstrap-app/src/post-update; fi;
@@ -38,13 +39,13 @@ if [[ -f /bootstrap/.installed-version ]]; then
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
   echo "${CFG_VERSION}" > /bootstrap/.installed-version;
 
-  . /bootstrap/src/setups/cleanup;
+  . /bootstrap/src/setups/update/cleanup;
 
   restart-app-related-services;
 
   set +o xtrace; # Turn off comand printing.
 
-  . /bootstrap/src/setups/finale;
+  . /bootstrap/src/setups/update/finale;
 
 else # Provide details about why we are not updating.
   echo 'Not installed yet. Run the installer first please!'; exit 1;
