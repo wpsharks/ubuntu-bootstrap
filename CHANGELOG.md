@@ -1,4 +1,4 @@
-## $v
+## v160913.22912
 
 - New WordPress Docker containers that run multiple versions of PHP on sub-domains.
 - New config parameter: `CFG_INSTALL_WORDPRESS_DEV_CONTAINERS`
