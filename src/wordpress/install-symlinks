@@ -53,3 +53,9 @@ if [[ -d /app/src/wp-content/plugins ]]; then
 
   done; unset _wp_dir;
 fi; # Housekeeping.
+
+# Success message to the operator.
+
+echo '---------------------------------------------------------------';
+echo '-- WordPress symlink installation complete. -------------------';
+echo '---------------------------------------------------------------';

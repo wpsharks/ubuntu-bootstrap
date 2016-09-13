@@ -14,7 +14,8 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
   # Allow SSH access for admins.
 
   if is-vm; then
-    ufw allow 22/tcp; # No firewall limitations on a VM.
+    ufw allow 22/tcp; # No limitations.
+
   elif [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
       ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
       # limit = max of 6 connections every 30 seconds.
@@ -65,6 +66,9 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
   if can-run mysql; then
     if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306}" == 1 ]]; then
       ufw allow 3306/tcp; # Allow external connections.
+    fi;
+    if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+      ufw allow in on docker0 to any port 3306 proto tcp;
     fi;
     if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
       if is-vm; then # On a VM this has a slightly different meaning.

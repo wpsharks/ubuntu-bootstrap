@@ -8,24 +8,25 @@ systemctl enable ssh;
 
 if ! is-vm && ! in-docker; then
 
-  # Disallow root SSH access.
+  # Disallow root & require a valid SSH key.
 
-  perl -i -wpe 's/^(\s*)PermitRootLogin\s+.*$/$1PermitRootLogin no/ui' /etc/ssh/sshd_config;
+  perl -i -wpe 's/^(\s*)(?:#\s*)?PermitRootLogin\s+.*$/$1PermitRootLogin no/u' /etc/ssh/sshd_config;
+  perl -i -wpe 's/^(\s*)(?:#\s*)?PasswordAuthentication\s+.*$/$1PasswordAuthentication no/u' /etc/ssh/sshd_config;
 
   # Only allow SSH access to these groups.
 
-  echo '# Allow Specific Groups Only' >> /etc/ssh/sshd_config;
+  echo '# Allow specific groups only.' >> /etc/ssh/sshd_config;
   echo 'AllowGroups sudo ssh-access' >> /etc/ssh/sshd_config;
 
   # Only allow SFTP access to these groups.
 
-  echo '# SFTP Only Group Restrictions' >> /etc/ssh/sshd_config;
+  echo '# SFTP-only group restrictions.' >> /etc/ssh/sshd_config;
   echo 'Match Group sftp-only' >> /etc/ssh/sshd_config;
   echo '    AllowTCPForwarding no' >> /etc/ssh/sshd_config;
   echo '    X11Forwarding no' >> /etc/ssh/sshd_config;
   echo '    ForceCommand internal-sftp' >> /etc/ssh/sshd_config;
 
-  perl -i -wpe 's/^(\s*)Subsystem\s+sftp\s+.*$/$1Subsystem sftp internal-sftp/ui' /etc/ssh/sshd_config;
+  perl -i -wpe 's/^(\s*)(?:#\s*)?Subsystem\s.*$/$1Subsystem sftp internal-sftp/ui' /etc/ssh/sshd_config;
 
   # Restart service.
 

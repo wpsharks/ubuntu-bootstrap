@@ -144,3 +144,9 @@ chmod +x /usr/bin/docker-"${php_v_container_name}";
 # Enable automatic startup.
 
 systemctl enable docker-"${php_v_container_name}";
+
+# Success message to the operator.
+
+echo '---------------------------------------------------------------';
+echo '-- WordPress installation complete. ---------------------------';
+echo '---------------------------------------------------------------';

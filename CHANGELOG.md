@@ -1,7 +1,8 @@
 ## $v
 
-- New Bash function: `is-dev()`
-- New Bash function: `docker-bridge-ip()`
+- New WordPress Docker containers that run multiple versions of PHP on sub-domains.
+- New config parameter: `CFG_INSTALL_WORDPRESS_DEV_CONTAINERS`
+- New config parameter: `CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306`
 - New config parameter: `CFG_INSTALL_SAMI`
 - New config parameter: `CFG_MYSQL_SSL_KEY`
 - New config parameter: `CFG_MYSQL_SSL_CRT`
@@ -10,8 +11,9 @@
 - New config parameter: `CFG_MYSQL_X_DB_USERNAME`
 - New config parameter: `CFG_MYSQL_X_DB_PASSWORD`
 - New config parameter: `CFG_MYSQL_X_REQUIRES_SSL`
-- New config parameter: `CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306`
-- New config parameter: `CFG_INSTALL_WORDPRESS_DEV_CONTAINERS`
+- New Bash function: `is-dev()`
+- New Bash function: `docker-bridge-ip()`
+- SSH security hardening.
 
 ## v160911.84308
 

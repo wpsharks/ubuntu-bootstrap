@@ -57,3 +57,9 @@ fi;
 chown --recursive www-data:app /app/src;
 find /app/src -type d -exec chmod 2775 {} \;
 find /app/src -type f -exec chmod 664 {} \;
+
+# Stop w/ a success message to the operator.
+
+echo '---------------------------------------------------------------';
+echo '-- WordPress installation complete. ---------------------------';
+echo '---------------------------------------------------------------';
