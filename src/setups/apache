@@ -114,7 +114,7 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   # Put live sites into maintenance mode.
 
-  if ! is-vm; then
+  if ! is-vm && ! is-dev; then
     touch /app/.maintenance; fi;
 
   # Restart service.

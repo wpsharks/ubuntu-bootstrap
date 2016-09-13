@@ -9,6 +9,7 @@
 - New binary in `$PATH`: `install-wp-dev`
 - New binary in `$PATH`: `install-wp-symlinks`
 - Bug fix. Trying to use `app` group before it exists.
+- Enhancing `is-dev()` function; better detection now.
 
 ## v160913.22912
 
