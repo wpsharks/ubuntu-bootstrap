@@ -6,6 +6,7 @@
 - Reorganized file and directory structure for WordPress dev containers.
 - The `install-wp` utility now deletes and recreates the primary database.
 - WordPress dev containers are now referenced with `phpXX-` or `phpXX.` (either/or).
+- Improving `auto_prepend_file` in PHP configuration for better compatibility w/ CloudFlare and Nginx reverse proxy.
 
 ## v160913.32760
 
