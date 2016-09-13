@@ -43,6 +43,7 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   . /bootstrap/src/setups/runit;
   . /bootstrap/src/setups/env-vars;
   . /bootstrap/src/setups/ssl-certs;
+  . /bootstrap/src/setups/git-crypt;
 
   . /bootstrap/src/setups/postfix;
   . /bootstrap/src/setups/mailhog;

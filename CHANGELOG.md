@@ -8,6 +8,7 @@
 - New binary in `$PATH`: `install-wp`
 - New binary in `$PATH`: `install-wp-dev`
 - New binary in `$PATH`: `install-wp-symlinks`
+- Bug fix. Trying to use `app` group before it exists.
 
 ## v160913.22912
 
