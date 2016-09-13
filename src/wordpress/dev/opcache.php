@@ -2,8 +2,8 @@
 namespace WebSharks\Ubuntu\Bootstrap;
 
 // @codingStandardsIgnoreFile
-// This is loaded via INI `auto_prepend_file`.
 // No strict types. This must be compatible w/ PHP v5.4+.
+// i.e., This is used by the WordPress dev containers.
 
 error_reporting(-1);
 ini_set('display_errors', 'yes');

@@ -1,5 +1,9 @@
 <?php
+namespace WebSharks\Ubuntu\Bootstrap;
+
 // @codingStandardsIgnoreFile
+// No strict types. This must be compatible w/ PHP v5.4+.
+// i.e., This is used by the WordPress dev containers.
 
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);

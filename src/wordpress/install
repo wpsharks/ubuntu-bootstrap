@@ -27,7 +27,7 @@ rm --force /tmp/wordpress-latest.zip;
 # Maybe setup a `/wp-config.php` file.
 
 if is-vm || is-dev; then # Only for VMs and/or dev test sites.
-  cp /bootstrap/src/wordpress/.wp-config.vm.php /app/src/wp-config.php;
+  cp /bootstrap/src/wordpress/dev/wp-config.php /app/src/wp-config.php;
 
   perl -i -0wpe 's/%%MYSQL_DB_HOST%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_HOST}")"'/ug' /app/src/wp-config.php;
   perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' /app/src/wp-config.php;
@@ -50,13 +50,18 @@ fi;
 
 if is-vm || is-dev; then # Only for VMs and/or dev test sites.
   # Setup a `robots.txt` file to disallow all search engines.
-  cp /bootstrap/src/wordpress/.robots.vm.txt /app/src/robots.txt;
+  cp /bootstrap/src/wordpress/dev/robots.txt /app/src/robots.txt;
 fi;
 # Set permissions in the `/app/src` directory.
 
 chown --recursive www-data:app /app/src;
 find /app/src -type d -exec chmod 2775 {} \;
 find /app/src -type f -exec chmod 664 {} \;
+
+# Start with a brand new database; i.e., drop if exists and create.
+
+mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="DROP DATABASE IF EXISTS \`${CFG_MYSQL_DB_NAME}\`;";
+mysql --user=root --password="${CFG_MYSQL_DB_PASSWORD}" --execute="CREATE DATABASE IF NOT EXISTS \`${CFG_MYSQL_DB_NAME}\` CHARACTER SET '${CFG_MYSQL_DB_CHARSET}' COLLATE '${CFG_MYSQL_DB_COLLATE}';";
 
 # Stop w/ a success message to the operator.
 

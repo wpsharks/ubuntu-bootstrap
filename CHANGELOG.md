@@ -3,6 +3,9 @@
 - Enhancing CloudFlare IP whitelisting routine.
 - Adding update routines for CloudFlare IP whitelisting.
 - Reorganized and refactored bootstrap updater for production servers.
+- Reorganized file and directory structure for WordPress dev containers.
+- The `install-wp` utility now deletes and recreates the primary database.
+- WordPress dev containers are now referenced with `phpXX-` or `phpXX.` (either/or).
 
 ## v160913.32760
 

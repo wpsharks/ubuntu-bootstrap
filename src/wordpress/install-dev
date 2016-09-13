@@ -46,7 +46,7 @@ rm --force /tmp/wordpress-latest.zip;
 
 # Setup the `/wp-config.php` file.
 
-cp /bootstrap/src/wordpress/.wp-config.vm.php "${php_v_src_dir}"/wp-config.php;
+cp /bootstrap/src/wordpress/dev/wp-config.php "${php_v_src_dir}"/wp-config.php;
 
 perl -i -0wpe 's/%%MYSQL_DB_HOST%%/bridge/ug' "${php_v_src_dir}"/wp-config.php;
 perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' "${php_v_src_dir}"/wp-config.php;
@@ -70,12 +70,13 @@ perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_
 
 # Setup a `robots.txt` file to disallow all search engines.
 
-cp /bootstrap/src/wordpress/.robots.vm.txt "${php_v_src_dir}"/robots.txt;
+cp /bootstrap/src/wordpress/dev/robots.txt "${php_v_src_dir}"/robots.txt;
 
 # Setup a PHP info file.
 
 mkdir --parents "${php_v_src_dir}"/---tools;
-echo '<?php phpinfo();' > "${php_v_src_dir}"/---tools/info.php;
+cp /bootstrap/src/wordpress/dev/info.php "${php_v_src_dir}"/---tools/info.php;
+cp /bootstrap/src/wordpress/dev/opcache.php "${php_v_src_dir}"/---tools/opcache.php;
 
 # Setup an `.htaccess` file.
 
