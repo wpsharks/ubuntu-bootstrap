@@ -50,12 +50,15 @@ function setup-user() {
   if [[ -z "${name}" ]]; then
     name="${user}"; fi;
 
-  if [[ "${user}" == root ]]; then
-    home_dir=/root; # Special case.
-  else home_dir=/home/"${user}"; fi;
+  if [[ -z "${shell}" ]]; then
+    shell=/bin/zsh; fi;
 
   if [[ -z "${ssh_keys}" && -f /bootstrap/src/ssh/"${user}"/authorized_keys ]]; then
     ssh_keys=/bootstrap/src/ssh/"${user}"/authorized_keys; fi;
+
+  if [[ "${user}" == root ]]; then
+    home_dir=/root; # Special case.
+  else home_dir=/home/"${user}"; fi;
 
   ## Validate options.
 

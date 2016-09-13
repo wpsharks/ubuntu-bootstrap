@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Admin setup/configuration utility.
+
+function setup-admin() {
+  ## Initialize.
+
+  local user='';
+  local name='';
+  local email='';
+  local shell='';
+  local ssh_keys='';
+  local home_dir='';
+
+  ## Parse options.
+
+  local short_options='u:n:e:s:k:';
+  local long_options='user:,name:,email:,shell:,ssh-keys:';
+  local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
+
+  eval set -- "${options}"; while true; do
+     case "${1}" in
+        -u|--user)
+          user="${2}";
+          shift 2;
+          ;;
+        -n|--name)
+          name="${2}";
+          shift 2;
+          ;;
+        -e|--email)
+          email="${2}";
+          shift 2;
+          ;;
+        -s|--shell)
+          shell="${2}";
+          shift 2;
+          ;;
+        -k|--ssh-keys)
+          ssh_keys="${2}";
+          shift 2;
+          ;;
+        --) shift 1; break;
+          ;;
+        *) echo 'Internal error.'; exit 1;
+          ;;
+     esac;
+  done;
+
+  # Setup.
+
+  setup-user \
+    --user="${user}" \
+    --name="${name}" \
+    --email="${email}" \
+    --shell="${shell}" \
+    --ssh-keys="${ssh_keys}";
+
+  # A user to admin groups.
+
+  if [[ "${user}" != 'root' ]]; then
+    usermod --append --groups=adm "${user}";
+    usermod --append --groups=app "${user}";
+    usermod --append --groups=sudo "${user}";
+    usermod --append --groups=ssh-access "${user}";
+    usermod --append --groups=www-data "${user}";
+  fi;
+};

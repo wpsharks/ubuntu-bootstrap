@@ -6,49 +6,37 @@ addgroup app;
 addgroup ssh-access;
 addgroup sftp-only;
 
-# Create admin user.
+# Create & setup admin.
 
 create-user \
   --user="${CFG_ADMIN_USERNAME}" \
   --pass="${CFG_ADMIN_PASSWORD}";
 
-setup-user \
+setup-admin \
   --user="${CFG_ADMIN_USERNAME}" \
   --name="${CFG_ADMIN_NAME}" \
   --email="${CFG_ADMIN_EMAIL}" \
   --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
   --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}";
 
-usermod --append --groups=adm "${CFG_ADMIN_USERNAME}";
-usermod --append --groups=app "${CFG_ADMIN_USERNAME}";
-usermod --append --groups=sudo "${CFG_ADMIN_USERNAME}";
-usermod --append --groups=ssh-access "${CFG_ADMIN_USERNAME}";
-usermod --append --groups=www-data "${CFG_ADMIN_USERNAME}";
-
-# If running a VM, setup the vagrant user.
+# Maybe setup vagrant admin.
 
 if is-vagrant; then
 
-  setup-user \
+  setup-admin \
     --user=vagrant \
     --name="${CFG_ADMIN_NAME}" \
     --email="${CFG_ADMIN_EMAIL}" \
     --shell="${CFG_ADMIN_PREFERRED_SHELL}";
 
-  usermod --append --groups=adm vagrant;
-  usermod --append --groups=app vagrant;
-  usermod --append --groups=sudo vagrant;
-  usermod --append --groups=ssh-access vagrant;
-  usermod --append --groups=www-data vagrant;
-
   # In case `/etc/sudoers` is modified by initial `upgrade`.
   echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
 
-fi; # On vagrant boxes only.
+fi;
 
-# Setup the root user also.
+# Setup root admin.
 
-setup-user \
+setup-admin \
   --user=root \
   --name="${CFG_ADMIN_NAME}" \
   --email="${CFG_ADMIN_EMAIL}" \

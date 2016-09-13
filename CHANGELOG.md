@@ -1,3 +1,8 @@
+## $v
+
+- Adding contributor SSH keys.
+- New Bash function: `setup-admin()`
+
 ## v160913.22912
 
 - New WordPress Docker containers that run multiple versions of PHP on sub-domains.

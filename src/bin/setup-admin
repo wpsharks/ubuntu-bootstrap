@@ -10,6 +10,6 @@ if [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Setup user.
+# Setup admin.
 
-setup-user "${@}";
+setup-admin "${@}";
