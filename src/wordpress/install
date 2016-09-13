@@ -24,9 +24,9 @@ cp --force --recursive --preserve=all /tmp/wordpress-latest/wordpress/. /app/src
 rm --force --recursive /tmp/wordpress-latest;
 rm --force /tmp/wordpress-latest.zip;
 
-# Setup the `/wp-config.php` file on VMs.
+# Maybe setup a `/wp-config.php` file.
 
-if is-vm; then # Only for VMs.
+if is-vm || is-dev; then # Only for VMs and/or dev test sites.
   cp /bootstrap/src/wordpress/.wp-config.vm.php /app/src/wp-config.php;
 
   perl -i -0wpe 's/%%MYSQL_DB_HOST%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_HOST}")"'/ug' /app/src/wp-config.php;
@@ -45,6 +45,12 @@ if is-vm; then # Only for VMs.
   perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
   perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
   perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+fi;
+# Maybe setup a `robots.txt` file.
+
+if is-vm || is-dev; then # Only for VMs and/or dev test sites.
+  # Setup a `robots.txt` file to disallow all search engines.
+  cp /bootstrap/src/wordpress/.robots.vm.txt /app/src/robots.txt;
 fi;
 # Set permissions in the `/app/src` directory.
 

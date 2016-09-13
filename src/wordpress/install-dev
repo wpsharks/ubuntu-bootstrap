@@ -68,6 +68,10 @@ perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${
 perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
 perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
+# Setup a `robots.txt` file to disallow all search engines.
+
+cp /bootstrap/src/wordpress/.robots.vm.txt "${php_v_src_dir}"/robots.txt;
+
 # Setup a PHP info file.
 
 mkdir --parents "${php_v_src_dir}"/---tools;
