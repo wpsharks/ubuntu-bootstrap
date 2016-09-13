@@ -6,7 +6,7 @@ namespace WebSharks\Ubuntu\Bootstrap;
 // No strict types. This must be compatible w/ PHP v5.4+.
 
 foreach ($_SERVER as $_key => &$_value) {
-    if ($_value === ' ' && strpos($_key, 'CFG_') === 0) {
+    if ($_value === ' ' && mb_strpos($_key, 'CFG_') === 0) {
         // See: `src/setups/env-vars` for reasoning.
         $_value = ''; // Empty this string.
     }
@@ -22,7 +22,7 @@ if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
 }
 if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
     if ((!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-            || (!empty($_SERVER['HTTP_CF_VISITOR']) && strpos($_SERVER['HTTP_CF_VISITOR'], '"scheme":"https"') !== false)) {
+            || (!empty($_SERVER['HTTP_CF_VISITOR']) && mb_strpos($_SERVER['HTTP_CF_VISITOR'], '"scheme":"https"') !== false)) {
         $_SERVER['HTTPS'] = 'on';
     }
 }
