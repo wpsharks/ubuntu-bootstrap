@@ -8,7 +8,7 @@ addgroup sftp-only;
 
 # Create & setup admin.
 
-create-user \
+create-admin \
   --user="${CFG_ADMIN_USERNAME}" \
   --pass="${CFG_ADMIN_PASSWORD}";
 
@@ -33,7 +33,6 @@ if is-vagrant; then
   echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
 
 fi;
-
 # Setup root admin.
 
 setup-admin \
@@ -41,3 +40,8 @@ setup-admin \
   --name="${CFG_ADMIN_NAME}" \
   --email="${CFG_ADMIN_EMAIL}" \
   --shell="${CFG_ADMIN_PREFERRED_SHELL}";
+
+# Authentication for web-based tools.
+
+mkdir --parents /etc/bootstrap/passwds;
+htpasswd -cb /etc/bootstrap/passwds/.tools "${CFG_TOOLS_USERNAME}" "${CFG_TOOLS_PASSWORD}";

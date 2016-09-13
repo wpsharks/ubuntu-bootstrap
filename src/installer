@@ -41,12 +41,8 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   . /bootstrap/src/setups/mkdirs;
   . /bootstrap/src/setups/umask;
   . /bootstrap/src/setups/runit;
-
-  . /bootstrap/src/setups/git-up;
-
   . /bootstrap/src/setups/env-vars;
   . /bootstrap/src/setups/ssl-certs;
-  . /bootstrap/src/setups/htpasswd;
 
   . /bootstrap/src/setups/postfix;
   . /bootstrap/src/setups/mailhog;

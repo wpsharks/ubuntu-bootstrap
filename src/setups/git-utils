@@ -35,3 +35,10 @@ git clone https://github.com/AGWA/git-crypt /usr/local/src/git-crypt --branch=ma
 
 cd /usr/local/src/git-crypt;
 make; make install; make clean;
+
+# Git-Crypt app key permissions.
+
+if [[ -f /etc/git-crypt.app.key ]]; then
+  chown root:app /etc/git-crypt.app.key;
+  chmod 640 /etc/git-crypt.app.key;
+fi;

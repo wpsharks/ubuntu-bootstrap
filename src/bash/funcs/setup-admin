@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Admin setup/configuration utility.
+# Admin setup utility.
 
 function setup-admin() {
   ## Initialize.
@@ -56,7 +56,7 @@ function setup-admin() {
     --shell="${shell}" \
     --ssh-keys="${ssh_keys}";
 
-  # A user to admin groups.
+  # Add user to admin groups.
 
   if [[ "${user}" != 'root' ]]; then
     usermod --append --groups=adm "${user}";

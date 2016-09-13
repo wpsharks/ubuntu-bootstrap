@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# User setup/configuration utility.
+# User setup utility.
 
 function setup-user() {
   ## Initialize.

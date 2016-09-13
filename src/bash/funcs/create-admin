@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Create user utility.
+# Create admin utility.
 
-function create-user() {
+function create-admin() {
   # Initialize.
 
   local user='';
@@ -34,20 +34,19 @@ function create-user() {
   if [[ -z "${pass}" ]]; then
     pass="$(keygen 15)"; fi;
 
-  # Validate options.
+  # Create.
 
-  if [[ -z "${user}" || -z "${pass}" ]]; then
-    return 1; fi; # Missing required arg(s).
+  create-user \
+    --user="${user}" \
+    --pass="${pass}";
 
-  if user-exists "${user}"; then
-    return 1; fi; # User exists!
+  # Web-based tools auth.
 
-  # Create user & set pass.
+  if [[ "${user}" != 'root' ]]; then
+    mkdir --parents /etc/bootstrap/passwds;
+    touch /etc/bootstrap/passwds/.tools;
 
-  if group-exists "${user}"; then
-    useradd "${user}" -g "${user}" --create-home;
-  else # Create a group matching the username.
-    useradd "${user}" --user-group --create-home;
+    htpasswd -D /etc/bootstrap/passwds/.tools "${user}" &>/dev/null;
+    htpasswd -cb /etc/bootstrap/passwds/.tools "${user}" "${pass}";
   fi;
-  echo "${user}"':'"${pass}" | chpasswd;
 };

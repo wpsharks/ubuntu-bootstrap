@@ -1,7 +1,13 @@
 ## $v
 
 - Adding contributor SSH keys.
+- New Bash function: `create-admin()`
+- New binary in `$PATH`: `create-admin`
 - New Bash function: `setup-admin()`
+- New binary in `$PATH`: `setup-admin`
+- New binary in `$PATH`: `install-wp`
+- New binary in `$PATH`: `install-wp-dev`
+- New binary in `$PATH`: `install-wp-symlinks`
 
 ## v160913.22912
 
