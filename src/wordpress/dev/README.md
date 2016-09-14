@@ -3,7 +3,7 @@
 `%%do_floating_ip%%` (USA)
 `ws-droplet-%%CFG_HOST%%`
 
-This is a dedicated IP address that will survive  your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name.
+This is a dedicated IP address that will survive your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name.
 
 ## SSH Access
 
@@ -21,6 +21,7 @@ _**Tip:** When you log in via SFTP you'll arrive at your home directory on the s
 Login in via SSH and run these two commands to change your system password to something that's easier to remember. _**Note:** On this server, `sudo` requires your password; so changing your password is helpful if you plan to work from SSH for any length of time._
 
 ```bash
+$ ssh ws-droplet-%%CFG_HOST%%
 $ passwd # Enter old and new password.
 ```
 
@@ -65,25 +66,25 @@ Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%` (same as above)
 
 - <https://php54-%%CFG_HOST%%>
   - Database name: `%%CFG_MYSQL_DB_NAME%%_php54`
-  - Apache doc root: `/app-dev/php5.4src`
+  - Apache doc root: `/app-dev/php5.4/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
 - <https://php55-%%CFG_HOST%%>
   - Database name: `%%CFG_MYSQL_DB_NAME%%_php55`
-  - Apache doc root: `/app-dev/php5.5src`
+  - Apache doc root: `/app-dev/php5.5/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
 - <https://php56-%%CFG_HOST%%>
   - Database name: `%%CFG_MYSQL_DB_NAME%%_php56`
-  - Apache doc root: `/app-dev/php5.6src`
+  - Apache doc root: `/app-dev/php5.6/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
 - <https://php70-%%CFG_HOST%%>
   - Database name: `%%CFG_MYSQL_DB_NAME%%_php70`
-  - Apache doc root: `/app-dev/php7.0src`
+  - Apache doc root: `/app-dev/php7.0/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
