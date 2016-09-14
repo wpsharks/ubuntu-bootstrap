@@ -208,7 +208,7 @@ When you're connected to the VPN, all of your local DNS resolution occurs throug
 
 There are two log files on the server related to OpenVPN. One is `/var/log/openvpn/error.log` and the other is `/var/log/openvpn/status.log`. You may also find OpenVPN-related data in `/var/log/syslog`.
 
-As far as I can tell, none of these monitor your browing habits, they just log initial VPM connections, errors, and other protocol exchanges at verbosity level `3` (normal). Having said that, if you are concerned about security, please feel free to review `/bootstrap/src/openvpn/.conf`. That's the OpenVPN server configuration file.
+As far as I can tell, none of these monitor your browing habits, they just log initial VPN connections, errors, and other protocol exchanges at verbosity level `3` (normal). Having said that, if you are concerned about security, please feel free to review `/bootstrap/src/openvpn/.conf`. That's the OpenVPN server configuration file.
 
 ### Sharing Your VPN w/ Others
 
