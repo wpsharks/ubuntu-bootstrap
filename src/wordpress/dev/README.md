@@ -122,7 +122,7 @@ $ sudo install-wp-dev 5.6
 $ sudo install-wp-dev 7.0
 ```
 
-**Warning:** This will delete MySQL _`db0_phpXX`_ and all files in `/app-dev/phpX.X/src`. Then it will recreate everything it deleted and reinstall WordPress so you can start fresh. Before running this command be sure to save anything that you must preserve.
+**Warning:** This will delete MySQL `db0_phpXX` and all files in `/app-dev/phpX.X/src`. Then it will recreate everything it deleted and reinstall WordPress so you can start fresh. Before running this command be sure to save anything that you must preserve.
 
 #### Logging Into a Docker Dev Container
 
