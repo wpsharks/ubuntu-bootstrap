@@ -1,3 +1,14 @@
+## $v
+
+- New Bash function: `is-htpasswd-valid`
+- New config param: `CFG_WORDPRESS_DEV_USERNAME`
+- New config param: `CFG_WORDPRESS_DEV_PASSWORD`
+- New config param: `CFG_WORDPRESS_DEV_NAME`
+- New config param: `CFG_WORDPRESS_DEV_EMAIL`
+- New config param: `CFG_WORDPRESS_DEV_PREFERRED_SHELL`
+- New config param: `CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS`
+- New WordPress Installation Guard for added developer security.
+
 ## v160913.53816
 
 - Enhancing CloudFlare IP whitelisting routine.

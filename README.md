@@ -310,12 +310,12 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 ---
 
 - `--CFG_MYSQL_DB_USERNAME=client` MySQL DB username.
-- `--CFG_MYSQL_DB_PASSWORD=[key]` Default is auto-generated.
+- `--CFG_MYSQL_DB_PASSWORD=[password]` Default is auto-generated.
 
 ---
 
 - `--CFG_MYSQL_X_DB_USERNAME=x_client` MySQL external DB username.
-- `--CFG_MYSQL_X_DB_PASSWORD=[key]` Default is auto-generated.
+- `--CFG_MYSQL_X_DB_PASSWORD=[password]` Default is auto-generated.
 
 ---
 
@@ -417,6 +417,21 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_INSTALL_WORDPRESS_DEV_CONTAINERS=0|1` Install WordPress dev containers?
   - This installs multiple versions of PHP (running WP in Docker containers) for additional testing.
+
+---
+
+- `--CFG_WORDPRESS_DEV_USERNAME=[username]` Install for another user?
+- `--CFG_WORDPRESS_DEV_PASSWORD=[password]` Default is auto-generated.
+
+---
+
+- `--CFG_WORDPRESS_DEV_NAME=[name]` The other user's name.
+- `--CFG_WORDPRESS_DEV_EMAIL=[email]` The other user's email address.
+
+---
+
+- `--CFG_WORDPRESS_DEV_PREFERRED_SHELL=/bin/zsh` Or `/bin/bash`.
+- `--CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS=[file]` e.g., `/authorized_keys`
 
 ---
 

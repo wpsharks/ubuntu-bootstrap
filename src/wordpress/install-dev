@@ -68,15 +68,19 @@ perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${
 perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
 perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
+# Setup the WordPress installation guard key.
+
+perl -i -0wpe 's/%%CFG_MAINTENANCE_BYPASS_KEY%%/'"$(esc-regex-rv "${CFG_MAINTENANCE_BYPASS_KEY}")"'/ug' /bootstrap/src/wordpress/dev/guard.php;
+
 # Setup a `robots.txt` file to disallow all search engines.
 
-cp /bootstrap/src/wordpress/dev/robots.txt "${php_v_src_dir}"/robots.txt;
+ln --symbolic /bootstrap/src/wordpress/dev/robots.txt "${php_v_src_dir}"/robots.txt;
 
 # Setup a PHP info file.
 
 mkdir --parents "${php_v_src_dir}"/---tools;
-cp /bootstrap/src/wordpress/dev/info.php "${php_v_src_dir}"/---tools/info.php;
-cp /bootstrap/src/wordpress/dev/opcache.php "${php_v_src_dir}"/---tools/opcache.php;
+ln --symbolic /bootstrap/src/wordpress/dev/info.php "${php_v_src_dir}"/---tools/info.php;
+ln --symbolic /bootstrap/src/wordpress/dev/opcache.php "${php_v_src_dir}"/---tools/opcache.php;
 
 # Setup an `.htaccess` file.
 
@@ -118,6 +122,41 @@ docker run --name="${php_v_container_name}" --detach \
 
 docker exec --tty "${php_v_container_name}" /bootstrap/src/wordpress/install-dev-extras;
 
+# If this is for another user, create that user now.
+
+if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; then
+  create-admin \
+    --user="${CFG_WORDPRESS_DEV_USERNAME}" \
+    --pass="${CFG_WORDPRESS_DEV_PASSWORD}";
+
+  setup-admin \
+    --user="${CFG_WORDPRESS_DEV_USERNAME}" \
+    --name="${CFG_WORDPRESS_DEV_NAME}" \
+    --email="${CFG_WORDPRESS_DEV_EMAIL}" \
+    --shell="${CFG_WORDPRESS_DEV_PREFERRED_SHELL}" \
+    --ssh-keys="${CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS}";
+
+  if is-do && do-has-floating-ip && can-run mail; then # Only available w/ Postfix.
+    cp /bootstrap/src/wordpress/dev/README.md /tmp/"${CFG_HOST}".md;
+
+    perl -i -0wpe 's/%%do_floating_ip%%/'"$(esc-regex-rv "$(do-floating-ip)")"'/ug' /tmp/"${CFG_HOST}".md;
+
+    perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_USERNAME%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_PASSWORD%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
+
+    perl -i -0wpe 's/%%CFG_HOST%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MAINTENANCE_BYPASS_KEY%%/'"$(esc-regex-rv "${CFG_MAINTENANCE_BYPASS_KEY}")"'/ug' /tmp/"${CFG_HOST}".md;
+
+    perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${MYSQL_DB_NAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${MYSQL_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${MYSQL_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
+
+    mail --subject='WordPress Dev Instructions' --attach=/tmp/"${CFG_HOST}".md \
+      "${CFG_ADMIN_EMAIL}" <<< 'Instructions for WordPress dev @'"${CFG_HOST}";
+
+      rm /tmp/"${CFG_HOST}".md; # Remove temporary file now.
+  fi;
+fi;
 # Configure service for auto-start at boot time.
 
 rm --force /etc/systemd/system/docker-"${php_v_container_name}".service;

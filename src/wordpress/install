@@ -45,12 +45,20 @@ if is-vm || is-dev; then # Only for VMs and/or dev test sites.
   perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
   perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
   perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
+
+  if is-vm; then # We can disable the dev guard on a VM.
+    perl -i -wpe "s/^(\s*require_once\s*'\/bootstrap\/src\/wordpress\/dev\/guard\.php'\s*;\s*)$/#$0/ui" /app/src/wp-config.php;
+  fi;
 fi;
+# Setup the WordPress installation guard key.
+
+perl -i -0wpe 's/%%CFG_MAINTENANCE_BYPASS_KEY%%/'"$(esc-regex-rv "${CFG_MAINTENANCE_BYPASS_KEY}")"'/ug' /bootstrap/src/wordpress/dev/guard.php;
+
 # Maybe setup a `robots.txt` file.
 
-if is-vm || is-dev; then # Only for VMs and/or dev test sites.
+if is-vm || is-dev; then # VMs and/or dev test sites.
   # Setup a `robots.txt` file to disallow all search engines.
-  cp /bootstrap/src/wordpress/dev/robots.txt /app/src/robots.txt;
+  ln --symbolic /bootstrap/src/wordpress/dev/robots.txt /app/src/robots.txt;
 fi;
 # Set permissions in the `/app/src` directory.
 

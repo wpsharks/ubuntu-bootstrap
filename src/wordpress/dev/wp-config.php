@@ -38,4 +38,5 @@ $table_prefix = 'wp_';
 if (!defined('ABSPATH')) {
     define('ABSPATH', __DIR__.'/');
 }
+require_once '/bootstrap/src/wordpress/dev/guard.php';
 require_once ABSPATH.'wp-settings.php';
