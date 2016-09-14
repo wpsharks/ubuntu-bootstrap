@@ -1,3 +1,8 @@
+## $v
+
+- Typos corrected in WP-dev README file.
+- Bug fix. Initial WordPress Installation Guard was not backing down once WP was installed.
+
 ## v160914.42855
 
 - New Bash function: `is-htpasswd-valid`
