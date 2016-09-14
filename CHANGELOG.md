@@ -1,4 +1,4 @@
-## $v
+## v160914.42855
 
 - New Bash function: `is-htpasswd-valid`
 - New config param: `CFG_WORDPRESS_DEV_USERNAME`
