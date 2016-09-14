@@ -125,18 +125,19 @@ docker exec --tty "${php_v_container_name}" /bootstrap/src/wordpress/install-dev
 # If this is for another user, create that user now.
 
 if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; then
-  create-admin \
-    --user="${CFG_WORDPRESS_DEV_USERNAME}" \
-    --pass="${CFG_WORDPRESS_DEV_PASSWORD}";
+  if ! user-exists "${CFG_WORDPRESS_DEV_USERNAME}"; then
+    create-admin \
+      --user="${CFG_WORDPRESS_DEV_USERNAME}" \
+      --pass="${CFG_WORDPRESS_DEV_PASSWORD}";
 
-  setup-admin \
-    --user="${CFG_WORDPRESS_DEV_USERNAME}" \
-    --name="${CFG_WORDPRESS_DEV_NAME}" \
-    --email="${CFG_WORDPRESS_DEV_EMAIL}" \
-    --shell="${CFG_WORDPRESS_DEV_PREFERRED_SHELL}" \
-    --ssh-keys="${CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS}";
-
-  if is-do && do-has-floating-ip && can-run mail; then # Only available w/ Postfix.
+    setup-admin \
+      --user="${CFG_WORDPRESS_DEV_USERNAME}" \
+      --name="${CFG_WORDPRESS_DEV_NAME}" \
+      --email="${CFG_WORDPRESS_DEV_EMAIL}" \
+      --shell="${CFG_WORDPRESS_DEV_PREFERRED_SHELL}" \
+      --ssh-keys="${CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS}";
+  fi;
+  if is-dev && is-do && do-has-floating-ip && can-run mail; then
     cp /bootstrap/src/wordpress/dev/README.md /tmp/"${CFG_HOST}".md;
 
     perl -i -0wpe 's/%%do_floating_ip%%/'"$(esc-regex-rv "$(do-floating-ip)")"'/ug' /tmp/"${CFG_HOST}".md;
@@ -147,9 +148,15 @@ if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; 
     perl -i -0wpe 's/%%CFG_HOST%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' /tmp/"${CFG_HOST}".md;
     perl -i -0wpe 's/%%CFG_MAINTENANCE_BYPASS_KEY%%/'"$(esc-regex-rv "${CFG_MAINTENANCE_BYPASS_KEY}")"'/ug' /tmp/"${CFG_HOST}".md;
 
+    perl -i -0wpe 's/%%CFG_INSTALL_PHP_VERSION%%/'"$(esc-regex-rv "${CFG_INSTALL_PHP_VERSION}")"'/ug' /tmp/"${CFG_HOST}".md;
+
     perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${MYSQL_DB_NAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+
     perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${MYSQL_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
     perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${MYSQL_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
+
+    perl -i -0wpe 's/%%MYSQL_X_DB_USERNAME%%/'"$(esc-regex-rv "${MYSQL_X_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%MYSQL_X_DB_PASSWORD%%/'"$(esc-regex-rv "${MYSQL_X_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
 
     mail --subject='WordPress Dev Instructions' --attach=/tmp/"${CFG_HOST}".md \
       "${CFG_ADMIN_EMAIL}" <<< 'Instructions for WordPress dev @'"${CFG_HOST}";

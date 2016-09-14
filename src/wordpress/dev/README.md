@@ -52,6 +52,7 @@ Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%`
   - Nginx doc root: `/app/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
+  - PHP v%%CFG_INSTALL_PHP_VERSION%%
 
 ## WordPress Dev Container Installs
 
@@ -198,7 +199,7 @@ $ brew cask install tunnelblick
 Your VPN allows up to 100 simultaneous connections. You can share your VPN with others if you'd like.
 
 - Send them a copy of your `.ovpn` file.
-- Create an account for them on the server (see **Giving Others Access** below). Instead of making them an admin, use `create-user` and `setup-user` in the second example that is shown.
+- Create an account for them on the server (see **Giving Others System Access** below). Instead of making them an admin, use `create-user` and `setup-user` in the second example that is shown.
 - Provide them with the instructions above so they can make a connection.
 - They will also browse the web as `%%do_floating_ip%%` (USA).
 
@@ -250,7 +251,7 @@ $ sudo service ufw restart # Restart service.
 # Opens MySQL port to external connections also.
 ```
 
-### Throttle Access to An Open Port
+### Throttle Access to An Open Port (Recommended)
 
 ```bash
 $ sudo ufw limit 3306/tcp # i.e., [port]/[proto]
@@ -260,7 +261,25 @@ $ sudo service ufw restart # Restart service.
 
 _i.e., A maximum of 6 connections every 30 seconds when you do it this way._
 
-## Giving Others Access
+## Advanced MySQL Database Access
+
+You don't need to open port 3306 for MySQL to work from inside the server itself via `localhost` (aka: `127.0.0.1`). For internal connections, here are the important details.
+
+Host name: `%%CFG_MYSQL_DB_HOST%%` port: `%%CFG_MYSQL_DB_PORT%%` (default)
+Username: `%%MYSQL_DB_USERNAME%%` Password: `%%MYSQL_DB_PASSWORD%%`
+Default/primary database name: `%%MYSQL_DB_NAME%%`
+
+_**See also:** `/etc/environment` for global environment variables with this data._
+
+### External MySQL Connections
+
+External connections (if necessary) require that you open port `3306` to the outside world. See: **Opening New Ports** above. For external connections, a different username/password is required as an extra security precaution. Here are the important details.
+
+Host name: `ws-droplet-%%CFG_HOST%%` port `%%CFG_MYSQL_DB_PORT%%` (default)
+Username: `%%MYSQL_X_DB_USERNAME%%` Password: `%%MYSQL_X_DB_PASSWORD%%`
+Default/primary database name: `%%MYSQL_DB_NAME%%`
+
+## Giving Others System Access
 
 ### Adding a new administrator (unrestricted access).
 

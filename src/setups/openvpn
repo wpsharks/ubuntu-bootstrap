@@ -49,7 +49,7 @@ if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
 
   # Email details for easy client setup.
 
-  if can-run mail; then # Only available w/ Postfix.
+  if can-run mail; then # Only if it's possible.
     cp /etc/bootstrap/openvpn/client.ovpn /tmp/"${CFG_HOST}".ovpn;
 
     mail --subject='OpenVPN Client Setup' --attach=/tmp/"${CFG_HOST}".ovpn \
