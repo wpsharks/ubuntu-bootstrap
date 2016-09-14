@@ -182,18 +182,33 @@ A Virtual Private Network (VPN). Learn more: http://jas.xyz/2cKxP3Q
 
 The most important thing you need to know about a VPN is that it secures your computer's Internet connection to guarantee that all of the data you're sending and receiving is encrypted and secured from prying eyes.
 
-Your server is running an instance of OpenVPN. It has been configured in such a way that you can connect securely and browse the web with a permanent static IP address. You simply need a VPN client software application to use this. I suggest Tunnelblick or Viscosity: <https://www.sparklabs.com/viscosity/> ($9.00)
+Your server is running an instance of OpenVPN. It has been configured in such a way that you can connect securely and browse the web with a permanent static IP address. You simply need a VPN client software application to use this. I suggest [Tunnelblick](https://tunnelblick.net/), [Pritunl](https://client.pritunl.com/), or [Viscosity](https://www.sparklabs.com/viscosity/).
 
 ```bash
 $ brew cask install tunnelblick
+# Or: brew cask install pritunl
 # Or: brew cask install viscosity
 ```
 
-- Open Tunnelblick or Viscosity and import the `.ovpn` file attached to this document. If you're using Tunnelblick you can just double-click to open the `.ovpn` file. If you're using Viscosity, open the application and choose to import the `.ovpn` connection file.
+- Open Tunnelblick, Pritunl, or Viscosity and import the `.ovpn` file attached to this document. If you're using Tunnelblick you can just double-click to open the `.ovpn` file. If you're using Pritunl or Viscosity, open the application and choose to import the `.ovpn` connection file.
 - Connect to the VPN by choosing 'connect' in either application.
 - When asked for a username/password, use your SSH credentials.
 - Confirm that your IP address has changed to the floating ip `%%do_floating_ip%%` (USA).
   - Try: <https://www.google.com/search?q=my+ip>
+
+### VPN Bandwidth Limitations
+
+You can use up to 1TB of data each month. In other words, there is no restriction. If you somehow use more than 1TB of data (not likely), what will happen is unknown. At this time, DigitalOcean does not charge for bandwidth overage. They will probably just throttle your connection or contact Jason.
+
+### VPN Public DNS by Google
+
+When you're connected to the VPN, all of your local DNS resolution occurs through Google's public DNS servers. These will likely offer you better speeds, better consistency, and improved security — compared to those provided by your ISP. You can learn more about Google's public DNS servers here: <https://developers.google.com/speed/public-dns/>
+
+### VPN Logging Considerations
+
+There are two log files on the server related to OpenVPN. One is `/var/log/openvpn/error.log` and the other is `/var/log/openvpn/status.log`. You may also find OpenVPN-related data in `/var/log/syslog`.
+
+As far as I can tell, none of these monitor your browing habits, they just log initial VPM connections, errors, and other protocol exchanges at verbosity level `3` (normal). Having said that, if you are concerned about security, please feel free to review `/bootstrap/src/openvpn/.conf`. That's the OpenVPN server configuration file.
 
 ### Sharing Your VPN w/ Others
 
@@ -204,7 +219,7 @@ Your VPN allows up to 100 simultaneous connections. You can share your VPN with 
 - Provide them with the instructions above so they can make a connection.
 - They, like you, will also browse the web as `%%do_floating_ip%%` (USA).
 
-_**Note:** While the server does allow up to 100 clients at a time, the firewall is configured to allow, at most, 6 new connections every 30 seconds._
+_**Note:** While the server does allow up to 100 clients at a time, the firewall is configured to allow, at most, 6 new connections every 30 seconds. So you can have up to 100 people connected at the same time, but there is a throttle on new incoming connection attempts._
 
 ## XDebug Remote Host IP
 
