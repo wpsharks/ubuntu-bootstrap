@@ -93,12 +93,13 @@ Your server has several utilities already installed. Here are a few that you mig
 
 - `php`
 - `composer`
-- `mail`
+- `mail` (see: man mail)
 - `git` (already configured)
+- `hub` (already aliased as `git`)
 - `wp` (WP-CLI, already configured)
 - `psysh` (already configured)
-- `casperjs`
 - `docker` (requires `sudo`)
+- `casperjs` (build tests)
 
 ### WordPress Reinstaller
 
