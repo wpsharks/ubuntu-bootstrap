@@ -160,7 +160,7 @@ if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; 
 
     pandoc --output=/tmp/"${CFG_HOST}".html --from=markdown_phpextra /tmp/"${CFG_HOST}".md;
 
-    mail --subject='WordPress Dev Instructions'
+    mail --subject='WordPress Dev Instructions' \
       --attach=/tmp/"${CFG_HOST}".md --attach=/tmp/"${CFG_HOST}".html \
       "${CFG_ADMIN_EMAIL}" <<< 'Instructions for WordPress dev @'"${CFG_HOST}";
 
