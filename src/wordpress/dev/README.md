@@ -48,7 +48,7 @@ Username: `[anything]` (does not matter)
 Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%`
 
 - <https://%%CFG_HOST%%>
-  - Database name: `%%MYSQL_DB_NAME%%`
+  - Database name: `%%CFG_MYSQL_DB_NAME%%`
   - Nginx doc root: `/app/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
@@ -64,25 +64,25 @@ Username: `[anything]` (does not matter)
 Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%` (same as above)
 
 - <https://php54-%%CFG_HOST%%>
-  - Database name: `%%MYSQL_DB_NAME%%_php54`
+  - Database name: `%%CFG_MYSQL_DB_NAME%%_php54`
   - Apache doc root: `/app-dev/php5.4src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
 - <https://php55-%%CFG_HOST%%>
-  - Database name: `%%MYSQL_DB_NAME%%_php55`
+  - Database name: `%%CFG_MYSQL_DB_NAME%%_php55`
   - Apache doc root: `/app-dev/php5.5src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
 - <https://php56-%%CFG_HOST%%>
-  - Database name: `%%MYSQL_DB_NAME%%_php56`
+  - Database name: `%%CFG_MYSQL_DB_NAME%%_php56`
   - Apache doc root: `/app-dev/php5.6src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
 - <https://php70-%%CFG_HOST%%>
-  - Database name: `%%MYSQL_DB_NAME%%_php70`
+  - Database name: `%%CFG_MYSQL_DB_NAME%%_php70`
   - Apache doc root: `/app-dev/php7.0src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
@@ -148,8 +148,8 @@ Username / Password: `[use your SSH credentials]`
 
 <https://%%CFG_HOST%%/---tools/pma/>
 
-Database Username: `%%MYSQL_DB_USERNAME%%`
-Database Password: `%%MYSQL_DB_PASSWORD%%`
+Database Username: `%%CFG_MYSQL_DB_USERNAME%%`
+Database Password: `%%CFG_MYSQL_DB_PASSWORD%%`
 
 _**Note:** This provides access to all databases, including those for dev containers._
 
@@ -202,7 +202,9 @@ Your VPN allows up to 100 simultaneous connections. You can share your VPN with 
 - Send them a copy of your `.ovpn` file.
 - Create an account for them on the server (see **Giving Others System Access** below). Instead of making them an admin, use `create-user` and `setup-user` in the second example that is shown.
 - Provide them with the instructions above so they can make a connection.
-- They will also browse the web as `%%do_floating_ip%%` (USA).
+- They, like you, will also browse the web as `%%do_floating_ip%%` (USA).
+
+_**Note:** While the server does allow up to 100 clients at a time, the firewall is configured to allow, at most, 6 new connections every 30 seconds._
 
 ## XDebug Remote Host IP
 
@@ -262,13 +264,19 @@ $ sudo service ufw restart # Restart service.
 
 _i.e., A maximum of 6 connections every 30 seconds when you do it this way._
 
+## Outgoing Mail via PHP `mail()` or `wp_mail()`
+
+This server is running a very simple installation of Postfix that has no ability to receive email from the Internet, but it does have the ability to send outgoing email via PHP to any outside location. This works well when running basic tests in a semi-live environment. However, there are no SPF records, no DKIM, etc. Therefore, mail sent by this server will likely end up in your spam folder. If you intend to send email in any official way you should install the WP Mail SMTP plugin and use a dedicated SMTP server of your choosing; e.g., GMail SMTP or Amazon SES, etc.
+
+_**Tip:** You can also send mail from the command-line using `mail`. See: `$ man mail` for instructions._
+
 ## Advanced MySQL Database Access
 
 You don't need to open port 3306 for MySQL to work from inside the server itself via `localhost` (aka: `127.0.0.1`). For internal connections, here are the important details.
 
 Host name: `%%CFG_MYSQL_DB_HOST%%` port: `%%CFG_MYSQL_DB_PORT%%` (default)
-Username: `%%MYSQL_DB_USERNAME%%` Password: `%%MYSQL_DB_PASSWORD%%`
-Default/primary database name: `%%MYSQL_DB_NAME%%`
+Username: `%%CFG_MYSQL_DB_USERNAME%%` Password: `%%CFG_MYSQL_DB_PASSWORD%%`
+Default/primary database name: `%%CFG_MYSQL_DB_NAME%%`
 
 _**See also:** `/etc/environment` for global environment variables with this data._
 
@@ -277,8 +285,8 @@ _**See also:** `/etc/environment` for global environment variables with this dat
 External connections (if necessary) require that you open port `3306` to the outside world. See: **Opening New Ports** above. For external connections, a different username/password is required as an extra security precaution. Here are the important details.
 
 Host name: `ws-droplet-%%CFG_HOST%%` port `%%CFG_MYSQL_DB_PORT%%` (default)
-Username: `%%MYSQL_X_DB_USERNAME%%` Password: `%%MYSQL_X_DB_PASSWORD%%`
-Default/primary database name: `%%MYSQL_DB_NAME%%`
+Username: `%%CFG_MYSQL_X_DB_USERNAME%%` Password: `%%CFG_MYSQL_X_DB_PASSWORD%%`
+Default/primary database name: `%%CFG_MYSQL_DB_NAME%%`
 
 ## Giving Others System Access
 
