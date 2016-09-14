@@ -1,4 +1,4 @@
-## $v
+## v160914.56388
 
 - Typos corrected in WP-dev README file.
 - Bug fix. Initial WordPress Installation Guard was not backing down once WP was installed.
