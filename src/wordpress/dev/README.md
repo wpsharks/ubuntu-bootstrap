@@ -3,7 +3,7 @@
 `%%do_floating_ip%%` (USA)
 `ws-droplet-%%CFG_HOST%%`
 
-_This is a dedicated IP address that will survive  your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name._
+This is a dedicated IP address that will survive  your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name.
 
 ## SSH Access
 
@@ -122,7 +122,7 @@ $ sudo install-wp-dev 5.6
 $ sudo install-wp-dev 7.0
 ```
 
-_**Warning:** This will delete MySQL _`db0_phpXX`_ and all files in `/app-dev/phpX.X/src`. Then it will recreate everything it deleted and reinstall WordPress so you can start fresh. Before running this command be sure to save anything that you must preserve._
+**Warning:** This will delete MySQL _`db0_phpXX`_ and all files in `/app-dev/phpX.X/src`. Then it will recreate everything it deleted and reinstall WordPress so you can start fresh. Before running this command be sure to save anything that you must preserve.
 
 #### Logging Into a Docker Dev Container
 
@@ -161,7 +161,7 @@ https://php55-%%CFG_HOST%%/---tools/info.php
 https://php56-%%CFG_HOST%%/---tools/info.php
 https://php70-%%CFG_HOST%%/---tools/info.php
 
-_**Warning:** PHP info is password protected because your server has environment variables that contain sensitive information. PHP displays them via _`$_SERVER[]`_ when you run `phpinfo()`. So please be advised that you should only use these PHP info pages that are protected; i.e., don't create your own PHP info pages and make them public, because PHP info pages reveal private details._
+_**Warning:** PHP info is password protected because your server has environment variables that contain sensitive information. PHP displays them via Superglobals when you run `phpinfo()`. So please be advised that you should only use these PHP info pages that are protected; i.e., don't create your own PHP info pages and make them public, because PHP info pages reveal private details._
 
 ### OPCache Dump
 
@@ -360,18 +360,25 @@ _**Suggested reading:** <http://jas.xyz/2c9cDrj>_
 $ sudo cat /etc/environment # And review.
 ```
 
-## No Backups (Be Advised)
+## No Data Backups (Be Advised)
 
-There are no backups in dev land. These test sites and the entire server can easily be rebuilt by Jason, using an existing image, but any data that you store on this server will be lost in that scenario. _**Tip:** If it's important, don't store it on this server._
+There are no data backups in dev land. These test sites and the entire server can easily be rebuilt by Jason, using an existing image, but any data that you store on this server will be lost in that scenario. _**Tip:** If it's important, don't store it on this server._
+
+## Snapshots (Easy Restoration)
+
+If you install something you shouldn't have, uninstall something that you needed, or otherwise find yourself in a pickle, let Jason or Raam know. A snapshot of this server was taken when it was first built. Jason and/or Raam can restore you to that original state in 5 minutes by logging into DigitalOcean and restoring your Droplet to that original snapshot.
+
+_**Tip:** If the problem is related specifically to WordPress itself (or there's a problem with your MySQL database), you can use the `install-wp` family of commands to restore both WordPress and the database yourself. See the section above: **WordPress Reinstaller** and **WordPress Dev Container Reinstaller**_
 
 ## Server Management/Maintenance & Ownership
 
-This server is owned by WebSharks, Inc. Jason manages this server for you, and he will let you know ahead of time if there are updates planned. Whenever updates do occur, there will likely be a loss of data, simply because Jason doesn't have enough time to manage all team servers and deal with the recovery and/or migration of your test sites also.
+This server is owned by WebSharks, Inc. Jason manages this server for you, and he will let you know ahead of time if there are updates planned. Whenever updates do occur, there will likely be a loss of data, simply because Jason doesn't have enough time to manage servers and deal with the recovery and/or migration of your test sites also.
 
-Here's what to expect when updates need to occur as determined by Jason.
+Here's what to expect when updates need to occur, as determined by Jason.
 
-- You will be notified by Jason at least 7 days in advance.
+- You will be notified by Jason at least 14 days in advance.
 - You will have that time to save/export anything that you need to keep.
-- The server will be upgraded and reset to a default state for a WordPress developer.
-- Your Floating IP (`%%do_floating_ip%%`) will be preserved so that you don't lose the static IP that identifies you.
-- You will receive another document like this one, with a new set of the latest up-to-date information, along with a changelog.
+- The server will be upgraded and then delivered to you in a new default state.
+- You will receive a new `.ovpn` file with newly generated client SSL certificates.
+- Your Floating IP (`%%do_floating_ip%%`) will remain; i.e., you will have the same IP as before.
+- You will receive another document like this one with the latest up-to-date information.

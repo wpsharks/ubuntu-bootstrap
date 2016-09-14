@@ -150,6 +150,9 @@ if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; 
 
     perl -i -0wpe 's/%%CFG_INSTALL_PHP_VERSION%%/'"$(esc-regex-rv "${CFG_INSTALL_PHP_VERSION}")"'/ug' /tmp/"${CFG_HOST}".md;
 
+    perl -i -0wpe 's/%%CFG_MYSQL_DB_HOST%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_HOST}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' /tmp/"${CFG_HOST}".md;
+
     perl -i -0wpe 's/%%CFG_MYSQL_DB_NAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_NAME}")"'/ug' /tmp/"${CFG_HOST}".md;
 
     perl -i -0wpe 's/%%CFG_MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
@@ -158,10 +161,7 @@ if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; 
     perl -i -0wpe 's/%%CFG_MYSQL_X_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
     perl -i -0wpe 's/%%CFG_MYSQL_X_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
 
-    pandoc --output=/tmp/"${CFG_HOST}".html --from=markdown_phpextra /tmp/"${CFG_HOST}".md;
-
-    mail --subject='WordPress Dev Instructions' \
-      --attach=/tmp/"${CFG_HOST}".md --attach=/tmp/"${CFG_HOST}".html \
+    mail --subject='WordPress Dev Instructions' --attach=/tmp/"${CFG_HOST}".md \
       "${CFG_ADMIN_EMAIL}" <<< 'Instructions for WordPress dev @'"${CFG_HOST}";
 
       rm /tmp/"${CFG_HOST}".md; # Remove temporary file now.
