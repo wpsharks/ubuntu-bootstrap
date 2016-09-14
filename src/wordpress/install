@@ -29,13 +29,16 @@ rm --force /tmp/wordpress-latest.zip;
 if is-vm || is-dev; then # Only for VMs and/or dev test sites.
   cp /bootstrap/src/wordpress/dev/wp-config.php /app/src/wp-config.php;
 
-  perl -i -0wpe 's/%%MYSQL_DB_HOST%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_HOST}")"'/ug' /app/src/wp-config.php;
-  perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' /app/src/wp-config.php;
-  perl -i -0wpe 's/%%MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' /app/src/wp-config.php;
-  perl -i -0wpe 's/%%MYSQL_DB_COLLATE%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_COLLATE}")"'/ug' /app/src/wp-config.php;
-  perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_USERNAME}")"'/ug' /app/src/wp-config.php;
-  perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PASSWORD}")"'/ug' /app/src/wp-config.php;
-  perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_NAME}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_HOST%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_HOST}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' /app/src/wp-config.php;
+
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_COLLATE%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_COLLATE}")"'/ug' /app/src/wp-config.php;
+
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_USERNAME}")"'/ug' /app/src/wp-config.php;
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PASSWORD}")"'/ug' /app/src/wp-config.php;
+
+  perl -i -0wpe 's/%%CFG_MYSQL_DB_NAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_NAME}")"'/ug' /app/src/wp-config.php;
 
   perl -i -0wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;
   perl -i -0wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' /app/src/wp-config.php;

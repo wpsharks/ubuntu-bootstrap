@@ -9,7 +9,7 @@
 - New config param: `CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS`
 - New WordPress Installation Guard for added developer security.
 - Enhancing force-SSL handlers. Now considering `CF-Visitor` scheme for compatibility with CloudFlare Flexible SSL mode. Props @ [Ruby](http://jas.xyz/2cMrjtc).
-- Updating `hub` tool to v2.2.8.
+- Updating the GitHub `hub` tool to v2.2.8.
 
 ## v160913.53816
 

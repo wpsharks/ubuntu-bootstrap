@@ -48,16 +48,16 @@ rm --force /tmp/wordpress-latest.zip;
 
 cp /bootstrap/src/wordpress/dev/wp-config.php "${php_v_src_dir}"/wp-config.php;
 
-perl -i -0wpe 's/%%MYSQL_DB_HOST%%/bridge/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_HOST%%/bridge/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_PORT%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PORT}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
-perl -i -0wpe 's/%%MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%MYSQL_DB_COLLATE%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_COLLATE}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_CHARSET%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_CHARSET}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_COLLATE%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_COLLATE}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
-perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${php_v_db}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_NAME%%/'"$(esc-regex-rv "${php_v_db}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
-perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_USERNAME}")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_PASSWORD}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_USERNAME}")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%CFG_MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_PASSWORD}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
 perl -i -0wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
 perl -i -0wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
@@ -150,13 +150,13 @@ if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; 
 
     perl -i -0wpe 's/%%CFG_INSTALL_PHP_VERSION%%/'"$(esc-regex-rv "${CFG_INSTALL_PHP_VERSION}")"'/ug' /tmp/"${CFG_HOST}".md;
 
-    perl -i -0wpe 's/%%MYSQL_DB_NAME%%/'"$(esc-regex-rv "${MYSQL_DB_NAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MYSQL_DB_NAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_NAME}")"'/ug' /tmp/"${CFG_HOST}".md;
 
-    perl -i -0wpe 's/%%MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${MYSQL_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
-    perl -i -0wpe 's/%%MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${MYSQL_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
 
-    perl -i -0wpe 's/%%MYSQL_X_DB_USERNAME%%/'"$(esc-regex-rv "${MYSQL_X_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
-    perl -i -0wpe 's/%%MYSQL_X_DB_PASSWORD%%/'"$(esc-regex-rv "${MYSQL_X_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MYSQL_X_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
+    perl -i -0wpe 's/%%CFG_MYSQL_X_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;
 
     mail --subject='WordPress Dev Instructions' --attach=/tmp/"${CFG_HOST}".md \
       "${CFG_ADMIN_EMAIL}" <<< 'Instructions for WordPress dev @'"${CFG_HOST}";

@@ -17,12 +17,12 @@ if (version_compare(PHP_VERSION, '7.0.4', '>=')) {
 }
 define('WP_ALLOW_MULTISITE', true);
 
-define('DB_NAME', '%%MYSQL_DB_NAME%%');
-define('DB_USER', '%%MYSQL_DB_USERNAME%%');
-define('DB_PASSWORD', '%%MYSQL_DB_PASSWORD%%');
-define('DB_HOST', '%%MYSQL_DB_HOST%%:%%MYSQL_DB_PORT%%');
-define('DB_CHARSET', '%%MYSQL_DB_CHARSET%%');
-define('DB_COLLATE', '%%MYSQL_DB_COLLATE%%');
+define('DB_NAME', '%%CFG_MYSQL_DB_NAME%%');
+define('DB_USER', '%%CFG_MYSQL_DB_USERNAME%%');
+define('DB_PASSWORD', '%%CFG_MYSQL_DB_PASSWORD%%');
+define('DB_HOST', '%%CFG_MYSQL_DB_HOST%%:%%CFG_MYSQL_DB_PORT%%');
+define('DB_CHARSET', '%%CFG_MYSQL_DB_CHARSET%%');
+define('DB_COLLATE', '%%CFG_MYSQL_DB_COLLATE%%');
 
 define('AUTH_KEY', '%%AUTH_KEY%%');
 define('SECURE_AUTH_KEY', '%%SECURE_AUTH_KEY%%');
