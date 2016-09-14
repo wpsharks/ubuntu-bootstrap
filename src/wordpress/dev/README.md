@@ -363,3 +363,15 @@ $ sudo cat /etc/environment # And review.
 ## No Backups (Be Advised)
 
 There are no backups in dev land. These test sites and the entire server can easily be rebuilt by Jason, using an existing image, but any data that you store on this server will be lost in that scenario. _**Tip:** If it's important, don't store it on this server._
+
+## Server Management/Maintenance & Ownership
+
+This server is owned by WebSharks, Inc. Jason manages this server for you, and he will let you know ahead of time if there are updates planned. Whenever updates do occur, there will likely be a loss of data, simply because Jason doesn't have enough time to manage all team servers and deal with the recovery and/or migration of your test sites also.
+
+Here's what to expect when updates need to occur as determined by Jason.
+
+- You will be notified by Jason at least 7 days in advance.
+- You will have that time to save/export anything that you need to keep.
+- The server will be upgraded and reset to a default state for a WordPress developer.
+- Your Floating IP (`%%do_floating_ip%%`) will be preserved so that you don't lose the static IP that identifies you.
+- You will receive another document like this one, with a new set of the latest up-to-date information, along with a changelog.
