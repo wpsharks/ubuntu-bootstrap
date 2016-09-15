@@ -22,6 +22,9 @@ cd /; # Move to drive base.
 
 data_to_export='/app';
 
+if [[ -d /app-dev ]]; then
+  data_to_export+=' /app-dev';
+fi;
 if [[ -d /repos ]]; then
   data_to_export+=' /repos';
 fi;
