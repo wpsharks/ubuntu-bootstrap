@@ -34,6 +34,7 @@ if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
       cp /bootstrap/src/wordpress/dev/README.md /tmp/"${CFG_HOST}".md;
 
       perl -i -0wpe 's/%%do_floating_ip%%/'"$(esc-regex-rv "$(do-floating-ip)")"'/ug' /tmp/"${CFG_HOST}".md;
+      perl -i -0wpe 's/%%do_region%%/'"$(esc-regex-rv "$(do-region)")"'/ug' /tmp/"${CFG_HOST}".md;
 
       perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_USERNAME%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
       perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_PASSWORD%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;

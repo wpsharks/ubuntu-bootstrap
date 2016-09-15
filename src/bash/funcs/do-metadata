@@ -2,20 +2,16 @@
 
 # DigitalOcean metadata.
 
-function do-region() {
-  curl --silent --fail http://169.254.169.254/metadata/v1/region;
-};
-
 function do-droplet-id() {
   curl --silent --fail http://169.254.169.254/metadata/v1/id;
 };
 
-function do-mac-address() {
-  curl --silent --fail http://169.254.169.254/metadata/v1/interfaces/public/0/mac;
-};
-
 function do-hostname() {
   curl --silent --fail http://169.254.169.254/metadata/v1/hostname;
+};
+
+function do-mac-address() {
+  curl --silent --fail http://169.254.169.254/metadata/v1/interfaces/public/0/mac;
 };
 
 function do-anchor-ip() {
@@ -30,6 +26,10 @@ function do-public-ipv6() {
   curl --silent --fail http://169.254.169.254/metadata/v1/interfaces/public/0/ipv6/address;
 };
 
+function do-region() {
+  local region=''; region="$(curl --silent --fail http://169.254.169.254/metadata/v1/region)";
+  echo "${region^^}"; # e.g., `NYC2`, `SFO2`, `SGP1` (uppercase).
+};
 function do-floating-ip() {
   curl --silent --fail http://169.254.169.254/metadata/v1/floating_ip/ipv4/ip_address;
 };

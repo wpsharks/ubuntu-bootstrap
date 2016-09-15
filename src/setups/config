@@ -221,7 +221,7 @@ function fill-clean-sanitize-cfgs() {
 
   if [[ -z "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
     if [[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]]; then
-      CFG_ADMIN_STATIC_IP_ADDRESS='45.55.103.59';
+      CFG_ADMIN_STATIC_IP_ADDRESS='138.68.38.139';
     elif is-dev && is-do; then
       CFG_ADMIN_STATIC_IP_ADDRESS="$(do-floating-ip)";
     fi;
