@@ -1,6 +1,6 @@
 ## Floating IP
 
-`%%do_floating_ip%%` (USA)
+`%%do_floating_ip%%`
 `ws-droplet-%%CFG_HOST%%`
 
 This is a dedicated IP address that will survive your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name.
@@ -194,7 +194,7 @@ $ brew cask install tunnelblick
 - Open Tunnelblick, Pritunl, or Viscosity and import the `.ovpn` file attached to this document. If you're using Tunnelblick you can just double-click to open the `.ovpn` file. If you're using Pritunl or Viscosity, open the application and choose to import the `.ovpn` connection file.
 - Connect to the VPN by choosing 'connect' in either application.
 - When asked for a username/password, use your SSH credentials.
-- Confirm that your IP address has changed to the floating ip `%%do_floating_ip%%` (USA).
+- Confirm that your IP address has changed to the floating ip `%%do_floating_ip%%`.
   - Try: <https://www.google.com/search?q=my+ip>
 
 ### VPN Bandwidth Limitations
@@ -218,7 +218,7 @@ Your VPN allows up to 100 simultaneous connections. You can share your VPN with 
 - Send them a copy of your `.ovpn` file.
 - Create an account for them on the server (see **Giving Others System Access** below). Instead of making them an admin, use `create-user` and `setup-user` in the second example that is shown.
 - Provide them with the instructions above so they can make a connection.
-- They, like you, will also browse the web as `%%do_floating_ip%%` (USA).
+- They, like you, will also browse the web as `%%do_floating_ip%%`.
 
 _**Note:** While the server does allow up to 100 clients at a time, the firewall is configured to allow, at most, 6 new connections every 30 seconds. So you can have up to 100 people connected at the same time, but there is a throttle on new incoming connection attempts._
 
