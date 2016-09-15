@@ -1,6 +1,6 @@
 ## Floating IP
 
-`%%do_floating_ip%%`
+`%%do_floating_ip%%` (%%do_region%%)
 `ws-droplet-%%CFG_HOST%%`
 
 This is a dedicated IP address that will survive your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name.
