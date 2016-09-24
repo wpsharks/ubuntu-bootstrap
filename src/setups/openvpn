@@ -55,7 +55,7 @@ if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
     mail --subject='OpenVPN Client Setup' --attach=/tmp/"${CFG_HOST}".ovpn \
       "${CFG_ADMIN_EMAIL}" <<< 'Configuration file for OpenVPN @'"${CFG_HOST}";
 
-      rm /tmp/"${CFG_HOST}".ovpn; # Remove temporary file now.
+    rm /tmp/"${CFG_HOST}".ovpn; # Remove temporary file now.
   fi;
   # Enable automatic startup.
 
