@@ -257,6 +257,10 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
+- `--CFG_ADMIN_GENDER=[male|female]` Admin gender.
+
+---
+
 - `--CFG_ADMIN_USERNAME=admin` Administrative username.
 - `--CFG_ADMIN_PASSWORD=admin` Administrative password.
 
@@ -422,6 +426,10 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_WORDPRESS_DEV_USERNAME=[username]` Install for another user?
 - `--CFG_WORDPRESS_DEV_PASSWORD=[password]` Default is auto-generated.
+
+---
+
+- `--CFG_WORDPRESS_DEV_GENDER=[male|female]` The other user's gender.
 
 ---
 

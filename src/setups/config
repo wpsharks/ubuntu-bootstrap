@@ -25,6 +25,9 @@ CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
 [[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]] && CFG_ADMIN_PUBLIC_EMAIL='me@jaswsinc.com';
 is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 
+CFG_ADMIN_GENDER=''; # One of `male`, `female`.
+[[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]] && CFG_ADMIN_GENDER='male';
+
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
 CFG_ADMIN_STATIC_IP_ADDRESS=''; # See `fill-clean-sanitize-cfgs()` below.
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
@@ -114,6 +117,8 @@ CFG_INSTALL_WORDPRESS='1'; ( is-4ci || is-4pkg ) && CFG_INSTALL_WORDPRESS='0';
 CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0'; is-vagrant && ! is-4pkg && CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
 CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='0'; ( ! in-docker && ( is-vm || is-dev ) ) && CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='1';
 
+CFG_WORDPRESS_DEV_GENDER='';
+
 CFG_WORDPRESS_DEV_USERNAME='';
 CFG_WORDPRESS_DEV_PASSWORD="$(keygen 15)";
 
@@ -201,6 +206,8 @@ function fill-clean-sanitize-cfgs() {
   CFG_SLUG="${CFG_SLUG,,}";
   CFG_VAR="${CFG_VAR,,}";
 
+  CFG_ADMIN_GENDER="${CFG_ADMIN_GENDER,,}";
+
   CFG_ADMIN_USERNAME="${CFG_ADMIN_USERNAME,,}";
 
   CFG_ADMIN_EMAIL="${CFG_ADMIN_EMAIL,,}";
@@ -221,6 +228,7 @@ function fill-clean-sanitize-cfgs() {
   CFG_DISCOURSE_SMTP_HOST="${CFG_DISCOURSE_SMTP_HOST,,}";
   CFG_DISCOURSE_SMTP_AUTH_TYPE="${CFG_DISCOURSE_SMTP_AUTH_TYPE,,}";
 
+  CFG_WORDPRESS_DEV_GENDER="${CFG_WORDPRESS_DEV_GENDER,,}";
   CFG_WORDPRESS_DEV_USERNAME="${CFG_WORDPRESS_DEV_USERNAME,,}";
 
   # Try to fill admin's static IP address.
@@ -251,6 +259,8 @@ function validate-cfgs() {
     \
     'CFG_SLUG' \
     'CFG_VAR' \
+    \
+    'CFG_ADMIN_GENDER' \
     \
     'CFG_ADMIN_USERNAME' \
     'CFG_ADMIN_PASSWORD' \
@@ -444,6 +454,8 @@ function cfgs-wizard() {
       ## Ask for required config values.
 
       for _cfg_key in \
+        'CFG_ADMIN_GENDER' \
+        \
         'CFG_ADMIN_USERNAME' \
         'CFG_ADMIN_PASSWORD' \
         \
@@ -643,6 +655,8 @@ function cfgs-wizard() {
             \
             'CFG_DISCOURSE_SMTP_USERNAME' \
             'CFG_DISCOURSE_SMTP_PASSWORD' \
+            \
+            'CFG_WORDPRESS_DEV_GENDER' \
             \
             'CFG_WORDPRESS_DEV_USERNAME' \
             'CFG_WORDPRESS_DEV_PASSWORD' \
