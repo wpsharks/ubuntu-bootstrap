@@ -16,8 +16,14 @@ CFG_ADMIN_USERNAME=''; is-vm && CFG_ADMIN_USERNAME='admin';
 CFG_ADMIN_PASSWORD=''; is-vm && CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
 
 CFG_ADMIN_NAME=''; is-vm && CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
-CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com'; is-vm && CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
-CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com'; is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
+
+CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@wsharks.com';
+[[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]] && CFG_ADMIN_EMAIL='me@jaswsinc.com';
+is-vm && CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
+
+CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
+[[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]] && CFG_ADMIN_PUBLIC_EMAIL='me@jaswsinc.com';
+is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
 CFG_ADMIN_STATIC_IP_ADDRESS=''; # See `fill-clean-sanitize-cfgs()` below.
