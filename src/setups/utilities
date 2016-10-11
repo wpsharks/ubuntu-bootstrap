@@ -18,6 +18,7 @@ apt-get install unzip --yes;
 apt-get install curl --yes;
 apt-get install man --yes;
 
+apt-get install pngquant --yes;
 apt-get install pandoc --yes;
 apt-get install pandoc-citeproc --yes;
 
