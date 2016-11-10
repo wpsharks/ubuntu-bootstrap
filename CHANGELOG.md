@@ -1,3 +1,7 @@
+## [coming soon]
+
+- Adding security checks for Comet Cache running on Nginx.
+
 ## v160914.56388
 
 - Typos corrected in WP-dev README file.
