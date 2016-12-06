@@ -26,6 +26,7 @@ CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@wsharks.com';
 is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_SLUG%%@%%CFG_ROOT_HOST%%';
 
 CFG_ADMIN_GENDER=''; # One of `male`, `female`.
+is-vm && CFG_ADMIN_GENDER='male'; # Defaults to `male`.
 [[ "${CFG_ADMIN_USERNAME}" == 'jaswsinc' ]] && CFG_ADMIN_GENDER='male';
 
 CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
