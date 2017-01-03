@@ -1,9 +1,10 @@
-## $v
+## v170103.75837
 
-- Adding `phpX-dev` package before attempting to install XDebug.
 - Adding support for PHP v7.1 and making this the new default PHP version.
+- Adding security checks for Comet Cache directories when running on Nginx.
+- Bug fix. XDebug via PECL now requires PHP 5.5+. Not possible on PHP 5.4.x any longer.
+- Adding `phpX-dev` package before attempting to install XDebug.
 - Adding `WP_NGINX_CONFIG = done` to satisfy Comet Cache.
-- Adding security checks for Comet Cache running on Nginx.
 
 ## v160914.56388
 

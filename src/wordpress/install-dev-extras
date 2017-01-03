@@ -16,5 +16,7 @@ ln --symbolic /bootstrap/src/wordpress/dev/extras.ini "${PHP_INI_DIR}"/conf.d/z9
 
 # Install the XDebug extension for testing.
 
-pecl install xdebug &>/dev/null; # Quiety to avoid confusion on rebuilds.
-echo 'zend_extension="'"$(php-config --extension-dir)"'/xdebug.so"' > "${PHP_INI_DIR}"/conf.d/xdebug.ini;
+if version-compare "$(php -r 'echo PHP_VERSION;')" ge 5.5; then
+  pecl install xdebug &>/dev/null; # Quiety to avoid confusion on rebuilds.
+  echo 'zend_extension="'"$(php-config --extension-dir)"'/xdebug.so"' > "${PHP_INI_DIR}"/conf.d/xdebug.ini;
+fi; # XDebug via PECL now requires PHP 5.5+. Not possible on PHP 5.4.x any longer.

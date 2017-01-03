@@ -23,6 +23,7 @@ ___app_related_services[docker-app-dev-php5.4]=docker-app-dev-php5.4; ___app_rel
 ___app_related_services[docker-app-dev-php5.5]=docker-app-dev-php5.5; ___app_related_services_order+=('docker-app-dev-php5.5');
 ___app_related_services[docker-app-dev-php5.6]=docker-app-dev-php5.6; ___app_related_services_order+=('docker-app-dev-php5.6');
 ___app_related_services[docker-app-dev-php7.0]=docker-app-dev-php7.0; ___app_related_services_order+=('docker-app-dev-php7.0');
+___app_related_services[docker-app-dev-php7.1]=docker-app-dev-php7.1; ___app_related_services_order+=('docker-app-dev-php7.1');
 
 ___app_related_services[discourse]=discourse; ___app_related_services_order+=('discourse');
 
@@ -33,6 +34,7 @@ ___app_related_services[mysql]=mysql; ___app_related_services_order+=('mysql');
 ___app_related_services[php5.5-fpm]=php5.5-fpm; ___app_related_services_order+=('php5.5-fpm');
 ___app_related_services[php5.6-fpm]=php5.6-fpm; ___app_related_services_order+=('php5.6-fpm');
 ___app_related_services[php7.0-fpm]=php7.0-fpm; ___app_related_services_order+=('php7.0-fpm');
+___app_related_services[php7.0-fpm]=php7.1-fpm; ___app_related_services_order+=('php7.1-fpm');
 
 ___app_related_services[nginx]=nginx; ___app_related_services_order+=('nginx');
 ___app_related_services[apache2]=apache2; ___app_related_services_order+=('apache2');

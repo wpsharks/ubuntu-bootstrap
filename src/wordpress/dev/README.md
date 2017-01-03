@@ -88,6 +88,12 @@ Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%` (same as above)
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
 
+- <https://php71-%%CFG_HOST%%>
+  - Database name: `%%CFG_MYSQL_DB_NAME%%_php70`
+  - Apache doc root: `/app-dev/php7.1/src`
+  - Choice of `http://` or `https://`
+  - In `WP_DEBUG` mode.
+
 ## Command-Line Utilities
 
 Your server has several utilities already installed. Here are a few that you might find useful.
@@ -121,6 +127,7 @@ $ sudo install-wp-dev 5.4
 $ sudo install-wp-dev 5.5
 $ sudo install-wp-dev 5.6
 $ sudo install-wp-dev 7.0
+$ sudo install-wp-dev 7.1
 ```
 
 **Warning:** This will delete MySQL `db0_phpXX` and all files in `/app-dev/phpX.X/src`. Then it will recreate everything it deleted and reinstall WordPress so you can start fresh. Before running this command be sure to save anything that you must preserve.
@@ -239,7 +246,7 @@ XDebug is already installed and configured. However, since this is a live site t
 - Restart the PHP process manager.
 
   ```bash
-  $ sudo service php7.0-fpm restart
+  $ sudo service php7.1-fpm restart
   ```
 
 ### Dev Containers: e.g., `php5.4-%%CFG_HOST%%`
