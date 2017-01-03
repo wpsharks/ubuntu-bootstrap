@@ -1,5 +1,8 @@
-## [coming soon]
+## $v
 
+- Adding `phpX-dev` package before attempting to install XDebug.
+- Adding support for PHP v7.1 and making this the new default PHP version.
+- Adding `WP_NGINX_CONFIG = done` to satisfy Comet Cache.
 - Adding security checks for Comet Cache running on Nginx.
 
 ## v160914.56388
