@@ -9,15 +9,10 @@ if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
 
   # Install PHP CLI and/or PHP process manager.
 
-  if [[ "${CFG_INSTALL_PHP_VERSION}" == 7.0 ]]; then
-    . /bootstrap/src/setups/php/v7.0;
+  if [[ -n "${CFG_INSTALL_PHP_VERSION}" ]]; then
+    . /bootstrap/src/setups/php/v"${CFG_INSTALL_PHP_VERSION}";
+  else . /bootstrap/src/setups/php/v7.1; fi;
 
-  elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.6 ]]; then
-    . /bootstrap/src/setups/php/v5.6;
-
-  elif [[ "${CFG_INSTALL_PHP_VERSION}" == 5.5 ]]; then
-    . /bootstrap/src/setups/php/v5.5;
-  fi;
   # Handle OPcache being enabled or disabled.
 
   if [[ "${CFG_ENABLE_PHP_OPCACHE}" == 1 ]]; then

@@ -13,8 +13,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
     apt-get install php7.0-fpm --yes;
     # Reverse this so it matches w/ other PHP versions.
-    ln --symbolic /usr/sbin/php-fpm7.0 /usr/sbin/php7.0-fpm; fi;
-
+    ln --symbolic /usr/sbin/php-fpm7.0 /usr/sbin/php7.0-fpm;
+  fi;
   apt-get install php7.0-mysql --yes;
   apt-get install php7.0-curl --yes;
   apt-get install php7.0-intl --yes;
@@ -28,6 +28,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
   apt-get install php7.0-zip --yes;
   apt-get install php7.0-bcmath --yes;
   apt-get install php-memcached --yes;
+
+  apt-get install php7.0-dev --yes;
   apt-get install php-pear --yes;
 
   if [[ "${CFG_INSTALL_PHP_XDEBUG}" == 1 ]]; then

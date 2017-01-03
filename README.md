@@ -1,4 +1,4 @@
-## VirtualBox + Vagrant + Landrush; running Ubuntu 16.04 LTS (Xenial Xersus) w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of PHP 7.0, PHP 5.6, PHP 5.5), and WordPress
+## VirtualBox + Vagrant + Landrush; running Ubuntu 16.04 LTS (Xenial Xersus) w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of PHP 7.1, PHP 7.0, PHP 5.6, PHP 5.5), and WordPress
 
 ![](http://cdn.websharks-inc.com/jaswsinc/uploads/2015/03/os-x-vagrant-virtualbox.png)
 
@@ -368,7 +368,7 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_INSTALL_PHP_CLI=0|1` Install PHP command-line interpreter?
 - `--CFG_INSTALL_PHP_FPM=0|1` Install PHP-FPM process manager for Apache/Nginx?
-- `--CFG_INSTALL_PHP_VERSION=[7.0|5.6|5.5]` Which PHP version to install?
+- `--CFG_INSTALL_PHP_VERSION=[7.1|7.0|5.6|5.5]` Which PHP version to install?
 - `--CFG_ENABLE_PHP_OPCACHE=0|1` Enable the PHP OPcache extension?
 - `--CFG_INSTALL_PHP_XDEBUG=0|1` Install PHP XDebug extension?
 - `--CFG_ENABLE_PHP_PHAR_READONLY=0|1` Force PHAR readonly mode?
