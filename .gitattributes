@@ -112,6 +112,7 @@
 *.jpeg binary
 *.jpg binary
 *.png binary
+*.webp binary
 *.psd binary
 *.svg text
 *.tif binary
@@ -279,15 +280,54 @@ Icons -export-ignore
 # Export Ignore (More) -------------------------------------------------------------------------------------------------
 # These are in addition to what we have in `.gitignore`.
 
-# SASS
+# Assets (in WS projects)
 
-*.scss export-ignore
-*.css.map export-ignore
+/assets/ export-ignore
+/src/vendor/websharks/*/assets/ export-ignore
 
-/src/client-s/**/bourbon/ export-ignore
-/src/vendor/websharks/*/src/client-s/**/bourbon/ export-ignore
+# Demo Directories
 
-# Git
+/demo/ export-ignore
+/demos/ export-ignore
+/src/vendor/*/*/demo/ export-ignore
+/src/vendor/*/*/demos/ export-ignore
+
+# Doc Directories
+
+/doc/ export-ignore
+/docs/ export-ignore
+/src/vendor/*/*/doc/ export-ignore
+/src/vendor/*/*/docs/ export-ignore
+
+# Test Directories
+
+/test/ export-ignore
+/tests/ export-ignore
+/src/vendor/*/*/test/ export-ignore
+/src/vendor/*/*/tests/ export-ignore
+
+# TO-DO Lists
+
+TODO.md export-ignore
+TODO.mdown export-ignore
+TODO.markdown export-ignore
+TODO.txt export-ignore
+
+# README Files
+
+README.md export-ignore
+README.mdown export-ignore
+README.markdown export-ignore
+README.txt export-ignore
+
+# CHANGELOG Files
+
+CHANGELOG.md export-ignore
+CHANGELOG.mdown﻿⁠⁠⁠⁠ export-ignore
+CHANGELOG.markdown﻿⁠⁠⁠⁠ export-ignore
+CHANGELOG.txt﻿⁠⁠⁠⁠ export-ignore
+
+# Git Dotfiles
 
 /.gitignore export-ignore
 /src/vendor/*/*/.gitignore export-ignore
@@ -301,7 +341,7 @@ Icons -export-ignore
 /.gitchange export-ignore
 /src/vendor/websharks/*/.gitchange export-ignore
 
-# GitHub
+# GitHub Dir/Files
 
 /.github/ export-ignore
 /src/vendor/*/*/.github/ export-ignore
@@ -315,19 +355,44 @@ Icons -export-ignore
 /PULL_REQUEST_TEMPLATE.md export-ignore
 /src/vendor/*/*/PULL_REQUEST_TEMPLATE.md export-ignore
 
-# Assets
+# GitHub + Jekyll Dirs/Files
+# Note: `docs/` and `assets/` are also used by Jekyll.
+# They aren't listed here because they are listed elsewhere.
 
-/assets/ export-ignore
-/src/vendor/websharks/*/assets/ export-ignore
+/_config.yml export-ignore
+/src/vendor/*/*/_config.yml export-ignore
 
-# Build Files
+/_layouts/ export-ignore
+/src/vendor/*/*/_layouts/ export-ignore
+
+/_includes/ export-ignore
+/src/vendor/*/*/_includes/ export-ignore
+
+/_sass/ export-ignore
+/src/vendor/*/*/_sass/ export-ignore
+
+# Makefiles
+
+/Makefile export-ignore
+/src/vendor/*/*/Makefile export-ignore
+
+# Gulp Files
+
+/gulpfile.js export-ignore
+/src/vendor/*/*/gulpfile.js export-ignore
+
+# Grunt Files
+
+/Gruntfile export-ignore
+/src/vendor/*/*/Gruntfile export-ignore
+
+# Phings Directory
 
 /phings/ export-ignore
 /src/vendor/*/*/phing/ export-ignore
 /src/vendor/*/*/phings/ export-ignore
 
-/.build.props export-ignore
-/src/vendor/*/*/.build.props export-ignore
+# Phing Build Files
 
 /build.xml export-ignore
 /src/vendor/*/*/build.xml export-ignore
@@ -335,7 +400,10 @@ Icons -export-ignore
 /build-*.xml export-ignore
 /src/vendor/*/*/build-*.xml export-ignore
 
-# Dot Build Files
+/.build.props export-ignore
+/src/vendor/*/*/.build.props export-ignore
+
+# Phing Dot Build Files
 
 /.build.php export-ignore
 /src/vendor/websharks/*/.build.php export-ignore
@@ -361,21 +429,70 @@ Icons -export-ignore
 /src/includes/**/.build.*.php export-ignore
 /src/vendor/websharks/*/src/includes/**/.build.*.php export-ignore
 
-# Tests
+# IDE Helpers
 
-/tests/ export-ignore
-/src/vendor/*/*/test/ export-ignore
-/src/vendor/*/*/tests/ export-ignore
+_ide.php export-ignore
+
+# Composer Files
+
+/composer.json export-ignore
+/src/vendor/*/*/composer.json export-ignore
+
+/composer.lock export-ignore
+/src/vendor/*/*/composer.lock export-ignore
+
+# PHPUnit
+
+/phpunit.xml export-ignore
+/src/vendor/*/*/phpunit.xml export-ignore
+
+/phpunit.xml.dist export-ignore
+/src/vendor/*/*/phpunit.xml.dist export-ignore
+
+# SASS-Related
+
+*.scss export-ignore
+*.css.map export-ignore
+
+# Bourbon (in WS projects)
+
+/src/client-s/**/bourbon/ export-ignore
+/src/vendor/websharks/*/src/client-s/**/bourbon/ export-ignore
+
+# Box / Phar
+
+/box.json export-ignore
+/src/vendor/*/*/box.json export-ignore
+
+/.box.json export-ignore
+/src/vendor/*/*/.box.json export-ignore
+
+/box.json.dist export-ignore
+/src/vendor/*/*/box.json.dist export-ignore
+
+/.box.json.dist export-ignore
+/src/vendor/*/*/.box.json.dist export-ignore
 
 # Drone
 
 /.drone.* export-ignore
 /src/vendor/*/*/.drone.* export-ignore
 
+# Circle CI
+
+/circle.yml export-ignore
+/src/vendor/*/*/circle.yml export-ignore
+
+/.circle.yml export-ignore
+/src/vendor/*/*/.circle.yml export-ignore
+
 # Travis
 
 /.travis.* export-ignore
 /src/vendor/*/*/.travis.* export-ignore
+
+/.travis-* export-ignore
+/src/vendor/*/*/.travis-* export-ignore
 
 # Coverage
 
@@ -384,6 +501,11 @@ Icons -export-ignore
 
 /.scrutinizer.* export-ignore
 /src/vendor/*/*/.scrutinizer.* export-ignore
+
+# PHP Code Sniffer
+
+/.php_cs export-ignore
+/src/vendor/*/*/.php_cs export-ignore
 
 # Post-Receive
 
@@ -395,8 +517,13 @@ Icons -export-ignore
 /src/includes/phar-stub.php export-ignore
 /src/vendor/websharks/*/src/includes/phar-stub.php export-ignore
 
+# PsySH Stub
+
+/src/includes/psysh-stub.php export-ignore
+/src/vendor/websharks/*/src/includes/psysh-stub.php export-ignore
+
 # LFS Storage (Assets) -------------------------------------------------------------------------------------------------
-# NOTE: Here we need to match all assets explictly; i.e., requires `/**`
+# NOTE: Here we need to match all assets explicitly; i.e., requires `/**`
 
 /assets/** filter=lfs diff=lfs merge=lfs -text
 
