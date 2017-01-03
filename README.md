@@ -2,13 +2,11 @@
 
 ## VirtualBox + Vagrant + Landrush; running Ubuntu 16.04 LTS (Xenial Xersus) w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of PHP 7.1, PHP 7.0, PHP 5.6, PHP 5.5), and WordPress
 
----
-
 ### Installation Instructions
 
 #### Step 1: Satisfy Software Requirements
 
-You need to have VirtualBox, Vagrant, and one of two DNS plugin options.
+You need VirtualBox, Vagrant, and a DNS plugin.
 
 ```bash
 $ brew cask install virtualbox;
