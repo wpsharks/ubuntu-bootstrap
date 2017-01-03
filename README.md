@@ -1,4 +1,4 @@
-<img src="https://media.githubusercontent.com/media/websharks/ubuntu-bootstrap/dev/assets/cover.png" align="right" />
+<img src="https://media.githubusercontent.com/media/websharks/ubuntu-bootstrap/dev/assets/cover.png" width="300" align="right" />
 
 ## VirtualBox + Vagrant + Landrush; running Ubuntu 16.04 LTS (Xenial Xersus) w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of PHP 7.1, PHP 7.0, PHP 5.6, PHP 5.5), and WordPress
 
