@@ -1,3 +1,8 @@
+## v170104.56167
+
+- Making PHP versions easier to maintain.
+- Updating PHPCS and WP i18n Tools.
+
 ## v170103.75837
 
 - Adding support for PHP v7.1 and making this the new default PHP version.
