@@ -4,7 +4,7 @@ if can-run php && [[ "${CFG_INSTALL_WP_I18N_TOOLS}" == 1 ]]; then
 
   # Install WP i18n Tools now also.
 
-  curl https://github.com/websharks/wp-i18n-tools/releases/download/160416/wp-i18n-tools.phar --location --output /usr/bin/wp-i18n-tools;
+  curl https://github.com/websharks/wp-i18n-tools/releases/download/160908/wp-i18n-tools.phar --location --output /usr/bin/wp-i18n-tools;
   chmod +x /usr/bin/wp-i18n-tools; # Make it executable.
 
 else echo 'Skipping WP i18n Tools installation.'; fi;

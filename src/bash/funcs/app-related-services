@@ -34,23 +34,10 @@ ___app_related_services[php-fpm]=php-fpm; ___app_related_services_order+=('php-f
 ___app_related_services[nginx]=nginx; ___app_related_services_order+=('nginx');
 ___app_related_services[apache2]=apache2; ___app_related_services_order+=('apache2');
 
-# Stop app-related services.
+# Start app-related services (alias of `restart-app-related-services`).
 
-function stop-app-related-services() {
-  local _i _binary _service;
-
-  for ((_i=${#___app_related_services_order[@]}-1; _i >= 0; _i--)); do
-    _binary="${___app_related_services_order[$_i]}";
-    _service="${___app_related_services[$_binary]}";
-
-    if [[ "${_binary}" == 'discourse' ]]; then
-      if [[ -x /discourse/launcher ]]; then
-        /discourse/launcher stop app || true;
-      fi;
-    elif can-run "${_binary}"; then
-      service "${_service}" stop &>/dev/null || true;
-    fi;
-  done;
+function start-app-related-services() {
+  restart-app-related-services;
 };
 
 # Start (or restart) app-related services.
@@ -72,21 +59,40 @@ function restart-app-related-services() {
   done;
 };
 
-# Auto-restart app-related services on error.
-# e.g., `trap auto-restart-app-related-services-on-error ERR;`
+# Stop app-related services.
 
-function auto-restart-app-related-services-on-error() {
-  set +o xtrace; # Disable.
-  restart-app-related-services;
-  stack-trace "$@";
+function stop-app-related-services() {
+  local _i _binary _service;
+
+  for ((_i=${#___app_related_services_order[@]}-1; _i >= 0; _i--)); do
+    _binary="${___app_related_services_order[$_i]}";
+    _service="${___app_related_services[$_binary]}";
+
+    if [[ "${_binary}" == 'discourse' ]]; then
+      if [[ -x /discourse/launcher ]]; then
+        /discourse/launcher stop app || true;
+      fi;
+    elif can-run "${_binary}"; then
+      service "${_service}" stop &>/dev/null || true;
+    fi;
+  done;
 };
 
 # Auto-warn user about app-related services on error.
 # e.g., `trap auto-warn-about-app-related-services-on-error ERR;`
 
 function auto-warn-about-app-related-services-on-error() {
-  set +o xtrace; # Disable; i.e., turn off comand printing.
+  set +o xtrace; # i.e., turn off command printing.
   echo '----------------------------------------------------------------------';
   echo 'WARNING: App-related services may still be in a stopped state, due to an error.';
+  stack-trace "$@";
+};
+
+# Auto-restart app-related services on error.
+# e.g., `trap auto-restart-app-related-services-on-error ERR;`
+
+function auto-restart-app-related-services-on-error() {
+  set +o xtrace; # i.e., turn off command printing.
+  restart-app-related-services;
   stack-trace "$@";
 };
