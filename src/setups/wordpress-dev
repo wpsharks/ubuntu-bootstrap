@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# When adding a new version:
+# - Update: `Vagrantfile` (add sub-domain variation).
+# - Update: `.box.Vagrantfile` (add sub-domain variation).
+# - Update: `/bootstrap/src/bash/app-related-services` (add service).
+# - Update: `/bootstrap/src/wordpress/dev/README.md` (adjust as necessary).
+# - CloudFlare DNS records should be added for all team members.
+
 if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
 
   # Install WordPress dev containers.
@@ -8,17 +15,9 @@ if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
   /bootstrap/src/wordpress/install-dev 5.5;
   /bootstrap/src/wordpress/install-dev 5.6;
   /bootstrap/src/wordpress/install-dev 7.0;
-
   # /bootstrap/src/wordpress/install-dev 7.1;
   # Unfortunately, a PHP 7.1 container is unavailable.
   # See: <https://hub.docker.com/r/chialab/php/tags/>
-  # The checklist below is complete. Just need container.
-
-  # When adding a new version, the following updates must occur.
-  # - Update `Vagrantfile` and `.box.Vagrantfile`.
-  # - Update `/bootstrap/src/wordpress/dev/README.md`.
-  # - Update `/bootstrap/src/bash/app-related-services`.
-  # CloudFlare DNS records should be added for all team members.
 
   # If this is for another user, create that user now.
 

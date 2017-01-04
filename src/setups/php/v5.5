@@ -41,11 +41,16 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
     ln --symbolic /bootstrap/src/php/.ini /etc/php/5.5/fpm/conf.d/z90.ini;
     ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php/5.5/fpm/pool.d/www.conf;
 
+    ln --symbolic /usr/sbin/php5.5-fpm /usr/sbin/php-fpm; # Alias.
+    # Note: the [Install] section is not read by Systemd in an override file.
+    # For that reason, this change must occur in the primary service file, unfortunately.
+    perl -i -0wpe 's/(\[Install\])/$1\nAlias=php-fpm.service/u' /lib/systemd/system/php5.5-fpm.service;
+
     mkdir --parents /etc/systemd/system/php5.5-fpm.service.d;
     echo '[Service]' >> /etc/systemd/system/php5.5-fpm.service.d/override.conf;
     echo 'UMask=0002' >> /etc/systemd/system/php5.5-fpm.service.d/override.conf;
-    systemctl daemon-reload; # Restart systemd after updating umask.
 
+    systemctl daemon-reload; # Restart systemd after updates above.
     systemctl enable php5.5-fpm; # Enable automatic startup.
 
     maybe-add-runit-service php5.5-fpm; # Maybe create an RUnit startup script.

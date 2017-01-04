@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# When adding a new version:
+# - Update: `Vagrantfile` (add sub-domain variation).
+# - Update: `.box.Vagrantfile` (add sub-domain variation).
+# - Update: `/bootstrap/src/setups/php/` (add installation script).
+# - Update: `/bootstrap/src/setups/config` (set default version).
+# - Update: `/bootstrap/src/docker/runit/` (add startup script).
+
 if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
 
   # Log directory.

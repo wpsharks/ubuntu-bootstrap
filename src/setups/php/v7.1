@@ -11,10 +11,8 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
     apt-get install php7.1-cli --yes; fi;
 
   if [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
-    apt-get install php7.1-fpm --yes;
-    # Reverse this so it matches w/ other PHP versions.
-    ln --symbolic /usr/sbin/php-fpm7.1 /usr/sbin/php7.1-fpm;
-  fi;
+    apt-get install php7.1-fpm --yes; fi;
+
   apt-get install php7.1-mysql --yes;
   apt-get install php7.1-curl --yes;
   apt-get install php7.1-intl --yes;
@@ -48,11 +46,20 @@ if [[ ( "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ) && "${C
     ln --symbolic /bootstrap/src/php/.ini /etc/php/7.1/fpm/conf.d/z90.ini;
     ln --symbolic /bootstrap/src/php/fpm/.conf /etc/php/7.1/fpm/pool.d/www.conf;
 
+    if [[ -f /usr/sbin/php-fpm7.1 ]]; then # This exists?
+      # PHP 7 uses an indifferent binary name for some reason.
+      ln --symbolic /usr/sbin/php-fpm7.1 /usr/sbin/php7.1-fpm; fi;
+
+    ln --symbolic /usr/sbin/php7.1-fpm /usr/sbin/php-fpm; # Alias.
+    # Note: the [Install] section is not read by Systemd in an override file.
+    # For that reason, this change must occur in the primary service file, unfortunately.
+    perl -i -0wpe 's/(\[Install\])/$1\nAlias=php-fpm.service/u' /lib/systemd/system/php7.1-fpm.service;
+
     mkdir --parents /etc/systemd/system/php7.1-fpm.service.d;
     echo '[Service]' >> /etc/systemd/system/php7.1-fpm.service.d/override.conf;
     echo 'UMask=0002' >> /etc/systemd/system/php7.1-fpm.service.d/override.conf;
-    systemctl daemon-reload; # Restart systemd after updating umask.
 
+    systemctl daemon-reload; # Restart systemd after updates above.
     systemctl enable php7.1-fpm; # Enable automatic startup.
 
     maybe-add-runit-service php7.1-fpm; # Maybe create an RUnit startup script.
