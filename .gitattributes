@@ -318,7 +318,8 @@ TODO.txt export-ignore
 README.md export-ignore
 README.mdown export-ignore
 README.markdown export-ignore
-README.txt export-ignore
+# README.txt export-ignore
+# Needed by WP themes/plugins.
 
 # CHANGELOG Files
 
