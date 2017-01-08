@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 
-# Enable startup.
+# Set the subsystem and a default umask for SFTP.
+# Note: This is generally ineffective due to most SFTP applications sending source permissions.
+# i.e., This does not enforce a specific set of permissions when files are uploaded via SFTP.
 
-systemctl enable ssh;
+perl -i -wpe 's/^(\s*)(?:#\s*)?Subsystem\s.*$/$1Subsystem sftp internal-sftp -u 0002/ui' /etc/ssh/sshd_config;
 
-# Maybe harden SSH security.
+# Set umask in PAM config also. See: <http://jas.xyz/2iUOkA2>
+# Note: This is generally ineffective due to most SFTP applications sending source permissions.
+# i.e., This does not enforce a specific set of permissions when files are uploaded via SFTP.
+
+echo 'session optional pam_umask.so umask=0002' >> /etc/pam.d/sshd;
+
+# Maybe harden SSH security in production environments.
 
 if ! is-vm && ! in-docker; then
 
-  # Disallow root & require a valid SSH key.
+  # Disallow root and require a valid SSH key instead of enabling passwords.
 
   perl -i -wpe 's/^(\s*)(?:#\s*)?PermitRootLogin\s+.*$/$1PermitRootLogin no/u' /etc/ssh/sshd_config;
   perl -i -wpe 's/^(\s*)(?:#\s*)?PasswordAuthentication\s+.*$/$1PasswordAuthentication no/u' /etc/ssh/sshd_config;
@@ -18,18 +26,20 @@ if ! is-vm && ! in-docker; then
   echo '# Allow specific groups only.' >> /etc/ssh/sshd_config;
   echo 'AllowGroups sudo ssh-access' >> /etc/ssh/sshd_config;
 
-  # Only allow SFTP access to these groups.
+  # For these groups, only allow SFTP access — nothing more.
 
   echo '# SFTP-only group restrictions.' >> /etc/ssh/sshd_config;
   echo 'Match Group sftp-only' >> /etc/ssh/sshd_config;
   echo '    AllowTCPForwarding no' >> /etc/ssh/sshd_config;
   echo '    X11Forwarding no' >> /etc/ssh/sshd_config;
-  echo '    ForceCommand internal-sftp' >> /etc/ssh/sshd_config;
+  echo '    ForceCommand internal-sftp -u 0002' >> /etc/ssh/sshd_config;
 
-  perl -i -wpe 's/^(\s*)(?:#\s*)?Subsystem\s.*$/$1Subsystem sftp internal-sftp/ui' /etc/ssh/sshd_config;
+fi; # End of security considerations in production environments.
+
+  # Enable startup.
+
+  systemctl enable ssh;
 
   # Restart service.
 
   service ssh restart;
-
-else echo 'Skipping SSH configuration & security hardening.'; fi;
