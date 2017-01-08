@@ -1,3 +1,7 @@
+## $v
+
+- Adding a default umask for SFTP interactions.
+
 ## v170104.56167
 
 - Making PHP versions easier to maintain.
