@@ -1,3 +1,9 @@
+## $v
+
+- Enhancing unattended upgrades configuration.
+- Automatically reboot after unattended upgrades when/if necessary.
+- Automatically purge unused dependencies after unattended upgrades; e.g., automatically remove unused kernels from the past to avoid these building up over time and resulting in 'no space left on device' as a result — which has been a problem on Ubuntu boxes for years now.
+
 ## v170108.5188
 
 - Adding a default umask for SFTP interactions.
