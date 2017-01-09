@@ -1,3 +1,7 @@
+## $v
+
+- Enhancing Nginx + PHP configuration. Now allowing virtual `.php` files.
+
 ## v170109.18307
 
 - Enhancing unattended upgrades configuration.
