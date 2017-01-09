@@ -1,4 +1,4 @@
-## v170109.7757
+## $v
 
 - Enhancing unattended upgrades configuration.
 - Automatically reboot after unattended upgrades when/if necessary.

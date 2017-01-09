@@ -28,12 +28,10 @@ if [[ "${CFG_INSTALL_UNATTENDED_UPGRADES}" == 1 ]]; then
 
   apt-get install unattended-upgrades --yes;
 
-  echo 'Unattended-Upgrade::Automatic-Reboot "true";' >> /etc/apt/apt.conf.d/50unattended-upgrades;
-  echo 'Unattended-Upgrade::Remove-Unused-Dependencies "true";' >> /etc/apt/apt.conf.d/50unattended-upgrades;
+  mv /etc/apt/apt.conf.d/10periodic /tmp/apt-10periodic~;
+  mv /etc/apt/apt.conf.d/50unattended-upgrades /tmp/apt-50unattended-upgrades~;
 
-  echo 'APT::Periodic::Update-Package-Lists "1";' > /etc/apt/apt.conf.d/10periodic;
-  echo 'APT::Periodic::Download-Upgradeable-Packages "1";' >> /etc/apt/apt.conf.d/10periodic;
-  echo 'APT::Periodic::AutocleanInterval "7";' >> /etc/apt/apt.conf.d/10periodic;
-  echo 'APT::Periodic::Unattended-Upgrade "1";' >> /etc/apt/apt.conf.d/10periodic;
+  ln --symbolic /bootstrap/src/apt/periodic /etc/apt/apt.conf.d/10periodic;
+  ln --symbolic /bootstrap/src/apt/upgrades /etc/apt/apt.conf.d/50unattended-upgrades;
 
 else echo 'Skipping installation of unattended-upgrades package.'; fi;
