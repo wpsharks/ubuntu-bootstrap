@@ -1,3 +1,7 @@
+## $v
+
+- Bug fix. Incorrectly missing `php-fpm` is resource limit adjustments after recent changes. Fixed in this release.
+
 ## v170109.33193
 
 - Enhancing Nginx + PHP configuration. Now allowing virtual `.php` files.
