@@ -1,4 +1,4 @@
-## v170114.9955
+## $v
 
 - Nginx adjustments that allow for larger PHP request headers sent by WP plugins; e.g., Jetpack.
 
