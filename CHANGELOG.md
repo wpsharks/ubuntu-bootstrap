@@ -1,3 +1,7 @@
+## v170114.9955
+
+- Nginx adjustments that allow for larger PHP request headers sent by WP plugins; e.g., Jetpack.
+
 ## v170111.14775
 
 - Bug fix. Incorrectly missing `php-fpm` is resource limit adjustments after recent changes. Fixed in this release.
