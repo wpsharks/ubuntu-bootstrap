@@ -8,7 +8,7 @@ if [[ "${CFG_INSTALL_DOCKER}" == 1 ]]; then
   apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main' --yes;
   apt-get update; # Update APT & install now.
 
-  apt-get install linux-image-extra-"$(uname -r)" --yes;
+  apt-get install linux-image-extra-"$(uname -r)" linux-image-extra-virtual --yes;
   apt-get install docker-engine --yes;
 
   # Configure Docker.
