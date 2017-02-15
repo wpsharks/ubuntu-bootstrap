@@ -1,5 +1,6 @@
 ## $v
 
+- Removing unnecessary memcached settings from the `php.ini` file. This comes following confirmation that PHP v7.1 + memcached + igbinary now work together without issue, whereas in previous releases of PHP, the igbinary extension did not work in all cases; e.g., memcached + igbinary was totally broken in PHP 7.0. No longer an issue when you install PHP 7.1.
 - Enhancing security. Deny direct access to `.php` files inside an `inc` directory variation also.
 
 ## v170114.11523
