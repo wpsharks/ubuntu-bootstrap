@@ -13,7 +13,9 @@ if (version_compare(PHP_VERSION, '7.0.4', '>=')) {
     @ini_set('zend.assertions', '1');
     ini_set('assert.exception', 'yes');
 }
+define('WP_POST_REVISIONS', 50);
 define('WP_ALLOW_MULTISITE', true);
+define('ALLOW_UNFILTERED_UPLOADS', true);
 
 define('DB_NAME', '%%CFG_MYSQL_DB_NAME%%');
 define('DB_USER', '%%CFG_MYSQL_DB_USERNAME%%');
