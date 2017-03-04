@@ -95,4 +95,10 @@ Icon?
 
 .vagrant/
 
+# NPM-specific exclusions.
+
+*.ts
+!*.d.ts
+dist/
+
 # Custom code reinserted here via [custom] marker. Add your <custom></custom> comment markers here please.

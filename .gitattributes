@@ -48,9 +48,12 @@
 
 *.css text
 *.js text
-*.css.map text
-*.js.map text
+*.ts text
+*.jsx text
+*.tsx text
 *.json text
+*.js.map text
+*.css.map text
 
 # Applescript
 
@@ -196,10 +199,9 @@
 *~ export-ignore
 *.bak export-ignore
 
-# Vendor
-# NOT excluded here.
+# TypeScript
 
-# vendor/ export-ignore
+typings/ export-ignore
 
 # Node
 
@@ -433,6 +435,13 @@ CHANGELOG.txt﻿⁠⁠⁠⁠ export-ignore
 # IDE Helpers
 
 _ide.php export-ignore
+
+# TypeScript Files
+
+*.ts export-ignore
+*.d.ts -export-ignore
+typings.json export-ignore
+tsconfig.json export-ignore
 
 # Composer Files
 
