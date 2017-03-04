@@ -60,7 +60,7 @@ $ vagrant package --output ~/vms/my-boxes/my.box;
 ```bash
 $ cd ~/vms/my.vm
 $ vagrant box add [YOU]/[DESCRIPTIVE SLUG] ~/vms/my-boxes/my.box;
-# e.g., vagrant box add jaswsinc/ubuntu-xenial64-wub-nginx ~/vms/my-boxes/my.box;
+# e.g., vagrant box add jaswrks/ubuntu-xenial64-wub-nginx ~/vms/my-boxes/my.box;
 ```
 
 ## Do a Little Housekeeping
@@ -103,7 +103,7 @@ To the name of your base Box:
 
 ```ruby
 config.vm.box = '[YOU]/[DESCRIPTIVE SLUG]';
-# e.g., config.vm.box = 'jaswsinc/ubuntu-xenial64-wub-nginx';
+# e.g., config.vm.box = 'jaswrks/ubuntu-xenial64-wub-nginx';
 ```
 
 _**Tip:** At this point, it would be a good idea to start a new personal GitHub repository with your `Vagrantfile` being the only file for now, that's fine. Just save it somewhere so you can use it again later as a faster starting point. Or you can share your repo with others._
@@ -116,7 +116,7 @@ $ git init
 $ git add --all
 $ git commit -m 'Initialzing VM repo.'
 $ git create [YOU]/[DESCRIPTIVE SLUG]
-# e.g., git create jaswsinc/ubuntu-xenial64-wub-nginx
+# e.g., git create jaswrks/ubuntu-xenial64-wub-nginx
 ```
 
 ### Vagrant Up
@@ -229,7 +229,7 @@ $ vagrant package --output ~/vms/my-boxes/my.box;
 ```bash
 $ cd ~/vms/my.vm
 $ vagrant box add [YOU]/[DESCRIPTIVE SLUG] ~/vms/my-boxes/my.box;
-# e.g., vagrant box add jaswsinc/ubuntu-xenial64-wub-nginx ~/vms/my-boxes/my.box;
+# e.g., vagrant box add jaswrks/ubuntu-xenial64-wub-nginx ~/vms/my-boxes/my.box;
 ```
 
 ## Do a Little Housekeeping
@@ -272,7 +272,7 @@ To the name of your base Box:
 
 ```ruby
 config.vm.box = '[YOU]/[DESCRIPTIVE SLUG]';
-# e.g., config.vm.box = 'jaswsinc/ubuntu-xenial64-wub-nginx';
+# e.g., config.vm.box = 'jaswrks/ubuntu-xenial64-wub-nginx';
 ```
 
 _**Tip:** At this point, it would be a good idea to start a new personal GitHub repository with your `Vagrantfile` being the only file for now, that's fine. Just save it somewhere so you can use it again later as a faster starting point. Or you can share your repo with others._
@@ -285,7 +285,7 @@ $ git init
 $ git add --all
 $ git commit -m 'Initialzing VM repo.'
 $ git create [YOU]/[DESCRIPTIVE SLUG]
-# e.g., git create jaswsinc/ubuntu-xenial64-wub-nginx
+# e.g., git create jaswrks/ubuntu-xenial64-wub-nginx
 ```
 
 ### Vagrant Up

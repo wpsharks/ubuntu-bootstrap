@@ -76,7 +76,7 @@ If you'd like to always see a green SSL status for your local test sites (i.e., 
 
 Any SSL certificates created by the Ubuntu Bootstrap will use that root CA certificate. Trusting the root CA (it's fake, and only for the Ubuntu Bootstrap project), will green-light all of your local `.vm` domains when accessing them over `https://`. On a Mac, you can simply download, then drag n' drop the certificate file onto your Keychain.app. Open up the settings for that certification in Keychain.app and choose "Always Trust" at the top. Done! :-)
 
-**↑ UPDATE (WARNING):** If you're on a Mac, there is a nasty bug in the Keychain application that can lock your system when attempting to 'Always Trust'. Until that bug is fixed in the Mac OS, please see the command-line alternatives demonstrated [here](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224305268) by @jaswsinc and @raamdev. I suggest using [the example given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504).
+**↑ UPDATE (WARNING):** If you're on a Mac, there is a nasty bug in the Keychain application that can lock your system when attempting to 'Always Trust'. Until that bug is fixed in the Mac OS, please see the command-line alternatives demonstrated [here](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224305268) by @jaswrks and @raamdev. I suggest using [the example given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504).
 
 #### Step 7: Add Files to: `~/vms/my.vm/src/app/src/`
 
@@ -147,7 +147,7 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 #### Creating a Second VM w/ a Different Domain Name
 
 ```bash
-$ git clone https://github.com/jaswsinc/vagrant-ubuntu-lemp my-second.vm;
+$ git clone https://github.com/jaswrks/vagrant-ubuntu-lemp my-second.vm;
 $ cd my-second.vm;
 $ vagrant up;
 $ vagrant ssh;

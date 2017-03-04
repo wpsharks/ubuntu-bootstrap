@@ -203,7 +203,7 @@ _Additional detailed changes listed below..._
 - **New Vagrant Box:** (Xenial Box by WebSharks):
 
   ```bash
-  $ vagrant box add websharks/ubuntu-xenial64 # by @jaswsinc
+  $ vagrant box add websharks/ubuntu-xenial64 # by @jaswrks
   ```
 
 - Latest Vagrant update requires a reinstall of all plugins following these instructions:

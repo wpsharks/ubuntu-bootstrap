@@ -322,7 +322,7 @@ $ sudo create-admin --user=someone --pass=xxxxxxxxxxxxxxx
 $ sudo setup-admin --user=someone --name='Someone Special' --email=someone@example.com --ssh-keys=/tmp/path/to/authorized_keys;
 
 # TIP: you can omit --ssh-keys=... if the username is:
-#   `jaswsinc`, `raamdev`, `kristineds`, `renzms`
+#   `jaswrks`, `raamdev`, `kristineds`, `renzms`
 #   SSH keys for these users exist on the server already.
 ```
 
@@ -335,7 +335,7 @@ $ sudo create-user --user=someone --pass=xxxxxxxxxxxxxxx
 $ sudo setup-user --user=someone --name='Someone Special' --email=someone@example.com --ssh-keys=/tmp/path/to/authorized_keys;
 
 # TIP: you can omit --ssh-keys=... if the username is:
-#   `jaswsinc`, `raamdev`, `kristineds`, `renzms`
+#   `jaswrks`, `raamdev`, `kristineds`, `renzms`
 #   SSH keys for these users exist on the server already.
 ```
 

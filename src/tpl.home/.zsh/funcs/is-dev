@@ -5,7 +5,7 @@
 function is-dev() {
   if ! is-vm && \
     [[ "${CFG_HOST}" =~ ^dev\. || \
-       "${CFG_HOST}" == 'jaswsinc.com' || \
+       "${CFG_HOST}" == 'jaswrks.com' || \
        "${CFG_HOST}" =~ ^.+?\.wpsharks\.net$ || \
        "${CFG_HOST}" =~ ^.+?\.websharks\-inc\.net$ \
     ]]; then
