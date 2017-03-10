@@ -1,4 +1,4 @@
-## $v
+## v170310.46373
 
 - Upgrading from `websharks/ubuntu-xenial` Box, to the official `ubuntu/xenial` Box, now that one exists.
 - Removing unnecessary memcached settings from the `php.ini` file. This comes following confirmation that PHP v7.1 + memcached + igbinary now work together without issue, whereas in previous releases of PHP, the igbinary extension did not work in all cases; e.g., memcached + igbinary was totally broken in PHP 7.0. No longer an issue when you install PHP 7.1.
