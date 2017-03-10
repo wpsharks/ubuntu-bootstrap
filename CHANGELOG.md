@@ -2,6 +2,14 @@
 
 - Removing unnecessary memcached settings from the `php.ini` file. This comes following confirmation that PHP v7.1 + memcached + igbinary now work together without issue, whereas in previous releases of PHP, the igbinary extension did not work in all cases; e.g., memcached + igbinary was totally broken in PHP 7.0. No longer an issue when you install PHP 7.1.
 - Enhancing security. Deny direct access to `.php` files inside an `inc` directory variation also.
+- Automatic email notifications whenever unattended upgrades are enabled and occur.
+- Adding PHP v7.1 to the list of available WordPress dev containers.
+- Improving permissions update following a Git remote push.
+- Improving permissions update following a Bootstrap upgrade.
+- Fixing a bug in the Nginx configuration that had the potential to allow direct access to an `index.php` file located in the `/---tools` directory.
+- Reversed index precedence in Apache and Nginx configurations. Instead of `index.php index.html`, now `index.html index.php`.
+- Placing a new binary in `$PATH` called `app-related-services`, which accepts arguments: `start`, `restart` and `stop`. This allows for all app-related services to be started/restarted/stopped, all at once, which saves time.
+- Unattended automatic upgrades, if enabled, are now capable of automatically rebooting when necessary to apply the updates.
 
 ## v170114.11523
 

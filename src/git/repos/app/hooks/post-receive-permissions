@@ -12,10 +12,19 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 # Trap errors & warn the user if an error occurs.
 
-find /repos/app.git -type d -exec chmod 2775 {} \;
-find /repos/app.git -type f -exec chmod 664 {} \;
+if [[ -d /repos/app.git ]]; then
+  find /repos/app.git -type d -exec chmod 2775 {} \;
+  find /repos/app.git -type f -exec chmod 664 {} \;
+fi;
 
 if [[ -d /app/src/vendor ]]; then
   find /app/src/vendor -type d -exec chmod 2775 {} \;
   find /app/src/vendor -type f -exec chmod 664 {} \;
+fi;
+
+if [[ -d /tmp/.websharks ]]; then
+  chmod 777 /tmp/.websharks;
+fi;
+if [[ -d /tmp/.websharks/phings ]]; then
+  chmod 777 /tmp/.websharks/phings;
 fi;

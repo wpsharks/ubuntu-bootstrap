@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# App-related services.
+
+if [[ "${1}" == start ]]; then
+  echo 'Starting app-related services...';
+  start-app-related-services; echo 'Done.';
+
+elif [[ "${1}" == restart ]]; then
+  echo 'Restarting app-related services...';
+  restart-app-related-services; echo 'Done.';
+
+elif [[ "${1}" == stop ]]; then
+  echo 'Stopping app-related services...';
+  stop-app-related-services; echo 'Done.';
+
+else # Feedback for the end user.
+  echo 'Expecting `start|restart|stop`.';
+  exit 1; # Failure status.
+fi;

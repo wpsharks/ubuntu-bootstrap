@@ -12,4 +12,11 @@ if can-run php && can-run phing && [[ -d /usr/local/src/websharks-core ]]; then
   git pull; # Merge latest changes.
   git submodule update --recursive --force --init;
   phing post-receive-build;
+
+  if [[ -d /tmp/.websharks ]]; then
+    chmod 777 /tmp/.websharks;
+  fi;
+  if [[ -d /tmp/.websharks/phings ]]; then
+    chmod 777 /tmp/.websharks/phings;
+  fi;
 fi;

@@ -34,13 +34,28 @@ ___app_related_services[php-fpm]=php-fpm; ___app_related_services_order+=('php-f
 ___app_related_services[nginx]=nginx; ___app_related_services_order+=('nginx');
 ___app_related_services[apache2]=apache2; ___app_related_services_order+=('apache2');
 
-# Start app-related services (alias of `restart-app-related-services`).
+# Start app-related services.
 
 function start-app-related-services() {
-  restart-app-related-services;
+  local _i _binary _service;
+
+  for ((_i=0; _i < ${#___app_related_services_order[@]}; _i++)); do
+    _binary="${___app_related_services_order[$_i]}";
+    _service="${___app_related_services[$_binary]}";
+
+    if [[ "${_binary}" == 'discourse' ]]; then
+      if [[ -x /discourse/launcher ]]; then
+        echo 'Starting '"${_binary}"':/discourse/launcher...';
+        /discourse/launcher start app;
+      fi;
+    elif can-run "${_binary}"; then
+      echo 'Starting '"${_binary}"':'"${_service}"'...';
+      service "${_service}" start &>/dev/null;
+    fi;
+  done;
 };
 
-# Start (or restart) app-related services.
+# Restart app-related services.
 
 function restart-app-related-services() {
   local _i _binary _service;
@@ -51,9 +66,11 @@ function restart-app-related-services() {
 
     if [[ "${_binary}" == 'discourse' ]]; then
       if [[ -x /discourse/launcher ]]; then
+        echo 'Restarting '"${_binary}"':/discourse/launcher...';
         /discourse/launcher restart app;
       fi;
     elif can-run "${_binary}"; then
+      echo 'Restarting '"${_binary}"':'"${_service}"'...';
       service "${_service}" restart &>/dev/null;
     fi;
   done;
@@ -70,9 +87,11 @@ function stop-app-related-services() {
 
     if [[ "${_binary}" == 'discourse' ]]; then
       if [[ -x /discourse/launcher ]]; then
+        echo 'Stopping '"${_binary}"':/discourse/launcher...';
         /discourse/launcher stop app || true;
       fi;
     elif can-run "${_binary}"; then
+      echo 'Stopping '"${_binary}"':'"${_service}"'...';
       service "${_service}" stop &>/dev/null || true;
     fi;
   done;
