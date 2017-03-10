@@ -11,6 +11,7 @@
 - Reversed index precedence in Apache and Nginx configurations. Instead of `index.php index.html`, now `index.html index.php`.
 - Placing a new binary in `$PATH` called `app-related-services`, which accepts arguments: `start`, `restart` and `stop`. This allows for all app-related services to be started/restarted/stopped, all at once, which saves time.
 - Unattended automatic upgrades, if enabled, are now capable of automatically rebooting when necessary to apply the updates.
+- `CFG_INSTALL_UNATTENDED_UPGRADES` now defaults to `0` (off) when installing from a VM like Vagrant.
 
 ## v170114.11523
 
