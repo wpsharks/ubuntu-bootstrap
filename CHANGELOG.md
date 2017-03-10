@@ -1,5 +1,6 @@
 ## $v
 
+- Upgrading from `websharks/ubuntu-xenial` Box, to the official `ubuntu/xenial` Box, now that one exists.
 - Removing unnecessary memcached settings from the `php.ini` file. This comes following confirmation that PHP v7.1 + memcached + igbinary now work together without issue, whereas in previous releases of PHP, the igbinary extension did not work in all cases; e.g., memcached + igbinary was totally broken in PHP 7.0. No longer an issue when you install PHP 7.1.
 - Enhancing security. Deny direct access to `.php` files inside an `inc` directory variation also.
 - Automatic email notifications whenever unattended upgrades are enabled and occur.
@@ -208,10 +209,10 @@ _Additional detailed changes listed below..._
   $ brew cask install vagrant # upgrades you to latest.
   ```
 
-- **New Vagrant Box:** (Xenial Box by WebSharks):
+- **New Vagrant Box:** (Ubuntu 16.04 Xenial):
 
   ```bash
-  $ vagrant box add websharks/ubuntu-xenial64 # by @jaswrks
+  $ vagrant box add ubuntu/xenial64
   ```
 
 - Latest Vagrant update requires a reinstall of all plugins following these instructions:

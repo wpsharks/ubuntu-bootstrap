@@ -6,7 +6,7 @@ Vagrant.configure(2) do |config|
 
   # Required box configuration.
 
-  config.vm.box = 'websharks/ubuntu-xenial64';
+  config.vm.box = 'ubuntu/xenial64';
 
   # Configure hostname for this VM.
 

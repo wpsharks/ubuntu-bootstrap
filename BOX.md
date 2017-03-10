@@ -96,7 +96,7 @@ $ vi Vagrantfile;
 Change this line:
 
 ```ruby
-config.vm.box = 'websharks/ubuntu-xenial64';
+config.vm.box = 'ubuntu/xenial64';
 ```
 
 To the name of your base Box:
@@ -265,7 +265,7 @@ $ vi Vagrantfile;
 Change this line:
 
 ```ruby
-config.vm.box = 'websharks/ubuntu-xenial64';
+config.vm.box = 'ubuntu/xenial64';
 ```
 
 To the name of your base Box:
