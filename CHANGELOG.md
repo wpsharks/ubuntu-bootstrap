@@ -1,4 +1,4 @@
-## $v
+## v170322.40769
 
 - Adding optional `CFG_AWS_ACCESS_KEY_ID` configuration variable.
 - Adding optional `CFG_AWS_SECRET_ACCESS_KEY` configuration variable.
