@@ -464,10 +464,23 @@ tsconfig.json export-ignore
 *.scss export-ignore
 *.css.map export-ignore
 
-# Bourbon (in WS projects)
+# Bourbon-Related
 
 /src/client-s/**/bourbon/ export-ignore
-/src/vendor/websharks/*/src/client-s/**/bourbon/ export-ignore
+/src/vendor/*/*/src/client-s/**/bourbon/ export-ignore
+
+# Semantic UI-Related
+
+/semantic.json export-ignore
+/src/vendor/*/*/semantic.json export-ignore
+
+/src/client-s/semantic/src/** export-ignore
+/src/client-s/semantic/tasks/** export-ignore
+/src/client-s/semantic/gulpfile.js export-ignore
+
+/src/vendor/*/*/src/client-s/semantic/src/** export-ignore
+/src/vendor/*/*/src/client-s/semantic/tasks/** export-ignore
+/src/vendor/*/*/src/client-s/semantic/gulpfile.js export-ignore
 
 # Box / Phar
 

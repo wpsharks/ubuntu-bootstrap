@@ -1,3 +1,11 @@
+## $v
+
+- Adding optional `CFG_AWS_ACCESS_KEY_ID` configuration variable.
+- Adding optional `CFG_AWS_SECRET_ACCESS_KEY` configuration variable.
+- Adding new utility `sharefile-s3`, which depends on the new configuration variables.
+- Enhancing existing `sharefile` utility. General code cleanup and mild optimization.
+- Moving `export-data` and `import-data` into default `$PATH` for easier access.
+
 ## v170310.46373
 
 - Upgrading from `websharks/ubuntu-xenial` Box, to the official `ubuntu/xenial` Box, now that one exists.

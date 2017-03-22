@@ -31,6 +31,9 @@ CFG_ADMIN_STATIC_IP_ADDRESS=''; # See `fill-clean-sanitize-cfgs()` below.
 CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
 ! is-vm && [[ -f /root/.ssh/authorized_keys ]] && CFG_ADMIN_AUTHORIZED_SSH_KEYS='/root/.ssh/authorized_keys';
 
+CFG_AWS_ACCESS_KEY_ID='';
+CFG_AWS_SECRET_ACCESS_KEY='';
+
 CFG_TOOLS_USERNAME='%%CFG_ADMIN_USERNAME%%';
 CFG_TOOLS_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
 
@@ -619,6 +622,9 @@ function cfgs-wizard() {
             'CFG_ADMIN_PREFERRED_SHELL' \
             'CFG_ADMIN_STATIC_IP_ADDRESS' \
             'CFG_ADMIN_AUTHORIZED_SSH_KEYS' \
+            \
+            'CFG_AWS_ACCESS_KEY_ID' \
+            'CFG_AWS_SECRET_ACCESS_KEY' \
             \
             'CFG_TOOLS_USERNAME' \
             'CFG_TOOLS_PASSWORD' \

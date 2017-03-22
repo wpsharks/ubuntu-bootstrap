@@ -276,6 +276,11 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
+- `--CFG_AWS_ACCESS_KEY_ID=xxxxxxx...` AWS access key ID. Optional, for backups/transfers.
+- `--CFG_AWS_SECRET_ACCESS_KEY=xxxxxxx...` AWS secret access key.
+
+---
+
 - `--CFG_TOOLS_USERNAME=admin` Administrative username.
 - `--CFG_TOOLS_PASSWORD=admin` Administrative password.
 

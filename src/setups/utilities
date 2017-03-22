@@ -29,3 +29,4 @@ apt-get install tree --yes;
 apt-get install ncdu --yes;
 apt-get install xclip --yes;
 apt-get install colordiff --yes;
+apt-get install uuid-runtime --yes;

@@ -57,6 +57,8 @@ tar \
   \
   ${data_to_export};
 
-sharefile /tmp/exported-data.tar.gz symmetric;
+if [[ -n "${CFG_AWS_ACCESS_KEY_ID}" ]]; then
+  sharefile-s3 /tmp/exported-data.tar.gz symmetric;
+else sharefile /tmp/exported-data.tar.gz symmetric; fi;
 
 rm --force /tmp/exported-data.*; # Cleanup temporary files.

@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Intialize.
+
+file='';
+dir='';
+basename='';
+basename_no_ext='';
+recipient='';
+
+# Parse options.
+
+short_options='f:r:';
+long_options='file:,recipient:';
+options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
+
+eval set -- "${options}"; while true; do
+	 case "${1}" in
+			-f|--file)
+				file="${2}";
+				shift 2;
+				;;
+			-r|--recipient)
+				recipient="${2}";
+				shift 2;
+				;;
+			--) shift 1; break;
+				;;
+			*) echo 'Internal error.'; exit 1;
+				;;
+	 esac;
+done;
+
+if [[ -z "${file}" && -n "${1:-}" ]]; then
+	file="${1}"; fi;
+
+if [[ -z "${recipient}" && -n "${2:-}" ]]; then
+	recipient="${2}"; fi;
+
+dir="${file%/*}";
+basename="${file##*/}";
+basename_no_ext="${basename%.*}";
+
+# Validate options.
+
+if [[ -z "${file}" || ! -f "${file}" || -z "${dir}" || -z "${basename}" || -z "${basename_no_ext}" ]]; then
+	echo 'Expecting a parseable input file.';
+	exit 1; # Error status.
+fi;
+
+# S3 config vars.
+
+s3_bucket=websharks;
+s3_bucket_path=/cloudfront/transfers;
+
+s3_bucket_url=https://cdn.websharks.org;
+s3_bucket_url_path=/transfers;
+
+s3_key="${CFG_AWS_ACCESS_KEY_ID}";
+s3_secret="${CFG_AWS_SECRET_ACCESS_KEY}";
+
+# Make sure directory exists.
+
+mkdir --parents /tmp/sharefile-s3;
+
+# Upload for sharing via Amazon S3.
+
+if [[ "${recipient}" == symmetric ]]; then
+
+  echo 'Uploading encrypted file w/ symmetric key.';
+
+	gpg_file=/tmp/sharefile-s3/"$(uuidgen)"-"${basename}".gpg;
+	gpg_basename="${gpg_file##*/}"; # Use hashed file name.
+
+	gpg2 --armor --symmetric --cipher-algo AES256 --output "${gpg_file}" "${file}";
+
+	s3_date="$(date --rfc-2822)";
+	s3_content_type='application/octet-stream';
+	s3_path="${s3_bucket_path}/${gpg_basename}";
+	s3_url="${s3_bucket_url}${s3_bucket_url_path}/${gpg_basename}";
+	s3_string_to_sign="PUT\n\n${s3_content_type}\n${s3_date}\n/${s3_bucket}${s3_path}";
+	s3_signature="$(echo -en "${s3_string_to_sign}" | openssl sha1 -hmac "${s3_secret}" -binary | base64)";
+
+	response="$( \
+		curl --request PUT \
+			--upload-file "${gpg_file}" \
+			--header "date: ${s3_date}" \
+			--header "content-type: ${s3_content_type}" \
+	  	--header "host: ${s3_bucket}.s3.amazonaws.com" \
+	  	--header "authorization: AWS ${s3_key}:${s3_signature}" \
+	  	"https://${s3_bucket}.s3.amazonaws.com${s3_path}" \
+	)";
+	rm "${gpg_file}"; # Cleanup `.gpg` file.
+
+  echo -n "${s3_url}" | pbcopy; echo "${s3_url}";
+  echo 'Copied to clipboard; expires in 14 days.';
+
+# Upload for sharing via Amazon S3.
+
+elif [[ -n "${recipient}" ]]; then
+
+	echo 'Uploading encrypted file for: '"${recipient}";
+
+	gpg_file=/tmp/sharefile-s3/"$(uuidgen)"-"${basename}".gpg;
+	gpg_basename="${gpg_file##*/}"; # Use hashed file name.
+
+	keybase pgp encrypt --infile "${file}" --outfile "${gpg_file}" "${recipient}";
+
+	s3_date="$(date --rfc-2822)";
+	s3_content_type='application/octet-stream';
+	s3_path="${s3_bucket_path}/${gpg_basename}";
+	s3_url="${s3_bucket_url}${s3_bucket_url_path}/${gpg_basename}";
+	s3_string_to_sign="PUT\n\n${s3_content_type}\n${s3_date}\n/${s3_bucket}${s3_path}";
+	s3_signature="$(echo -en "${s3_string_to_sign}" | openssl sha1 -hmac "${s3_secret}" -binary | base64)";
+
+	response="$( \
+		curl --request PUT \
+			--upload-file "${gpg_file}" \
+			--header "date: ${s3_date}" \
+			--header "content-type: ${s3_content_type}" \
+	  	--header "host: ${s3_bucket}.s3.amazonaws.com" \
+	  	--header "authorization: AWS ${s3_key}:${s3_signature}" \
+	  	"https://${s3_bucket}.s3.amazonaws.com${s3_path}" \
+	)";
+	rm "${gpg_file}"; # Cleanup `.gpg` file.
+
+	echo -n "${s3_url}" | pbcopy; echo "${s3_url}";
+  echo 'Copied to clipboard; expires in 14 days.';
+
+else # Unencrypted (default behavior w/ no recipient).
+
+  echo 'Uploading file for public sharing.';
+
+	une_basename="$(uuidgen)"-"${basename}"; # Use hashed file name.
+
+	s3_date="$(date --rfc-2822)";
+	s3_content_type='application/octet-stream';
+	s3_path="${s3_bucket_path}/${une_basename}";
+	s3_url="${s3_bucket_url}${s3_bucket_url_path}/${une_basename}";
+	s3_string_to_sign="PUT\n\n${s3_content_type}\n${s3_date}\n/${s3_bucket}${s3_path}";
+	s3_signature="$(echo -en "${s3_string_to_sign}" | openssl sha1 -hmac "${s3_secret}" -binary | base64)";
+
+	response="$( \
+		curl --request PUT \
+			--upload-file "${file}" \
+			--header "date: ${s3_date}" \
+			--header "content-type: ${s3_content_type}" \
+	  	--header "host: ${s3_bucket}.s3.amazonaws.com" \
+	  	--header "authorization: AWS ${s3_key}:${s3_signature}" \
+	  	"https://${s3_bucket}.s3.amazonaws.com${s3_path}" \
+	)";
+	echo -n "${s3_url}" | pbcopy; echo "${s3_url}";
+  echo 'Copied to clipboard; expires in 14 days.';
+fi;
