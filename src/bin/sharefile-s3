@@ -97,8 +97,7 @@ if [[ "${recipient}" == symmetric ]]; then
 	)";
 	rm "${gpg_file}"; # Cleanup `.gpg` file.
 
-  echo -n "${s3_url}" | pbcopy; echo "${s3_url}";
-  echo 'Copied to clipboard; expires in 14 days.';
+  echo "${s3_url}"; echo 'Link expires in 14 days.';
 
 # Upload for sharing via Amazon S3.
 
@@ -129,8 +128,7 @@ elif [[ -n "${recipient}" ]]; then
 	)";
 	rm "${gpg_file}"; # Cleanup `.gpg` file.
 
-	echo -n "${s3_url}" | pbcopy; echo "${s3_url}";
-  echo 'Copied to clipboard; expires in 14 days.';
+	echo "${s3_url}"; echo 'Link expires in 14 days.';
 
 else # Unencrypted (default behavior w/ no recipient).
 
@@ -154,6 +152,5 @@ else # Unencrypted (default behavior w/ no recipient).
 	  	--header "authorization: AWS ${s3_key}:${s3_signature}" \
 	  	"https://${s3_bucket}.s3.amazonaws.com${s3_path}" \
 	)";
-	echo -n "${s3_url}" | pbcopy; echo "${s3_url}";
-  echo 'Copied to clipboard; expires in 14 days.';
+	echo "${s3_url}"; echo 'Link expires in 14 days.';
 fi;

@@ -71,8 +71,7 @@ if [[ "${recipient}" == symmetric ]]; then
 
   rm "${gpg_file}"; # Cleanup `.gpg` file.
 
-  echo -n "${link}" | pbcopy; echo "${link}";
-  echo 'Copied to clipboard; expires in 14 days.';
+  echo "${link}"; echo 'Link expires in 14 days.';
 
 # Upload for sharing via transfer.sh.
 
@@ -88,8 +87,7 @@ elif [[ -n "${recipient}" ]]; then
 
   rm "${gpg_file}"; # Cleanup `.gpg` file.
 
-  echo -n "${link}" | pbcopy; echo "${link}";
-  echo 'Copied to clipboard; expires in 14 days.';
+  echo "${link}"; echo 'Link expires in 14 days.';
 
 else # Unencrypted (default behavior w/ no recipient).
 
@@ -98,6 +96,5 @@ else # Unencrypted (default behavior w/ no recipient).
 	une_basename="$(uuidgen)"-"${basename}"; # Use hashed file name.
   link="$(curl --request PUT --upload-file "${file}" https://transfer.sh/"${une_basename}")";
 
-  echo -n "${link}" | pbcopy; echo "${link}";
-  echo 'Copied to clipboard; expires in 14 days.';
+  echo "${link}"; echo 'Link expires in 14 days.';
 fi;

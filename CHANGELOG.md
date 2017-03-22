@@ -1,3 +1,7 @@
+## $v
+
+- Removing `pbcopy` and `pbpaste` utilities, as these generally do not work without X11 forwarding and are otherwise problematic over SSH.
+
 ## v170322.40769
 
 - Adding optional `CFG_AWS_ACCESS_KEY_ID` configuration variable.

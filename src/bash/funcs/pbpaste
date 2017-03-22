@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Paste from clipboard; OS X style.
-
-function pbpaste() {
-  xclip -selection clipboard -out "${@}";
-};
