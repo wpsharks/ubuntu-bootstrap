@@ -168,6 +168,7 @@ https://php54-%%CFG_HOST%%/---tools/info.php
 https://php55-%%CFG_HOST%%/---tools/info.php
 https://php56-%%CFG_HOST%%/---tools/info.php
 https://php70-%%CFG_HOST%%/---tools/info.php
+https://php71-%%CFG_HOST%%/---tools/info.php
 
 _**Warning:** PHP info is password protected because your server has environment variables that contain sensitive information. PHP displays them via Superglobals when you run `phpinfo()`. So please be advised that you should only use these PHP info pages that are protected; i.e., don't create your own PHP info pages and make them public, because PHP info pages reveal private details._
 
@@ -246,7 +247,7 @@ XDebug is already installed and configured. However, since this is a live site t
 - Restart the PHP process manager.
 
   ```bash
-  $ sudo service php7.1-fpm restart
+  $ sudo service php-fpm restart
   ```
 
 ### Dev Containers: e.g., `php5.4-%%CFG_HOST%%`
