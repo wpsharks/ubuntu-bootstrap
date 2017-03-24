@@ -89,7 +89,7 @@ Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%` (same as above)
   - In `WP_DEBUG` mode.
 
 - <https://php71-%%CFG_HOST%%>
-  - Database name: `%%CFG_MYSQL_DB_NAME%%_php70`
+  - Database name: `%%CFG_MYSQL_DB_NAME%%_php71`
   - Apache doc root: `/app-dev/php7.1/src`
   - Choice of `http://` or `https://`
   - In `WP_DEBUG` mode.
