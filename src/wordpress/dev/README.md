@@ -20,12 +20,10 @@ _If using FileZilla, you'll need to import your private SSH key. Your public SSH
 
 _When you log in via SFTP you'll arrive at your home directory on the server. To edit WordPress installation files, navigate to `/app/src` (document root)._
 
-_**Tip:** Mosh is installed on this server as well. So if you'd rather use Mosh instead of SSH, you can. Ports `60000:61000` are open for UDP, but you MUST connect from your floating IP through the VPN._
+_**Tip:** Mosh is installed on this server as well. So if you'd rather use Mosh instead of SSH, you can. Ports `60000:61000` are open for UDP._
 
 ```bash
 $ mosh %%CFG_WORDPRESS_DEV_USERNAME%%@ws-droplet-%%CFG_HOST%%
-# NOTE: Requires your floating IP. Connect to your VPN first please!
-# In other words, start out using pure SSH, get things setup, then use Mosh.
 ```
 
 ### Change SSH Password (Recommended)
