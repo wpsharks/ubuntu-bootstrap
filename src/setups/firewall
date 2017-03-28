@@ -11,29 +11,48 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
   ufw default deny incoming;
   ufw default allow outgoing;
 
+  # DigitalOcean IPs.
+
+  if is-do; then
+    _do_anchor_ip="$(do-anchor-ip)";
+  else _do_anchor_ip=''; fi;
+
+  if is-do && do-has-floating-ip; then
+    _do_floating_ip="$(do-floating-ip)";
+  else _do_floating_ip=''; fi;
+
   # Allow SSH access for admins.
 
   if is-vm; then
-    ufw allow 22/tcp; # No limitations.
+    ufw allow 22/tcp;
+    ufw allow 60000:61000/udp;
 
   elif [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
-      ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
-      # limit = max of 6 connections every 30 seconds.
-      # See: `/lib/ufw/user.rules` for details.
-  else ufw limit 22/tcp; fi; # SSH, SFTP, Git, etc.
+    ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
+    ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 60000:61000 proto udp;
+
+    if is-dev && is-do && [[ -n "${_do_floating_ip}" && "${_do_floating_ip}" != "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
+      ufw limit from "${_do_floating_ip}" to any port 22 proto tcp;
+    fi; # Only open these ports to a specific IP address.
+
+    if is-dev && is-do && [[ -n "${_do_floating_ip}" && "${_do_floating_ip}" != "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
+      ufw limit from "${_do_floating_ip}" to any port 60000:61000 proto udp;
+    fi; # Only open these ports to a specific IP address.
+  else
+    ufw limit 22/tcp;
+    ufw limit 60000:61000/udp;
+  fi;
 
   # Open the VPN port if installing OpenVPN.
   # See: <http://jas.xyz/2cuqxDM>
 
   if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
     ufw limit 1194/udp; # OpenVPN service.
-    # limit = max of 6 connections every 30 seconds.
-    # See: `/lib/ufw/user.rules` for details.
 
     echo '1' > /proc/sys/net/ipv4/ip_forward;
     echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf;
 
-    if is-do && do-has-floating-ip; then # A floating IP is better.
+    if is-do && do-has-floating-ip; then # Better.
 
       perl -i -0wpe 's/\nCOMMIT\s*$//u' /etc/ufw/before.rules;
       perl -i -0wpe 's/\n#.+$//u' /etc/ufw/before.rules;
@@ -47,7 +66,7 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
       echo $'\n''# NAT for OpenVPN' >> /etc/ufw/before.rules;
       echo '*nat' >> /etc/ufw/before.rules;
       echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
-      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"$(default-interface)"' -j SNAT --to-source '"$(do-anchor-ip)" >> /etc/ufw/before.rules;
+      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"$(default-interface)"' -j SNAT --to-source '"${_do_anchor_ip}" >> /etc/ufw/before.rules;
       echo 'COMMIT' >> /etc/ufw/before.rules;
 
     else # Default case handler; i.e., no special considerations.
@@ -116,5 +135,9 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   ufw --force enable;
   service ufw restart;
+
+  # Housekeeping.
+
+  unset _do_anchor_ip; unset _do_floating_ip;
 
 else echo 'Skipping firewall installation.'; fi;

@@ -1,3 +1,8 @@
+## $v
+
+- Installing `mosh` by default. See [Issue #20](https://github.com/websharks/ubuntu-bootstrap/issues/20).
+- Automatically configure `mosh` firewall rules. See [Issue #20](https://github.com/websharks/ubuntu-bootstrap/issues/20).
+
 ## v170322.42412
 
 - Removing `pbcopy` and `pbpaste` utilities, as these generally do not work without X11 forwarding and are otherwise problematic over SSH.

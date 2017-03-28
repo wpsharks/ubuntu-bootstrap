@@ -36,6 +36,7 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   . /bootstrap/src/setups/swap;
 
   . /bootstrap/src/setups/zsh;
+  . /bootstrap/src/setups/mosh;
   . /bootstrap/src/setups/hosts;
   . /bootstrap/src/setups/users;
   . /bootstrap/src/setups/mkdirs;

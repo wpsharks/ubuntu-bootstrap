@@ -7,14 +7,26 @@ This is a dedicated IP address that will survive your server being rebuilt. So i
 
 ## SSH Access
 
-Log in via SSH or SFTP. SSH key required.
+Log in via SSH or SFTP. Your SSH key is required!
 
 Host: `ws-droplet-%%CFG_HOST%%` Port: `22`
 Username: `%%CFG_WORDPRESS_DEV_USERNAME%%` Password: `%%CFG_WORDPRESS_DEV_PASSWORD%%`
 
-_**Note:** If using FileZilla, you'll need to import your private SSH key. Your public SSH key is already on the server. See: <https://wiki.filezilla-project.org/Howto>_
+```bash
+$ ssh %%CFG_WORDPRESS_DEV_USERNAME%%@ws-droplet-%%CFG_HOST%%
+```
 
-_**Tip:** When you log in via SFTP you'll arrive at your home directory on the server. To edit WordPress installation files, navigate to `/app/src` (document root)._
+_If using FileZilla, you'll need to import your private SSH key. Your public SSH key is already on the server. See: <https://wiki.filezilla-project.org/Howto>_
+
+_When you log in via SFTP you'll arrive at your home directory on the server. To edit WordPress installation files, navigate to `/app/src` (document root)._
+
+_**Tip:** Mosh is installed on this server as well. So if you'd rather use Mosh instead of SSH, you can. Ports `60000:61000` are open for UDP, but you MUST connect from your floating IP through the VPN._
+
+```bash
+$ mosh %%CFG_WORDPRESS_DEV_USERNAME%%@ws-droplet-%%CFG_HOST%%
+# NOTE: Requires your floating IP. Connect to your VPN first please!
+# In other words, start out using pure SSH, get things setup, then use Mosh.
+```
 
 ### Change SSH Password (Recommended)
 
@@ -264,7 +276,9 @@ XDebug is already installed and configured. However, since this is a live site t
 
 ## Open Ports
 
-Port `22` is open, but requires an SSH key and the firewall limits you to a maximum of 6 connection attempts every 30 seconds. In addition, Fail2Ban is guarding this port and will automatically ban abusers.
+Port `22` is open for SSH, but requires an SSH key and the firewall limits you to a maximum of 6 connection attempts every 30 seconds. In addition, Fail2Ban is guarding this port and will automatically ban abusers.
+
+Ports `60000-61000` are open for Mosh, but the firewall limits you to a maximum of 6 connection attempts every 30 seconds. In addition, Fail2Ban is guarding this port and will automatically ban abusers.
 
 Port `1194` is open for VPN connections that have the required SSL certificates, as provided by the attached `.ovpn` file that you got with this document.
 

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Install Mosh.
+
+apt-get install mosh --yes;
