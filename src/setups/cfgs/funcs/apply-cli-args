@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2153
+
+# Apply CLI arguments.
+
+function cfgs-apply-cli-args() {
+  local _cfg_key;
+  local _a_cfg_key;
+  local _a_cfg_val;
+
+  for _cfg_key in "${cfgs[@]}"; do
+    _a_cfg_key=A_"${_cfg_key}";
+    _a_cfg_val="${!_a_cfg_key:-}";
+
+    if [[ -n "${_a_cfg_val}" ]]; then
+      export "${_cfg_key}"="${_a_cfg_val}";
+    fi;
+  done;
+};

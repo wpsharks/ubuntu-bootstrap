@@ -18,10 +18,8 @@ trap auto-warn-about-app-related-services-on-error ERR;
 
 if [[ -f /bootstrap/.installed-version ]]; then
 
-  export CFG_IS_INSTALLER='0';
-  export CFG_IS_UPDATER='1';
-
-  export CFG_INSTALLED_VERSION; # Read file.
+  export CFG_INSTALLED_VERSION;
+  export CFG_IS_INSTALLER='0' CFG_IS_UPDATER='1';
   CFG_INSTALLED_VERSION="$(cat /bootstrap/.installed-version)";
 
   set -o xtrace; # Print each command that is run.

@@ -3,19 +3,19 @@
 # Admin setup utility.
 
 function setup-admin() {
-  ## Initialize.
+  # Initialize.
 
   local user='';
   local name='';
   local email='';
   local shell='';
   local ssh_keys='';
-  local home_dir='';
+  local static_ip='';
 
-  ## Parse options.
+  # Parse options.
 
-  local short_options='u:n:e:s:k:';
-  local long_options='user:,name:,email:,shell:,ssh-keys:';
+  local short_options='u:n:e:s:k:i:';
+  local long_options='user:,name:,email:,shell:,ssh-keys:,static-ip:';
   local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
   eval set -- "${options}"; while true; do
@@ -40,6 +40,10 @@ function setup-admin() {
           ssh_keys="${2}";
           shift 2;
           ;;
+        -i|--static-ip)
+          static_ip="${2}";
+          shift 2;
+          ;;
         --) shift 1; break;
           ;;
         *) echo 'Internal error.'; exit 1;
@@ -54,7 +58,8 @@ function setup-admin() {
     --name="${name}" \
     --email="${email}" \
     --shell="${shell}" \
-    --ssh-keys="${ssh_keys}";
+    --ssh-keys="${ssh_keys}" \
+    --static-ip="${static_ip}";
 
   # Add user to admin groups.
 

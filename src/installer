@@ -1,43 +1,60 @@
 #!/usr/bin/env bash
 
+# ----------------------------------------------------------------------------------------------------------------------
+
 # Running as root?
 
 if [[ "$(whoami)" != 'root' ]]; then
   echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 # Include strict mode & functions.
 
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Maybe run setup routines; i.e., once only.
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Run setup routines once only.
 
 if [[ ! -f /bootstrap/.installed-version ]]; then
 
-  export CFG_IS_INSTALLER='1';
-  export CFG_IS_UPDATER='0';
+  # --------------------------------------------------------------------------------------------------------------------
 
   export CFG_INSTALLED_VERSION='';
+  export CFG_IS_INSTALLER='1' CFG_IS_UPDATER='0';
 
-  . /bootstrap/src/setups/cfgs-args;
-  . /bootstrap/src/setups/config;
+  # --------------------------------------------------------------------------------------------------------------------
 
+  umask 0002; # While installing, use the eventual umask.
   set -o xtrace; # Print each command that is run.
-  umask 0002; # Force this default during installation.
 
-  . /bootstrap/src/setups/debian;
+  # --------------------------------------------------------------------------------------------------------------------
+
+  . /bootstrap/src/setups/cfgs/init;
+  . /bootstrap/src/setups/cfgs/setup;
+  . /bootstrap/src/setups/cfgs/process;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/aptitude;
   . /bootstrap/src/setups/timezone;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/utilities;
   . /bootstrap/src/setups/git-utils;
   . /bootstrap/src/setups/keybase;
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/swap;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/zsh;
   . /bootstrap/src/setups/mosh;
-  . /bootstrap/src/setups/hosts;
   . /bootstrap/src/setups/users;
   . /bootstrap/src/setups/mkdirs;
   . /bootstrap/src/setups/umask;
@@ -46,60 +63,106 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   . /bootstrap/src/setups/ssl-certs;
   . /bootstrap/src/setups/git-crypt;
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/postfix;
   . /bootstrap/src/setups/mailhog;
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/openvpn;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/docker;
 
-  . /bootstrap/src/setups/nginx;
-  . /bootstrap/src/setups/apache;
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/mysql;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/ramdisk;
   . /bootstrap/src/setups/memcache;
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/php/stub;
+
+  . /bootstrap/src/setups/composer;
+  . /bootstrap/src/setups/pma;
 
   . /bootstrap/src/setups/psysh;
   . /bootstrap/src/setups/phpcs;
   . /bootstrap/src/setups/phing;
   . /bootstrap/src/setups/phpunit;
-  . /bootstrap/src/setups/apigen;
   . /bootstrap/src/setups/sami;
-  . /bootstrap/src/setups/casperjs;
-  . /bootstrap/src/setups/composer;
+  . /bootstrap/src/setups/apigen;
+  . /bootstrap/src/setups/cachetool;
+  . /bootstrap/src/setups/wp-cli;
   . /bootstrap/src/setups/wp-i18n-tools;
   . /bootstrap/src/setups/websharks-core;
-  . /bootstrap/src/setups/cachetool;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
+  . /bootstrap/src/setups/nginx;
+  . /bootstrap/src/setups/apache;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
+  . /bootstrap/src/setups/casperjs;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/app-repo;
-  . /bootstrap/src/setups/discourse;
 
-  . /bootstrap/src/setups/wp-cli;
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/wordpress;
   . /bootstrap/src/setups/wordpress-dev;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
+  . /bootstrap/src/setups/discourse;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/ssh-config;
   . /bootstrap/src/setups/firewall;
   . /bootstrap/src/setups/fail2ban;
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/resources;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
+  . /bootstrap/src/setups/upgrades;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   if [[ -f /bootstrap-app/src/post-install ]]; then
     . /bootstrap-app/src/post-install; fi;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/version.bash;
   CFG_INSTALLED_VERSION="${CFG_VERSION}";
   echo "${CFG_VERSION}" > /bootstrap/.installed-version;
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/cleanup;
+
+  # --------------------------------------------------------------------------------------------------------------------
 
   set +o xtrace; # Turn off comand printing.
 
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/finale;
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 else # Provide details about why we are not running again.
   echo 'Installation complete. Can only be run once!'; exit 1;

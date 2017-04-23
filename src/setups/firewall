@@ -2,105 +2,62 @@
 
 if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
-  # Install.
+  # Network info.
+
+  _do_anchor_ip=''; _do_floating_ip='';
+  _default_interface="$(default-interface)";
+
+  if is-do; then # DigitalOcean.
+     _do_anchor_ip="$(do-anchor-ip)";
+     do-has-floating-ip && _do_floating_ip="$(do-floating-ip)";
+  fi; # Details acquired via DigitalOcean API calls.
+
+  # Install UFW utility.
 
   apt-get install ufw --yes;
 
-  # Default config.
+  # Default configuration.
 
   ufw default deny incoming;
   ufw default allow outgoing;
 
-  # DigitalOcean IPs.
+  # Allow SSH/Mosh access.
 
-  if is-do; then
-    _do_anchor_ip="$(do-anchor-ip)";
-  else _do_anchor_ip=''; fi;
-
-  if is-do && do-has-floating-ip; then
-    _do_floating_ip="$(do-floating-ip)";
-  else _do_floating_ip=''; fi;
-
-  # Allow SSH access for admins.
-
-  if is-vm; then
-    ufw allow 22/tcp;
-    ufw allow 60000:61000/udp;
-
-  elif [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 && -n "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
+  if [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 ]]; then
     ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
     ufw limit from "${CFG_ADMIN_STATIC_IP_ADDRESS}" to any port 60000:61000 proto udp;
 
-    if is-dev && is-do && [[ -n "${_do_floating_ip}" && "${_do_floating_ip}" != "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
-      ufw limit from "${_do_floating_ip}" to any port 22 proto tcp;
-    fi; # Only open these ports to a specific IP address.
-
-    if is-dev && is-do && [[ -n "${_do_floating_ip}" && "${_do_floating_ip}" != "${CFG_ADMIN_STATIC_IP_ADDRESS}" ]]; then
-      ufw limit from "${_do_floating_ip}" to any port 60000:61000 proto udp;
-    fi; # Only open these ports to a specific IP address.
-  else
+    if [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+      ufw limit from "${CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS}" to any port 22 proto tcp;
+      ufw limit from "${CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS}" to any port 60000:61000 proto udp;
+    fi;
+  elif is-vm; then
+    ufw allow 22/tcp;
+    ufw allow 60000:61000/udp;
+  else # Limit connections.
     ufw limit 22/tcp;
     ufw limit 60000:61000/udp;
   fi;
 
-  # Open the VPN port if installing OpenVPN.
-  # See: <http://jas.xyz/2cuqxDM>
+  # Maybe allow MySQL access.
 
-  if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
-    ufw limit 1194/udp; # OpenVPN service.
-
-    echo '1' > /proc/sys/net/ipv4/ip_forward;
-    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf;
-
-    if is-do && do-has-floating-ip; then # Better.
-
-      perl -i -0wpe 's/\nCOMMIT\s*$//u' /etc/ufw/before.rules;
-      perl -i -0wpe 's/\n#.+$//u' /etc/ufw/before.rules;
-
-      echo $'\n''# FWD for OpenVPN' >> /etc/ufw/before.rules;
-      echo '-A ufw-before-forward -m state --state RELATED,ESTABLISHED -j ACCEPT' >> /etc/ufw/before.rules;
-      echo '-A ufw-before-forward -s 10.8.0.0/24 -o '"$(default-interface)"' -j ACCEPT' >> /etc/ufw/before.rules;
-      echo '-A ufw-before-forward -j REJECT' >> /etc/ufw/before.rules;
-      echo $'\n''COMMIT' >> /etc/ufw/before.rules;
-
-      echo $'\n''# NAT for OpenVPN' >> /etc/ufw/before.rules;
-      echo '*nat' >> /etc/ufw/before.rules;
-      echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
-      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"$(default-interface)"' -j SNAT --to-source '"${_do_anchor_ip}" >> /etc/ufw/before.rules;
-      echo 'COMMIT' >> /etc/ufw/before.rules;
-
-    else # Default case handler; i.e., no special considerations.
-      perl -i -wpe 's/^(\s*)#?DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
-
-      echo '# NAT for OpenVPN' >> /etc/ufw/before.rules;
-      echo '*nat' >> /etc/ufw/before.rules;
-      echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
-      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"$(default-interface)"' -j MASQUERADE' >> /etc/ufw/before.rules;
-      echo 'COMMIT' >> /etc/ufw/before.rules;
-    fi;
-  fi;
-
-  # Open MySQL port 3306 to all VPN connections?
-
-  if can-run mysql; then
+  if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
     if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306}" == 1 ]]; then
       ufw allow 3306/tcp; # Allow external connections.
     fi;
-    if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+    if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]] && is-vm; then
+      ufw allow 3306/tcp; # Slightly different meaning on a VM (wide open).
+    elif [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]] && is-do; then
+      ufw allow in on eth1 to any port 3306 proto tcp; # Private interface.
+    fi;
+    if [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
       ufw allow in on docker0 to any port 3306 proto tcp;
-    fi;
-    if [[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]]; then
-      if is-vm; then # On a VM this has a slightly different meaning.
-        ufw allow 3306/tcp; # Wide open on a VM.
-      elif is-do; then # Private network interface.
-        ufw allow in on eth1 to any port 3306 proto tcp;
-      fi;
-    fi;
+    fi; # Allow containers to connect to MySQL server.
   fi;
 
-  # Open up the HTTP/HTTPS port numbers `80` and `443`?
+  # Maybe allow http/https access.
 
-  if can-run nginx || can-run apache2 || [[ -d /discourse ]]; then
+  if [[ "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 || "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
     if [[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]]; then
       _ips_v4="$(get-cloudflare-ips-v4)";
       _ips_v6="$(get-cloudflare-ips-v6)";
@@ -121,11 +78,47 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
     fi;
   fi;
 
-  # Open up the HTTP/HTTPS port number `8025` for MailHog.
+  # Maybe allow MailHog access.
 
-  if is-vm && [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
-    ufw allow 8025/tcp; # Requires `http://`.
-  fi; # MailHog does not support HTTPS at this time.
+  if [[ "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
+    ufw allow 8025/tcp; # Via web browser.
+  fi; # e.g., <http://my.vm:8025/>
+
+  # OpenVPN; see: <http://jas.xyz/2cuqxDM>
+
+  if [[ "${CFG_INSTALL_OPENVPN}" == 1 ]]; then
+    ufw limit 1194/udp; # OpenVPN service.
+
+    echo '1' > /proc/sys/net/ipv4/ip_forward;
+    echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf;
+
+    if is-do && [[ -n "${_do_anchor_ip}" && -n "${_do_floating_ip}" ]]; then
+
+      perl -i -0wpe 's/\nCOMMIT\s*$//u' /etc/ufw/before.rules;
+      perl -i -0wpe 's/\n#.+$//u' /etc/ufw/before.rules;
+
+      echo $'\n''# FWD for OpenVPN' >> /etc/ufw/before.rules;
+      echo '-A ufw-before-forward -m state --state RELATED,ESTABLISHED -j ACCEPT' >> /etc/ufw/before.rules;
+      echo '-A ufw-before-forward -s 10.8.0.0/24 -o '"${_default_interface}"' -j ACCEPT' >> /etc/ufw/before.rules;
+      echo '-A ufw-before-forward -j REJECT' >> /etc/ufw/before.rules;
+      echo $'\n''COMMIT' >> /etc/ufw/before.rules;
+
+      echo $'\n''# NAT for OpenVPN' >> /etc/ufw/before.rules;
+      echo '*nat' >> /etc/ufw/before.rules;
+      echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
+      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"${_default_interface}"' -j SNAT --to-source '"${_do_anchor_ip}" >> /etc/ufw/before.rules;
+      echo 'COMMIT' >> /etc/ufw/before.rules;
+
+    else # Default case handler; i.e., no special considerations.
+      perl -i -wpe 's/^(\s*)#?DEFAULT_FORWARD_POLICY\s*\=.*$/$1DEFAULT_FORWARD_POLICY="ACCEPT"/u' /etc/default/ufw;
+
+      echo '# NAT for OpenVPN' >> /etc/ufw/before.rules;
+      echo '*nat' >> /etc/ufw/before.rules;
+      echo ':POSTROUTING ACCEPT [0:0]' >> /etc/ufw/before.rules;
+      echo '-A POSTROUTING -s 10.8.0.0/24 -o '"${_default_interface}"' -j MASQUERADE' >> /etc/ufw/before.rules;
+      echo 'COMMIT' >> /etc/ufw/before.rules;
+    fi;
+  fi;
 
   # Enable automatic startup.
 
@@ -138,6 +131,8 @@ if [[ "${CFG_INSTALL_FIREWALL}" == 1 ]]; then
 
   # Housekeeping.
 
-  unset _do_anchor_ip; unset _do_floating_ip;
+  unset _do_anchor_ip;
+  unset _do_floating_ip;
+  unset _default_interface;
 
 else echo 'Skipping firewall installation.'; fi;

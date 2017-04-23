@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [[ "${CFG_INSTALL_UNATTENDED_UPGRADES}" == 1 ]]; then
+
+  # Setup automatic security updates.
+
+  apt-get install unattended-upgrades --yes;
+  apt-get install update-notifier-common --yes;
+
+  mv /etc/apt/apt.conf.d/10periodic /tmp/apt-10periodic~;
+  mv /etc/apt/apt.conf.d/50unattended-upgrades /tmp/apt-50unattended-upgrades~;
+
+  ln --symbolic /bootstrap/src/apt/periodic /etc/apt/apt.conf.d/10periodic;
+  ln --symbolic /bootstrap/src/apt/upgrades /etc/apt/apt.conf.d/50unattended-upgrades;
+
+  perl -i -0wpe 's/%%email%%/'"$(esc-regex-rv "${CFG_ADMIN_EMAIL}")"'/ug' /bootstrap/src/apt/upgrades;
+
+else echo 'Skipping installation of unattended-upgrades package.'; fi;

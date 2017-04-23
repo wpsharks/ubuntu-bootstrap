@@ -3,19 +3,20 @@
 # User setup utility.
 
 function setup-user() {
-  ## Initialize.
+  # Initialize.
 
   local user='';
   local name='';
   local email='';
   local shell='';
   local ssh_keys='';
+  local static_ip='';
   local home_dir='';
 
-  ## Parse options.
+  # Parse options.
 
-  local short_options='u:n:e:s:k:';
-  local long_options='user:,name:,email:,shell:,ssh-keys:';
+  local short_options='u:n:e:s:k:i:';
+  local long_options='user:,name:,email:,shell:,ssh-keys:,static-ip:';
   local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
   eval set -- "${options}"; while true; do
@@ -40,12 +41,18 @@ function setup-user() {
           ssh_keys="${2}";
           shift 2;
           ;;
+        -i|--static-ip)
+          static_ip="${2}";
+          shift 2;
+          ;;
         --) shift 1; break;
           ;;
         *) echo 'Internal error.'; exit 1;
           ;;
      esac;
   done;
+
+  # Fallback on defaults.
 
   if [[ -z "${name}" ]]; then
     name="${user}"; fi;
@@ -56,11 +63,13 @@ function setup-user() {
   if [[ -z "${ssh_keys}" && -f /bootstrap/src/ssh/"${user}"/authorized_keys ]]; then
     ssh_keys=/bootstrap/src/ssh/"${user}"/authorized_keys; fi;
 
+  # Establish home directory.
+
   if [[ "${user}" == root ]]; then
     home_dir=/root; # Special case.
   else home_dir=/home/"${user}"; fi;
 
-  ## Validate options.
+  # Validate options/variables.
 
   if [[ -z "${user}" ]]; then
     return 1; # Missing.
@@ -77,12 +86,13 @@ function setup-user() {
   elif [[ ! -d "${home_dir}" ]]; then
     return 1; # Missing.
   fi;
-  ## Set the login shell they prefer to use.
+
+  # Set login shell they prefer.
 
   if [[ -n "${shell}" ]]; then
     chsh --shell "${shell}" "${user}"; fi;
 
-  ## Home directory customization.
+  # Home directory customization.
 
   cp --force --recursive --preserve=mode /bootstrap/src/tpl.home/. "${home_dir}";
   find "${home_dir}" -type d ! -path "${home_dir}"'/.ssh' ! -path "${home_dir}"'/.ssh/**' -exec chmod g+w {} \;
@@ -90,14 +100,20 @@ function setup-user() {
   chown --recursive "${user}":"${user}" "${home_dir}";
 
   ## Setup authorized SSH keys in home directory.
+  ## This only configures the authorized SSH key(s).
+  # To use SSH it requires they be in a group with SSH access.
 
   if [[ -f "${ssh_keys}" ]]; then
-    mkdir --parents "${home_dir}"/.ssh;
-    cp --force "${ssh_keys}" "${home_dir}"/.ssh/authorized_keys;
+    # Do not set authorized keys for `vagrant ssh`, which has its own key.
+    # The system users on vagrant can be `vagrant` or `ubuntu` in newer builds.
+    if ! is-vagrant || [[ "${user}" != 'vagrant' && "${user}" != 'ubuntu' ]]; then
+      mkdir --parents "${home_dir}"/.ssh;
+      cp --force "${ssh_keys}" "${home_dir}"/.ssh/authorized_keys;
 
-    chmod 700 "${home_dir}"/.ssh;
-    chmod 600 "${home_dir}"/.ssh/authorized_keys;
-    chown --recursive "${user}":"${user}" "${home_dir}"/.ssh;
+      chmod 700 "${home_dir}"/.ssh;
+      chmod 600 "${home_dir}"/.ssh/authorized_keys;
+      chown --recursive "${user}":"${user}" "${home_dir}"/.ssh;
+    fi;
   fi;
   ## Git configuration for this user.
 
@@ -106,10 +122,24 @@ function setup-user() {
 
   ## WP-CLI configuration for this user.
 
-  if [[ "${user}" == 'root' || "${user}" == 'vagrant' ]]; then
+  if [[ "${user}" == 'root' ]]; then
+    perl -i -0wpe 's/%%user%%/admin/ug' "${home_dir}"/.wp-cli/config.yml;
+  elif if-vagrant && [[ "${user}" == 'vagrant' || "${user}" == 'ubuntu' ]]; then
     perl -i -0wpe 's/%%user%%/admin/ug' "${home_dir}"/.wp-cli/config.yml;
   else # Use this particular username in all other cases.
     perl -i -0wpe 's/%%user%%/'"$(esc-regex-rv "${user}")"'/ug' "${home_dir}"/.wp-cli/config.yml;
   fi;
   perl -i -0wpe 's/%%host%%/'"$(esc-regex-rv "${CFG_HOST}")"'/ug' "${home_dir}"/.wp-cli/config.yml;
+
+  # Setup firewall to allow this user access.
+  # This only allows the user access to the port.
+  # To use SSH it requires they be in a group with SSH access.
+
+  if [[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 ]]; then
+    if [[ -n "${static_ip}" ]] && can-run ufw; then
+      ufw limit from "${static_ip}" to any port 22 proto tcp &>/dev/null;
+      ufw limit from "${static_ip}" to any port 60000:61000 proto udp &>/dev/null;
+      service ufw restart;
+    fi;
+  fi;
 };

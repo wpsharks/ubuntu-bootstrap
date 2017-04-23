@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run docker && [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
+if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
 
   # Install/configure Discourse.
 

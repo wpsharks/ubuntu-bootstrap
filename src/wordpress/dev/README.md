@@ -1,6 +1,6 @@
 ## Floating IP
 
-`%%do_floating_ip%%` (%%do_region%%)
+`%%CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS%%` (%%do_region%%)
 `ws-droplet-%%CFG_HOST%%`
 
 This is a dedicated IP address that will survive your server being rebuilt. So it's OK to reference your server by this IP address in code or in configuration preferences. Or, if you prefer, you can use `ws-droplet-%%CFG_HOST%%`, which points to your Floating IP by name.
@@ -109,6 +109,7 @@ Password: `%%CFG_MAINTENANCE_BYPASS_KEY%%` (same as above)
 Your server has several utilities already installed. Here are a few that you might find useful.
 
 - `php`
+- `phing`
 - `composer`
 - `mail` (see: man mail)
 - `git` (already configured)
@@ -212,7 +213,7 @@ $ brew cask install tunnelblick
 - Open Tunnelblick, Pritunl, or Viscosity and import the `.ovpn` file attached to this document. If you're using Tunnelblick you can just double-click to open the `.ovpn` file. If you're using Pritunl or Viscosity, open the application and choose to import the `.ovpn` connection file.
 - Connect to the VPN by choosing 'connect' in either application.
 - When asked for a username/password, use your SSH credentials.
-- Confirm that your IP address has changed to the floating ip `%%do_floating_ip%%`.
+- Confirm that your IP address has changed to the floating ip `%%CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS%%`.
   - Try: <https://www.google.com/search?q=my+ip>
 
 ### VPN Bandwidth Limitations
@@ -236,7 +237,7 @@ Your VPN allows up to 100 simultaneous connections. You can share your VPN with 
 - Send them a copy of your `.ovpn` file.
 - Create an account for them on the server (see **Giving Others System Access** below). Instead of making them an admin, use `create-user` and `setup-user` in the second example that is shown.
 - Provide them with the instructions above so they can make a connection.
-- They, like you, will also browse the web as `%%do_floating_ip%%`.
+- They, like you, will also browse the web as `%%CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS%%`.
 
 _**Note:** While the server does allow up to 100 clients at a time, the firewall is configured to allow, at most, 6 new connections every 30 seconds. So you can have up to 100 people connected at the same time, but there is a throttle on new incoming connection attempts._
 
@@ -335,7 +336,7 @@ $ sudo create-admin --user=someone --pass=xxxxxxxxxxxxxxx
 $ sudo setup-admin --user=someone --name='Someone Special' --email=someone@example.com --ssh-keys=/tmp/path/to/authorized_keys;
 
 # TIP: you can omit --ssh-keys=... if the username is:
-#   `jaswrks`, `raamdev`, `kristineds`, `renzms`
+#   `jaswrks`, `raamdev`, `kristineds`, or `renzms`.
 #   SSH keys for these users exist on the server already.
 ```
 
@@ -348,7 +349,7 @@ $ sudo create-user --user=someone --pass=xxxxxxxxxxxxxxx
 $ sudo setup-user --user=someone --name='Someone Special' --email=someone@example.com --ssh-keys=/tmp/path/to/authorized_keys;
 
 # TIP: you can omit --ssh-keys=... if the username is:
-#   `jaswrks`, `raamdev`, `kristineds`, `renzms`
+#   `jaswrks`, `raamdev`, `kristineds`, or `renzms`.
 #   SSH keys for these users exist on the server already.
 ```
 
@@ -395,11 +396,11 @@ _**Tip:** If the problem is related specifically to WordPress itself (or there's
 
 This server is owned by WebSharks, Inc. Jason manages this server for you, and he will let you know ahead of time if there are updates planned. Whenever updates do occur, there will likely be a loss of data, simply because Jason doesn't have enough time to manage servers and deal with the recovery and/or migration of your test sites also.
 
-Here's what to expect when updates need to occur, as determined by Jason.
+Here's what to expect when updates need to occur:
 
-- You will be notified by Jason at least 14 days in advance.
-- You will have that time to save/export anything that you need to keep.
+- You'll be notified by Jason at least 14 days in advance.
+- You'll have that time to save/export anything that you need to keep.
 - The server will be upgraded and then delivered to you in a new default state.
-- You will receive a new `.ovpn` file with newly generated client SSL certificates.
-- Your Floating IP (`%%do_floating_ip%%`) will remain; i.e., you will have the same IP as before.
-- You will receive another document like this one with the latest up-to-date information.
+- You'll receive a new `.ovpn` file with newly generated client SSL certificates.
+- Your Floating IP (`%%CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS%%`) will remain; i.e., you will have the same IP as before.
+- You'll receive another document like this one with the latest up-to-date information.

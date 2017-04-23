@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php && [[ "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+if [[ "${CFG_INSTALL_CACHETOOL}" == 1 ]]; then
 
   # Install cachetool for OPcache management in PHP.
 

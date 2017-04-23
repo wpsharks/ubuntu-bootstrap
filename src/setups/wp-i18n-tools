@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php && [[ "${CFG_INSTALL_WP_I18N_TOOLS}" == 1 ]]; then
+if [[ "${CFG_INSTALL_WP_I18N_TOOLS}" == 1 ]]; then
 
   # Install WP i18n Tools now also.
 

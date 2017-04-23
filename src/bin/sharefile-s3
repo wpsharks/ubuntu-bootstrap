@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
 # Include strict mode & functions.
 
 . /bootstrap/src/bash/strict-mode;
@@ -61,8 +66,8 @@ s3_bucket_path=/cloudfront/transfers;
 s3_bucket_url=https://cdn.websharks.org;
 s3_bucket_url_path=/transfers;
 
-s3_key="${CFG_AWS_ACCESS_KEY_ID}";
-s3_secret="${CFG_AWS_SECRET_ACCESS_KEY}";
+s3_key="${CFG_AWS_TRANSFER_ACCESS_KEY_ID}";
+s3_secret="${CFG_AWS_TRANSFER_SECRET_ACCESS_KEY}";
 
 # Make sure directory exists.
 

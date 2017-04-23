@@ -1,7 +1,20 @@
 ## $v
 
+- Refactoring to improve organization and to pave the way for new features.
+- Refactored the CFG phase that parses command-line options and prepares installation routines.
+- Adding `CFG_INSTALL_WEBSHARKS_CORE` to the configuration wizard.
+- Adding `CFG_INSTALL_CACHETOOL` to the configuration wizard.
+- Adding `CFG_INSTALL_PMA` to the configuration wizard.
+- Rename: `CFG_AWS_ACCESS_KEY_ID` is now `CFG_AWS_TRANSFER_ACCESS_KEY_ID`.
+- Rename: `CFG_AWS_SECRET_ACCESS_KEY` is now `CFG_AWS_TRANSFER_SECRET_ACCESS_KEY`.
+- Rename: `CFG_TOOLS_PMA_BLOWFISH_KEY` is now `CFG_PMA_BLOWFISH_KEY`.
+- Adding `CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS` to the configuration wizard.
 - Installing `mosh` by default. See [Issue #20](https://github.com/websharks/ubuntu-bootstrap/issues/20).
 - Automatically configure `mosh` firewall rules. See [Issue #20](https://github.com/websharks/ubuntu-bootstrap/issues/20).
+- Removing `CFG_TOOLS_USERNAME` and `CFG_TOOLS_PASSWORD` in favor of `CFG_ADMIN_USERNAME` and `CFG_ADMIN_PASSWORD` which already exist.
+- Adding a new `passgen` binary, capable of generating stronger passwords guaranteed to contain numerals, mixed caSe, & symbols in a sanitized range of allowed chars. Powered in part by `pwgen`. This utility is also capable of reproducible hash-based password generation.
+- Deprecating `keygen` utility in favor of the new `passgen` utility.
+- Removing `CFG_OTHER_HOSTS` from configuration wizard as it is no longer necessary.
 
 ## v170322.42412
 

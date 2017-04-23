@@ -4,19 +4,18 @@
 
 mkdir --parents /etc/nginx;
 mkdir --parents /etc/apache2;
+
 mkdir --parents /etc/php/fpm;
 echo '[www]' > /etc/php/fpm/env.conf;
 
 for _cfg_key in \
   'CFG_HOST' \
   'CFG_ROOT_HOST' \
-  'CFG_OTHER_HOSTS' \
   \
   'CFG_SLUG' \
   'CFG_VAR' \
   \
   'CFG_ADMIN_GENDER' \
-  \
   'CFG_ADMIN_USERNAME' \
   \
   'CFG_ADMIN_NAME' \
@@ -24,15 +23,16 @@ for _cfg_key in \
   'CFG_ADMIN_PUBLIC_EMAIL' \
   \
   'CFG_ADMIN_STATIC_IP_ADDRESS' \
+  'CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22' \
+  \
+  'CFG_AWS_TRANSFER_ACCESS_KEY_ID' \
+  'CFG_AWS_TRANSFER_SECRET_ACCESS_KEY' \
+  \
+  'CFG_PMA_BLOWFISH_KEY' \
+  'CFG_MAINTENANCE_BYPASS_KEY' \
   \
   'CFG_WEB_SERVER_SSL_ONLY' \
   'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' \
-  \
-  'CFG_AWS_ACCESS_KEY_ID' \
-  'CFG_AWS_SECRET_ACCESS_KEY' \
-  \
-  'CFG_TOOLS_PMA_BLOWFISH_KEY' \
-  'CFG_MAINTENANCE_BYPASS_KEY' \
   \
   'CFG_MYSQL_DB_HOST' \
   'CFG_MYSQL_DB_PORT' \

@@ -1,3 +1,5 @@
+# Ignore ---------------------------------------------------------------------------------------------------------------
+
 # Local
 
 .~*
@@ -11,21 +13,13 @@
 *~
 *.bak
 
-# Vendor
+# Vagrant
 
-vendor/
+.vagrant/
 
 # TypeScript
 
 typings/
-
-# Node
-
-node_modules/
-
-# SASS
-
-.sass-cache/
 
 # IntelliJ
 
@@ -33,13 +27,29 @@ node_modules/
 
 # Sublime
 
-*.sublime-workspace
 *.sublime-project
+*.sublime-workspace
 
-# CTags
+# Vendor
 
-*.tags
+vendor/
+
+# NodeJS
+
+node_modules/
+
+# SASS
+
+.sass-cache/
+
+# Elastic Beanstalk
+
+.elasticbeanstalk/
+
+# CTAGs
+
 *.ctags
+*.tags
 
 # VCS
 
@@ -87,12 +97,8 @@ Icon?
 !Icons
 ._*
 
-# AWS
+# ----------------------------------------------------------------------------------------------------------------------
 
-.elasticbeanstalk/
-
-# Vagrant
-
-.vagrant/
-
-# Custom code reinserted here via [custom] marker. Add your <custom></custom> comment markers here please.
+# <custom>
+#   Put your rules in custom comment markers.
+# </custom>

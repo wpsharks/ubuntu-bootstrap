@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+export DEBIAN_FRONTEND=noninteractive;
+apt-get update --yes && apt-get install curl pwgen --yes;
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_USE_WIZARD='1'; [[ ! -t 1 ]] && CFG_USE_WIZARD='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_HOST="$(hostname --fqdn)";
+CFG_ROOT_HOST="$(hostname --domain)";
+[[ "$(dot-count "${CFG_ROOT_HOST}")" -lt 1 ]] && CFG_ROOT_HOST="${CFG_HOST}";
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_SLUG="$(hostname --short)";
+CFG_VAR="${CFG_SLUG//-/_}";
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_ADMIN_GENDER=''; is-vm && CFG_ADMIN_GENDER='male';
+
+CFG_ADMIN_USERNAME=''; is-vm && CFG_ADMIN_USERNAME='admin';
+CFG_ADMIN_PASSWORD=''; is-vm && CFG_ADMIN_PASSWORD='%%CFG_ADMIN_USERNAME%%';
+
+CFG_ADMIN_NAME=''; is-vm && CFG_ADMIN_NAME='%%CFG_ADMIN_USERNAME%%';
+CFG_ADMIN_EMAIL=''; is-vm && CFG_ADMIN_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
+CFG_ADMIN_PUBLIC_EMAIL=''; is-vm && CFG_ADMIN_PUBLIC_EMAIL='%%CFG_ADMIN_USERNAME%%@%%CFG_ROOT_HOST%%';
+
+CFG_ADMIN_PREFERRED_SHELL='/bin/zsh';
+CFG_ADMIN_STATIC_IP_ADDRESS=''; # Fill this in manually for best security.
+CFG_ADMIN_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_ADMIN_USERNAME%%/authorized_keys';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_AWS_TRANSFER_ACCESS_KEY_ID='';
+CFG_AWS_TRANSFER_SECRET_ACCESS_KEY='';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_SWAP='1'; in-docker && CFG_INSTALL_SWAP='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_WS_CA_FILES='1'; is-vm && CFG_INSTALL_WS_CA_FILES='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_POSTFIX='1'; is-vm && CFG_INSTALL_POSTFIX='0';
+CFG_INSTALL_MAILHOG='0'; is-vm && CFG_INSTALL_MAILHOG='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_OPENVPN='0'; is-dev && CFG_INSTALL_OPENVPN='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_DOCKER='1'; in-docker && CFG_INSTALL_DOCKER='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_MYSQL='1';
+
+CFG_MYSQL_DB_HOST='127.0.0.1';
+CFG_MYSQL_DB_PORT='3306';
+
+CFG_MYSQL_SSL_KEY=/etc/bootstrap/ssl/client-private-key.pem;
+CFG_MYSQL_SSL_CRT=/etc/bootstrap/ssl/client-crt.pem;
+CFG_MYSQL_SSL_CA=/etc/bootstrap/ssl/server-ca-crt.pem;
+CFG_MYSQL_SSL_CIPHER=CAMELLIA256-SHA;
+
+CFG_MYSQL_SSL_ENABLE='1';
+
+CFG_MYSQL_DB_CHARSET='utf8mb4';
+CFG_MYSQL_DB_COLLATE='utf8mb4_unicode_ci';
+
+CFG_MYSQL_DB_NAME='db0';
+
+CFG_MYSQL_DB_USERNAME='client'; is-vm && CFG_MYSQL_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
+CFG_MYSQL_DB_PASSWORD="$(passgen 32)"; is-vm && CFG_MYSQL_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+
+CFG_MYSQL_X_DB_USERNAME='x_client'; is-vm && CFG_MYSQL_X_DB_USERNAME='%%CFG_ADMIN_USERNAME%%';
+CFG_MYSQL_X_DB_PASSWORD="$(passgen 32)"; is-vm && CFG_MYSQL_X_DB_PASSWORD='%%CFG_ADMIN_PASSWORD%%';
+
+CFG_MYSQL_X_REQUIRES_SSL='1'; ( is-vm || is-dev ) && CFG_MYSQL_X_REQUIRES_SSL='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_RAMDISK='1'; in-docker && CFG_INSTALL_RAMDISK='0';
+CFG_INSTALL_MEMCACHE='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_PHP_CLI='1';
+CFG_INSTALL_PHP_FPM='1';
+CFG_INSTALL_PHP_VERSION='7.1';
+
+CFG_ENABLE_PHP_OPCACHE='1';
+CFG_INSTALL_PHP_XDEBUG='0'; ( is-vm || is-dev ) && CFG_INSTALL_PHP_XDEBUG='1';
+CFG_ENABLE_PHP_PHAR_READONLY='1'; ( is-vm || is-dev ) && CFG_ENABLE_PHP_PHAR_READONLY='0';
+CFG_ENABLE_PHP_ASSERTIONS='0'; ( is-vm || is-dev ) && CFG_ENABLE_PHP_ASSERTIONS='1';
+
+CFG_INSTALL_COMPOSER='1';
+
+CFG_INSTALL_PMA='1'; is-4ci && CFG_INSTALL_PMA='0';
+CFG_PMA_BLOWFISH_KEY="$(passgen 64)";
+
+CFG_INSTALL_PSYSH='1';
+CFG_INSTALL_PHPCS='1';
+CFG_INSTALL_PHING='1';
+CFG_INSTALL_PHPUNIT='1';
+CFG_INSTALL_SAMI='1';
+CFG_INSTALL_APIGEN='1';
+CFG_INSTALL_CACHETOOL='1';
+CFG_INSTALL_WP_CLI='1';
+CFG_INSTALL_WP_I18N_TOOLS='1';
+CFG_INSTALL_WEBSHARKS_CORE='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_NGINX='1'; is-4ci && CFG_INSTALL_NGINX='0';
+CFG_INSTALL_APACHE='0'; is-4ci && CFG_INSTALL_APACHE='1';
+
+CFG_WEB_SERVER_SSL_ONLY='1'; ( is-vm || is-dev ) && CFG_WEB_SERVER_SSL_ONLY='0';
+CFG_MAINTENANCE_BYPASS_KEY="$(passgen 64)";
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_CASPERJS='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_APP_REPO='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_WORDPRESS='1'; ( is-4ci || is-4pkg ) && CFG_INSTALL_WORDPRESS='0';
+CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0'; is-vagrant && ! is-4pkg && CFG_INSTALL_WORDPRESS_VM_SYMLINKS='1';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='0';
+( ! in-docker && ( is-vm || is-dev ) ) && CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='1';
+
+CFG_WORDPRESS_DEV_GENDER='';
+
+CFG_WORDPRESS_DEV_USERNAME='';
+CFG_WORDPRESS_DEV_PASSWORD="$(passgen 15)";
+
+CFG_WORDPRESS_DEV_NAME='';
+CFG_WORDPRESS_DEV_EMAIL='';
+
+CFG_WORDPRESS_DEV_PREFERRED_SHELL='/bin/zsh';
+CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS=''; is-dev && is-do && CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS="$(do-floating-ip)";
+CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS='/bootstrap/src/ssh/%%CFG_WORDPRESS_DEV_USERNAME%%/authorized_keys';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_DISCOURSE='0';
+
+CFG_DISCOURSE_SMTP_HOST='email-smtp.us-east-1.amazonaws.com';
+CFG_DISCOURSE_SMTP_PORT='587';
+
+CFG_DISCOURSE_SMTP_AUTH_TYPE='login';
+
+CFG_DISCOURSE_SMTP_USERNAME='';
+CFG_DISCOURSE_SMTP_PASSWORD='';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_FIREWALL='1'; in-docker && CFG_INSTALL_FIREWALL='0';
+
+CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='1'; ( is-vm || is-dev ) && CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='0';
+CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='1';
+CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0'; is-vm && CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='1';
+CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='1'; is-vm && CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_FAIL2BAN='1'; in-docker && CFG_INSTALL_FAIL2BAN='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_INSTALL_UNATTENDED_UPGRADES='1'; is-vm && CFG_INSTALL_UNATTENDED_UPGRADES='0';
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+CFG_CONFIG_FILE='/app/.config.json';

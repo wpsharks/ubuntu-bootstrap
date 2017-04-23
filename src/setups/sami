@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php && [[ "${CFG_INSTALL_SAMI}" == 1 ]]; then
+if [[ "${CFG_INSTALL_SAMI}" == 1 ]]; then
 
   # Install Sami for codex generation.
 

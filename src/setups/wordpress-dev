@@ -7,20 +7,20 @@
 # - Update: `/bootstrap/src/wordpress/dev/README.md` (adjust as necessary).
 # - CloudFlare DNS records should be added for all team members.
 
-if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+if [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
 
   # Install WordPress dev containers.
+  # <https://hub.docker.com/r/chialab/php/tags/>
 
   /bootstrap/src/wordpress/install-dev 5.4;
   /bootstrap/src/wordpress/install-dev 5.5;
   /bootstrap/src/wordpress/install-dev 5.6;
   /bootstrap/src/wordpress/install-dev 7.0;
   /bootstrap/src/wordpress/install-dev 7.1;
-  # See: <https://hub.docker.com/r/chialab/php/tags/>
 
   # If this is for another user, create that user now.
 
-  if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; then
+  if [[ -n "${CFG_WORDPRESS_DEV_USERNAME}" && -n "${CFG_WORDPRESS_DEV_PASSWORD}" ]]; then
     if ! user-exists "${CFG_WORDPRESS_DEV_USERNAME}"; then
       create-admin \
         --user="${CFG_WORDPRESS_DEV_USERNAME}" \
@@ -31,13 +31,14 @@ if can-run docker && [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
         --name="${CFG_WORDPRESS_DEV_NAME}" \
         --email="${CFG_WORDPRESS_DEV_EMAIL}" \
         --shell="${CFG_WORDPRESS_DEV_PREFERRED_SHELL}" \
+        --static-ip="${CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS}" \
         --ssh-keys="${CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS}";
     fi;
-    if is-dev && is-do && do-has-floating-ip && can-run mail; then
+    if is-dev && is-do && [[ -n "${CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS}" ]] && can-run mail; then
       cp /bootstrap/src/wordpress/dev/README.md /tmp/"${CFG_HOST}".md;
 
-      perl -i -0wpe 's/%%do_floating_ip%%/'"$(esc-regex-rv "$(do-floating-ip)")"'/ug' /tmp/"${CFG_HOST}".md;
       perl -i -0wpe 's/%%do_region%%/'"$(esc-regex-rv "$(do-region)")"'/ug' /tmp/"${CFG_HOST}".md;
+      perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS}")"'/ug' /tmp/"${CFG_HOST}".md;
 
       perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_USERNAME%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_USERNAME}")"'/ug' /tmp/"${CFG_HOST}".md;
       perl -i -0wpe 's/%%CFG_WORDPRESS_DEV_PASSWORD%%/'"$(esc-regex-rv "${CFG_WORDPRESS_DEV_PASSWORD}")"'/ug' /tmp/"${CFG_HOST}".md;

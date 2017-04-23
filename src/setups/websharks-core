@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if can-run php && can-run phing && version-compare "$(php -r 'echo PHP_VERSION;')" ge 7.0.4; then
+if [[ "${CFG_INSTALL_WEBSHARKS_CORE}" == 1 ]]; then
 
   # Install websharks/core library.
 

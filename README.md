@@ -6,7 +6,7 @@
 
 #### Step 1: Satisfy Software Requirements
 
-You need VirtualBox, Vagrant, and a DNS plugin.
+You need VirtualBox, Vagrant, and a DNS plugin. The following commands will do the trick.
 
 ```bash
 $ brew cask install virtualbox;
@@ -18,7 +18,7 @@ $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 
 # ---------------------------------------------
 
-# You need only one of these. Please choose:
+# You need only one of these. See explanation below.
 $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 
@@ -28,11 +28,15 @@ $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 # This allows for special event handling. Helpful, but not required at this time.
 ```
 
-_**Note:** If you don't install Landrush and instead you go with the simpler DNS plugin `vagrant-hostsupdater` (or you choose not to install a DNS plugin at all), it will mean that your VM will have a static IP address of: `192.168.42.42`_
+##### `vagrant-hostsupdater` vs Landrush
 
-_This also means that you can only run a single VM at one time, because the static IP is the same for each VM. If you go this route and also want to run multiple VM instances at the same time you will need to change the IP address in the [`Vagrantfile`](Vagrantfile) for each additional VM that you bring up._
+The `vagrant-hostsupdater` plugin is the easiest way to get started. It's quite simple in that it merely updates the `/etc/hosts` file in macOS. This avoids any confusion. You can just `$ sudo vi /etc/hosts` and take a quick peek at what's been done after you `vagrant up` for the first time.
 
-_You can just edit the [`Vagrantfile`](Vagrantfile) and bump the IP from `192.168.42.42` (default),  to `192.168.42.43`, `192.168.42.44`, etc (for each of your additional VMS)._
+However, unlike the more powerful Landrush plugin, `vagrant-hostsupdater` doesn't automatically assign a new IP for each VM instance that you bring up. Instead, the IP is established by the `Vagrantfile`, and in the WebSharks Ubuntu Bootstrap (if you run the `vagrant-hostsupdater` plugin), your VM's IP address will always be the default hard-coded: `192.168.42.42`
+
+You may eventually want to run multiple VMs at the same time; i.e., you'll need multiple IP addresses. To accomplish this with the `vagrant-hostsupdater` plugin you'll need to edit the [`Vagrantfile`](Vagrantfile) manually. Bump the IP from `192.168.42.42` (default), to `192.168.42.43`, `192.168.42.44`, etc. — for each of your additional VM instances.
+
+The Landrush plugin is slightly heavier, but it's also more flexible. It spins up a small DNS server and redirects DNS traffic, automatically registering/unregistering IP addresses for VMs as they come up and go down. With Landrush there is no need to edit the `Vagrantfile` manually. You can run several VMs all at the same time, all on different IPs, and without needing to edit the `Vagrantfile`.
 
 #### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
 
@@ -54,64 +58,61 @@ $ vagrant up;
 
 ```bash
 $ vagrant ssh;
-$ sudo /bootstrap/src/installer; # Presents a configuration dialog.
-# Tip: To bypass the dialog use `--CFG_USE_WIZARD=0` argument to installer.
+$ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0;
 ```
 
-#### Step 5: Confirm it is Working!
+#### Step 5: Confirm Working!
 
-- Open <https://my.vm>. You should get an SSL security warning. Please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page. SSL is working as expected!
+Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning. You can avoid that warning altogether later using the details below. For now, please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page!
 
-  _The URL <https://my.vm> is not working?_
-
-  _Try flushing your DNS cache. Each time you `vagrant up`, a new IP is generated automatically that is mapped to the `my.vm` hostname. If you are working with multiple VMs, you might need to flush your DNS cache to make sure your system is mapping `my.vm` to the correct IP address. See: <http://jas.xyz/1fmAa4P> for instructions on a Mac._
+  _What if <https://my.vm> doesn't work for me?_
+  _Try [flushing your local DNS cache](https://jas.xyz/2p7Q9wr)._
 
 ---
 
 ### Additional Steps (All Optional)
 
-#### Step 6: Install Root CA
+#### Install Root CA
 
 If you'd like to always see a green SSL status for your local test sites (i.e., avoid `https://` warnings on anything ending with `.vm`), you can download and install [this root CA certificate file](https://github.com/websharks/ubuntu-bootstrap/blob/master/src/ssl/vm-ca-crt.pem) and set your trust settings to "Always Trust" for this certificate.
 
-Any SSL certificates created by the Ubuntu Bootstrap will use that root CA certificate. Trusting the root CA (it's fake, and only for the Ubuntu Bootstrap project), will green-light all of your local `.vm` domains when accessing them over `https://`. On a Mac, you can simply download, then drag n' drop the certificate file onto your Keychain.app. Open up the settings for that certification in Keychain.app and choose "Always Trust" at the top. Done! :-)
+To clarify, any SSL certificates created by the Ubuntu Bootstrap will use that root CA certificate. Trusting the root CA (it's fake, and only for the Ubuntu Bootstrap project) will green-light all of your local `.vm` domains when accessing them over `https://`.
 
-**↑ UPDATE (WARNING):** If you're on a Mac, there is a nasty bug in the Keychain application that can lock your system when attempting to 'Always Trust'. Until that bug is fixed in the Mac OS, please see the command-line alternatives demonstrated [here](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224305268) by @jaswrks and @raamdev. I suggest using [the example given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504).
+On a Mac, you can simply drag n' drop the certificate file onto your Keychain.app. Then open the settings for the certificate and choose "Always Trust" at the top.
 
-#### Step 7: Add Files to: `~/vms/my.vm/src/app/src/`
+_**Note:** Prior to macOS Sierra, there was a nasty bug in Keychain.app that would lock your system when attempting to 'Always Trust'. If you're running an older OS X release try [this command-line alternative given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504)._
 
-The is the web root. The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory of its own; e.g., `~/vms/my.vm/src/app/src/phpBB`
+#### Add Files to Web Directory
 
-#### Step 8: Understanding Environment Variables
+Doc root: `~/vms/my.vm/src/app/src/`
 
-This stack comes preconfigured with a MySQL database and environment variables you can use in any PHP config. files.
+The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory; e.g., `~/vms/my.vm/src/app/src/phpBB`
 
-- `$_SERVER['CFG_MYSQL_DB_HOST']` This is the database host name. Defaults to `127.0.0.1`. Port is `3306` (default port).
-- `$_SERVER['CFG_MYSQL_DB_NAME']` This is the database name. Defaults to `admin`.
-- `$_SERVER['CFG_MYSQL_DB_USERNAME']` This is the database username. Defaults to `admin`.
-- `$_SERVER['CFG_MYSQL_DB_PASSWORD']` This is the database password. Defaults to `admin`.
+#### Understanding Environment Variables
+
+- `$_SERVER['CFG_MYSQL_DB_HOST']` Database host.
+- `$_SERVER['CFG_MYSQL_DB_NAME']` Database name.
+- `$_SERVER['CFG_MYSQL_DB_USERNAME']` Database username.
+- `$_SERVER['CFG_MYSQL_DB_PASSWORD']` Database password.
 
 _**Tip:** For a full list of all global environment variables, see: `src/setups/env-vars` in the repo. Or, from the command-line on your VM type: `$ cat /etc/environment` (shows you the values too)._
 
-#### Step 9: Learn to Use the Tools That I've Bundled
+#### Access Web-Based Tools
 
-A username/password is required to access each of these tools. It is always the same thing.
-
-- Username: `admin` Password: `admin`
-
-Available Tools (Using Any of These is Optional):
+A username/password is required for access.
+username: `admin`, password: `admin`
 
 - <https://my.vm/---tools/pma/> PhpMyAdmin  
-  DB name: `db0`, DB username: `admin`, DB password: `admin`
-- <https://my.vm/---tools/opcache.php> PHP OPcache extension status dump.
+  DB name: `db0`, DB user: `admin`, DB pass: `admin`
+- <https://my.vm/---tools/opcache.php> OPcache dump.
 - <https://my.vm/---tools/info.php> `phpinfo()` output page.
 - <https://my.vm/---tools/fpm-status.php> PHP-FPM status page.
-- <https://my.vm/---tools/status.nginx> NGINX status page (if Nginx was installed).
-- <https://my.vm/---tools/apache-status> Apache status page (if Apache was installed).
-- <https://my.vm/---tools/apache-info> Apache page (if Apache was installed).
-- <http://my.vm:8025> MailHog web interface for reviewing test emails on a VM.
+- <https://my.vm/---tools/status.nginx> NGINX status page (default web server).
+- <https://my.vm/---tools/apache-status> Apache status page (if installed).
+- <https://my.vm/---tools/apache-info> Apache info page (if installed).
+- <http://my.vm:8025> MailHog web interface for test emails.
 
-#### Step 10: Tear it Down and Customize
+#### Tear it Down and Customize
 
 ```bash
 $ cd ~/vms/my.vm;
@@ -235,18 +236,19 @@ The following CLI arguments can be passed to `/bootstrap/src/installer`, just in
 
 _**Tip:** You can learn more about how these work and what the defaults are by looking over the [src/setups/config](src/setups/config) file carefully and perhaps searching for their use in other files found in `src/setups/*`._
 
-- `--CFG_USE_WIZARD=0|1` `0` to bypass the wizard.
+---
+
+- `--CFG_4CI=0|1` Building as a base image for a CI server?
+- `--CFG_4PKG=0|1` Building as a base image that will be packaged?
 
 ---
 
-- `--CFG_4CI=0|1` Building this as a base image for a CI server?
-- `--CFG_4PKG=0|1` Building this as a base image that will be packaged up?
+- `--CFG_USE_WIZARD=0|1` Set as `0` to bypass the wizard.
 
 ---
 
-- `--CFG_HOST=my.cool.vm` Host name. Normally this is just `my.vm`.
-- `--CFG_ROOT_HOST=cool.vm` Root host name. Normally this is the same as `CFG_HOST`.
-- `--CFG_OTHER_HOSTS=[comma-delimited]` e.g., `a.vm,b.vm,c.vm` Other hosts to resolve locally. These are only resolved inside the VM; i.e., these additional host names are added to `/etc/hosts` inside the VM so the VM will be capable of connecting to them. Mainly useful when building a base image for a CI server that is entirely self-contained.
+- `--CFG_HOST=my.cool.vm` Host name.
+- `--CFG_ROOT_HOST=cool.vm` Root host name.
 
 ---
 
@@ -259,14 +261,14 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_ADMIN_USERNAME=admin` Administrative username.
-- `--CFG_ADMIN_PASSWORD=admin` Administrative password.
+- `--CFG_ADMIN_USERNAME=admin` Admin username.
+- `--CFG_ADMIN_PASSWORD=admin` Admin password.
 
 ---
 
 - `--CFG_ADMIN_NAME='Admin Istrator'` Display name.
 - `--CFG_ADMIN_EMAIL='admin@my.cool.vm'` Admin email address.
-- `--CFG_ADMIN_PUBLIC_EMAIL='hostnamster@my.cool.vm'` Public email address.
+- `--CFG_ADMIN_PUBLIC_EMAIL='webmaster@my.cool.vm'` Public email address.
 
 ---
 
@@ -276,57 +278,8 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_AWS_ACCESS_KEY_ID=xxxxxxx...` AWS access key ID. Optional, for backups/transfers.
-- `--CFG_AWS_SECRET_ACCESS_KEY=xxxxxxx...` AWS secret access key.
-
----
-
-- `--CFG_TOOLS_USERNAME=admin` Administrative username.
-- `--CFG_TOOLS_PASSWORD=admin` Administrative password.
-
----
-
-- `--CFG_TOOLS_PMA_BLOWFISH_KEY=[key]` Secret key. Default is auto-generated.
-- `--CFG_MAINTENANCE_BYPASS_KEY=[key]` Secret key. Default is auto-generated.
-
----
-
-- `--CFG_MYSQL_DB_HOST=127.0.0.1` MySQL DB host name.
-- `--CFG_MYSQL_DB_PORT=3306` MySQL DB port number.
-
----
-
-- `--CFG_MYSQL_SSL_KEY=[file]` MySQL SSL key file.
-- `--CFG_MYSQL_SSL_CRT=[file]` MySQL SSL crt file.
-- `--CFG_MYSQL_SSL_CA=[file]` MySQL SSL ca file.
-- `--CFG_MYSQL_SSL_CIPHER=[cipher]` MySQL SSL cipher.
-
----
-
-- `--CFG_MYSQL_SSL_ENABLE=0|1` MySQL DB supports SSL connections?
-
----
-
-- `--CFG_MYSQL_DB_CHARSET=utf8mb4` MySQL DB charset.
-- `--CFG_MYSQL_DB_COLLATE=utf8mb4_unicode_ci` MySQL DB collation.
-
----
-
-- `--CFG_MYSQL_DB_NAME=db0` MySQL DB name.
-
----
-
-- `--CFG_MYSQL_DB_USERNAME=client` MySQL DB username.
-- `--CFG_MYSQL_DB_PASSWORD=[password]` Default is auto-generated.
-
----
-
-- `--CFG_MYSQL_X_DB_USERNAME=x_client` MySQL external DB username.
-- `--CFG_MYSQL_X_DB_PASSWORD=[password]` Default is auto-generated.
-
----
-
-- `--CFG_MYSQL_X_REQUIRES_SSL=0|1` External connection require SSL?
+- `--CFG_AWS_TRANSFER_ACCESS_KEY_ID=xxxxxxx...` AWS access key ID.
+- `--CFG_AWS_TRANSFER_SECRET_ACCESS_KEY=xxxxxxx...` AWS secret access key.
 
 ---
 
@@ -351,16 +304,46 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-- `--CFG_INSTALL_NGINX=0|1` Install Nginx?
-- `--CFG_INSTALL_APACHE=0|1` Install Apache?
-
----
-
-- `--CFG_WEB_SERVER_SSL_ONLY=0|1` Require https:// ?
-
----
-
 - `--CFG_INSTALL_MYSQL=0|1` Install MySQL?
+
+---
+
+- `--CFG_MYSQL_DB_HOST=127.0.0.1` MySQL DB host name.
+- `--CFG_MYSQL_DB_PORT=3306` MySQL DB port number.
+
+---
+
+- `--CFG_MYSQL_SSL_KEY=[file]` MySQL SSL key file.
+- `--CFG_MYSQL_SSL_CRT=[file]` MySQL SSL crt file.
+- `--CFG_MYSQL_SSL_CA=[file]` MySQL SSL ca file.
+- `--CFG_MYSQL_SSL_CIPHER=[cipher]` MySQL SSL cipher.
+
+---
+
+- `--CFG_MYSQL_SSL_ENABLE=0|1` MySQL over SSL?
+
+---
+
+- `--CFG_MYSQL_DB_CHARSET=utf8mb4` MySQL DB charset.
+- `--CFG_MYSQL_DB_COLLATE=utf8mb4_unicode_ci` MySQL DB collation.
+
+---
+
+- `--CFG_MYSQL_DB_NAME=db0` MySQL DB name.
+
+---
+
+- `--CFG_MYSQL_DB_USERNAME=client` MySQL DB username.
+- `--CFG_MYSQL_DB_PASSWORD=[password]` Default is auto-generated.
+
+---
+
+- `--CFG_MYSQL_X_DB_USERNAME=x_client` MySQL external DB username.
+- `--CFG_MYSQL_X_DB_PASSWORD=[password]` Default is auto-generated.
+
+---
+
+- `--CFG_MYSQL_X_REQUIRES_SSL=0|1` External connections require SSL?
 
 ---
 
@@ -372,10 +355,22 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_INSTALL_PHP_CLI=0|1` Install PHP command-line interpreter?
 - `--CFG_INSTALL_PHP_FPM=0|1` Install PHP-FPM process manager for Apache/Nginx?
 - `--CFG_INSTALL_PHP_VERSION=[7.1|7.0|5.6|5.5]` Which PHP version to install?
+
+---
+
 - `--CFG_ENABLE_PHP_OPCACHE=0|1` Enable the PHP OPcache extension?
 - `--CFG_INSTALL_PHP_XDEBUG=0|1` Install PHP XDebug extension?
 - `--CFG_ENABLE_PHP_PHAR_READONLY=0|1` Force PHAR readonly mode?
 - `--CFG_ENABLE_PHP_ASSERTIONS=0|1` Enable PHP assertions?
+
+---
+
+- `--CFG_INSTALL_COMPOSER=0|1` Install Composer?
+
+---
+
+- `--CFG_INSTALL_PMA=0|1` Install PhpMyAdmin?
+- `--CFG_PMA_BLOWFISH_KEY=[key]` Blowfish key for PMA.
 
 ---
 
@@ -385,13 +380,57 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 - `--CFG_INSTALL_PHPUNIT=0|1` Install PHPUnit?
 - `--CFG_INSTALL_SAMI=0|1` Install Sami codex generator?
 - `--CFG_INSTALL_APIGEN=0|1` Install APIGen codex generator?
-- `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
-- `--CFG_INSTALL_COMPOSER=0|1` Install Composer?
+- `--CFG_INSTALL_CACHETOOL=0|1` Install PHP-FPM cachetool?
+- `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
 - `--CFG_INSTALL_WP_I18N_TOOLS=0|1` Install WP i18n tools?
+- `--CFG_INSTALL_WEBSHARKS_CORE=0|1` Install WS Core?
 
 ---
 
-- `--CFG_INSTALL_APP_REPO=0|1` Install a Git repo for the `/app/src` directory?
+- `--CFG_INSTALL_NGINX=0|1` Install Nginx?
+- `--CFG_INSTALL_APACHE=0|1` Install Apache?
+
+---
+
+- `--CFG_WEB_SERVER_SSL_ONLY=0|1` Serve `https://` requests only?
+- `--CFG_MAINTENANCE_BYPASS_KEY=[key]` Bypass key in maintenance mode.
+
+---
+
+- `--CFG_INSTALL_CASPERJS=0|1` Install CasperJS?
+
+---
+
+- `--CFG_INSTALL_APP_REPO=0|1` Install a Git repo?
+
+---
+
+- `--CFG_INSTALL_WORDPRESS=0|1` Install WordPress?
+- `--CFG_INSTALL_WORDPRESS_VM_SYMLINKS=0|1` Install symlinks?
+
+---
+
+- `--CFG_INSTALL_WORDPRESS_DEV_CONTAINERS=0|1` Install WP dev containers?
+
+---
+
+- `--CFG_WORDPRESS_DEV_GENDER=[male|female]` WP developer gender.
+
+---
+
+- `--CFG_WORDPRESS_DEV_USERNAME=[username]` WP developer username.
+- `--CFG_WORDPRESS_DEV_PASSWORD=[password]` Default is auto-generated.
+
+---
+
+- `--CFG_WORDPRESS_DEV_NAME=[name]` WP developer name.
+- `--CFG_WORDPRESS_DEV_EMAIL=[email]` WP developer email address.
+
+---
+
+- `--CFG_WORDPRESS_DEV_PREFERRED_SHELL=/bin/zsh` Or `/bin/bash`.
+- `--CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS=[ip]` e.g., `123.456.789.0`
+- `--CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS=[file]` e.g., `/authorized_keys`
 
 ---
 
@@ -405,49 +444,12 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 ---
 
 - `--CFG_DISCOURSE_SMTP_AUTH_TYPE=login` SMTP authentication type.
-
----
-
 - `--CFG_DISCOURSE_SMTP_USERNAME=[username]` SMTP username.
 - `--CFG_DISCOURSE_SMTP_PASSWORD=[password]` SMTP password.
 
 ---
 
-- `--CFG_INSTALL_WP_CLI=0|1` Install WP CLI tool?
-
----
-
-- `--CFG_INSTALL_WORDPRESS=0|1` Install WordPress?
-- `--CFG_INSTALL_WORDPRESS_VM_SYMLINKS=0|1` Install symlinks?
-
----
-
-- `--CFG_INSTALL_WORDPRESS_DEV_CONTAINERS=0|1` Install WordPress dev containers?
-  - This installs multiple versions of PHP (running WP in Docker containers) for additional testing.
-
----
-
-- `--CFG_WORDPRESS_DEV_USERNAME=[username]` Install for another user?
-- `--CFG_WORDPRESS_DEV_PASSWORD=[password]` Default is auto-generated.
-
----
-
-- `--CFG_WORDPRESS_DEV_GENDER=[male|female]` The other user's gender.
-
----
-
-- `--CFG_WORDPRESS_DEV_NAME=[name]` The other user's name.
-- `--CFG_WORDPRESS_DEV_EMAIL=[email]` The other user's email address.
-
----
-
-- `--CFG_WORDPRESS_DEV_PREFERRED_SHELL=/bin/zsh` Or `/bin/bash`.
-- `--CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS=[file]` e.g., `/authorized_keys`
-
----
-
 - `--CFG_INSTALL_FIREWALL=0|1` Install firewall?
-- `--CFG_INSTALL_FAIL2BAN=0|1` Install Fail2Ban?
 
 ---
 
@@ -459,11 +461,15 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
+- `--CFG_INSTALL_FAIL2BAN=0|1` Install Fail2Ban?
+
+---
+
 - `--CFG_INSTALL_UNATTENDED_UPGRADES=0|1` Configure unattended upgrades?
 
 ---
 
-- `--CFG_CONFIG_FILE=/app/.config.json` This is unrelated to the installer. It's for any purpose you like. e.g., To help you configure a web-based application that will run on this VM. The value that you set here becomes a global environment variable that your application can consume in any way you like. It is expected to be a config file path on the VM.
+- `--CFG_CONFIG_FILE=/app/.config.json` This is for any purpose you like. The value that you set here becomes a global environment variable that your application can consume. If set, it should be a configuration file path on the VM. The file does not even need to exist when configured, it's simply an environment variable that you can use elsewhere in your application later.
 
 ---
 

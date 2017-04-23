@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-# Web-based tools authentication.
-
-mkdir --parents /etc/bootstrap/passwds;
-touch /etc/bootstrap/passwds/.tools;
-
-htpasswd -D /etc/bootstrap/passwds/.tools "${CFG_TOOLS_USERNAME}";
-htpasswd -cb /etc/bootstrap/passwds/.tools "${CFG_TOOLS_USERNAME}" "${CFG_TOOLS_PASSWORD}";

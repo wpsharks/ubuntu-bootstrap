@@ -32,7 +32,8 @@ function create-user() {
   done;
 
   if [[ -z "${pass}" ]]; then
-    pass="$(keygen 15)"; fi;
+    pass="$(passgen 15)";
+  fi;
 
   # Validate options.
 

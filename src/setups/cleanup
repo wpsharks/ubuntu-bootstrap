@@ -37,5 +37,6 @@ fi;
 if is-4pkg; then
   rm --force /root/.bash_history;
   rm --force /home/vagrant/.bash_history;
+  rm --force /home/ubuntu/.bash_history;
   history -c; # Erase current history.
 fi;

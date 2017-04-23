@@ -32,7 +32,7 @@ function create-admin() {
   done;
 
   if [[ -z "${pass}" ]]; then
-    pass="$(keygen 15)"; fi;
+    pass="$(passgen 15)"; fi;
 
   # Create.
 
@@ -42,11 +42,11 @@ function create-admin() {
 
   # Web-based tools auth.
 
-  if [[ "${user}" != 'root' ]]; then
+  if [[ "${user}" != 'root' && "${user}" != 'vagrant' && "${user}" != 'ubuntu' ]]; then
     mkdir --parents /etc/bootstrap/passwds;
     touch /etc/bootstrap/passwds/.tools;
 
     htpasswd -D /etc/bootstrap/passwds/.tools "${user}" &>/dev/null;
-    htpasswd -cb /etc/bootstrap/passwds/.tools "${user}" "${pass}";
+    htpasswd -b /etc/bootstrap/passwds/.tools "${user}" "${pass}";
   fi;
 };

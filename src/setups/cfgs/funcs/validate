@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2153
+
+# Validate CFGs.
+
+function cfgs-validate() {
+  local _cfg_key;
+  local cfg_key_empty='';
+  local cfg_warning='';
+
+  # Check emptys.
+
+  for _cfg_key in \
+    'CFG_HOST' \
+    'CFG_ROOT_HOST' \
+    \
+    'CFG_SLUG' \
+    'CFG_VAR' \
+    \
+    'CFG_ADMIN_GENDER' \
+    \
+    'CFG_ADMIN_USERNAME' \
+    'CFG_ADMIN_PASSWORD' \
+    \
+    'CFG_ADMIN_NAME' \
+    'CFG_ADMIN_EMAIL' \
+    'CFG_ADMIN_PUBLIC_EMAIL' \
+    \
+    'CFG_MAINTENANCE_BYPASS_KEY' \
+    ; do # None can be empty.
+
+      if [[ -z "${!_cfg_key}" ]]; then
+        cfg_key_empty="${_cfg_key}";
+        break; # Stop here.
+      fi;
+  done;
+
+  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_MYSQL}" == 1 ]]; then
+    for _cfg_key in \
+      'CFG_MYSQL_DB_HOST' \
+      'CFG_MYSQL_DB_PORT' \
+      \
+      'CFG_MYSQL_DB_CHARSET' \
+      'CFG_MYSQL_DB_COLLATE' \
+      \
+      'CFG_MYSQL_DB_NAME' \
+      \
+      'CFG_MYSQL_DB_USERNAME' \
+      'CFG_MYSQL_DB_PASSWORD' \
+      \
+      'CFG_MYSQL_X_DB_USERNAME' \
+      'CFG_MYSQL_X_DB_PASSWORD' \
+      ; do # None can be empty.
+
+        if [[ -z "${!_cfg_key}" ]]; then
+          cfg_key_empty="${_cfg_key}";
+          break; # Stop here.
+        fi;
+    done;
+  fi;
+
+  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_PMA}" == 1 ]]; then
+    if [[ -z "${CFG_PMA_BLOWFISH_KEY}" ]]; then
+      cfg_key_empty='CFG_PMA_BLOWFISH_KEY';
+    fi; # Cannot be empty.
+  fi;
+
+  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+    for _cfg_key in \
+      'CFG_WORDPRESS_DEV_GENDER' \
+      \
+      'CFG_WORDPRESS_DEV_USERNAME' \
+      'CFG_WORDPRESS_DEV_PASSWORD' \
+      \
+      'CFG_WORDPRESS_DEV_NAME' \
+      'CFG_WORDPRESS_DEV_EMAIL' \
+      \
+      'CFG_WORDPRESS_DEV_PREFERRED_SHELL' \
+      'CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS' \
+      'CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS' \
+      ; do # None can be empty.
+
+        if [[ -z "${!_cfg_key}" ]]; then
+          cfg_key_empty="${_cfg_key}";
+          break; # Stop here.
+        fi;
+    done;
+  fi;
+
+  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
+    for _cfg_key in \
+      'CFG_DISCOURSE_SMTP_HOST' \
+      'CFG_DISCOURSE_SMTP_PORT' \
+      \
+      'CFG_DISCOURSE_SMTP_AUTH_TYPE' \
+      'CFG_DISCOURSE_SMTP_USERNAME' \
+      'CFG_DISCOURSE_SMTP_PASSWORD' \
+      ; do # None can be empty.
+
+        if [[ -z "${!_cfg_key}" ]]; then
+          cfg_key_empty="${_cfg_key}";
+          break; # Stop here.
+        fi;
+    done;
+  fi;
+
+  # Validation; any problems?
+
+  if [[ -n "${cfg_key_empty}" ]]; then
+
+    cfg_warning='-- Config Errors Exist -------------------------------------------------------------'$'\n';
+    cfg_warning+='The following configuration key is empty: `'"${cfg_key_empty}"'`'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && is-vm; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='The WebSharks SSL CA files require a production server.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_MAILHOG}" == 1 ]] && ! is-vm; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='The installation of MailHog applies only when running a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_POSTFIX}" == 1 && "${CFG_INSTALL_MAILHOG}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Please install Postfix or MailHog (not both).'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_NGINX}" == 1 && "${CFG_INSTALL_APACHE}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Please choose Nginx or Apache (not both). These run on the same ports.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ ( "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 ) && "${CFG_INSTALL_PHP_FPM}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Nginx or Apache you must also install PHP-FPM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_APP_REPO}" == 1 && "${CFG_INSTALL_PHING}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install an app repo you must also install Phing.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && "${CFG_INSTALL_DOCKER}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Discourse you must also install Docker.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_DISCOURSE}" == 1 && ( "${CFG_INSTALL_OPENVPN}" == 1 \
+          || "${CFG_INSTALL_NGINX}" == 1 || "${CFG_INSTALL_APACHE}" == 1 \
+          || "${CFG_INSTALL_PHP_FPM}" == 1 || "${CFG_INSTALL_MYSQL}" == 1 \
+          || "${CFG_INSTALL_MEMCACHE}" == 1 || "${CFG_INSTALL_APP_REPO}" == 1 \
+          || "${CFG_INSTALL_WORDPRESS}" == 1 || "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 \
+        ) ]]; then
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install Discourse, services like OpenVPN, Nginx, Apache, MySQL, PHP-FPM,';
+    cfg_warning+=' WordPress, etc. should be excluded. Discourse should run on a server by itself.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_WORDPRESS}" == 1 && "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && ! is-vm; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='The installation of VM symlinks applies only when running a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 && "${CFG_INSTALL_DOCKER}" != 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='If you install WordPress dev containers you must also install Docker.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif [[ "${CFG_INSTALL_FIREWALL}" == 1 && "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && is-vm; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='CloudFlare integration is not possible when running on a VM.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  elif in-docker && [[ "${CFG_INSTALL_DOCKER}" == 1 \
+    || "${CFG_INSTALL_OPENVPN}" == 1 || "${CFG_INSTALL_SWAP}" == 1 || "${CFG_INSTALL_RAMDISK}" == 1 \
+    || "${CFG_INSTALL_FIREWALL}" == 1 || "${CFG_INSTALL_FAIL2BAN}" == 1 ]]; then
+
+    cfg_warning='-- Installation Conflict -----------------------------------------------------------'$'\n';
+    cfg_warning+='Inside Docker, please exclude: Docker, OpenVPN, Swap, RAM Disk, Firewall, and Fail2Ban.'$'\n';
+    cfg_warning+='-----------------------------------------------------------------------------------'$'\n';
+
+  fi; # End conflicts/validation.
+
+  # Should we fail? i.e., warning exists?
+
+  if [[ -n "${cfg_warning}" ]]; then
+
+    if [[ "${CFG_USE_WIZARD}" != 1 ]]; then
+      echo "${cfg_warning}";
+      exit 1;
+
+    else # Simply return a false response in this case.
+
+      cfg_warning+='Press any key to start again w/ current options...'$'\n';
+      read -n1 -rsp "${cfg_warning}";
+      return 1;
+
+    fi; # End conditional error handling.
+
+  fi; # End validation and warning presentation.
+
+  return 0; # No problems.
+};

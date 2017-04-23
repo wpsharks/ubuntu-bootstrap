@@ -6,7 +6,47 @@ addgroup app;
 addgroup ssh-access;
 addgroup sftp-only;
 
-# Create & setup admin.
+# Setup root admin.
+
+setup-admin \
+  --user=root \
+  --name="${CFG_ADMIN_NAME}" \
+  --email="${CFG_ADMIN_EMAIL}" \
+  --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
+  --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
+  --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
+
+# Maybe setup system admins.
+
+if is-vagrant && user-exists ubuntu; then
+
+  setup-admin \
+    --user=ubuntu \
+    --name="${CFG_ADMIN_NAME}" \
+    --email="${CFG_ADMIN_EMAIL}" \
+    --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
+    --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
+    --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
+
+  # In case `/etc/sudoers` is modified by initial `upgrade`.
+  echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu;
+fi;
+
+if is-vagrant && user-exists vagrant; then
+
+  setup-admin \
+    --user=vagrant \
+    --name="${CFG_ADMIN_NAME}" \
+    --email="${CFG_ADMIN_EMAIL}" \
+    --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
+    --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
+    --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
+
+  # In case `/etc/sudoers` is modified by initial `upgrade`.
+  echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
+fi;
+
+# Create & setup 'the' admin.
 
 create-admin \
   --user="${CFG_ADMIN_USERNAME}" \
@@ -17,41 +57,5 @@ setup-admin \
   --name="${CFG_ADMIN_NAME}" \
   --email="${CFG_ADMIN_EMAIL}" \
   --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
-  --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}";
-
-# Maybe setup `ubuntu`, `vagrant` admins.
-
-if is-vagrant && user-exists ubuntu; then
-
-  setup-admin \
-    --user=ubuntu \
-    --name="${CFG_ADMIN_NAME}" \
-    --email="${CFG_ADMIN_EMAIL}" \
-    --shell="${CFG_ADMIN_PREFERRED_SHELL}";
-
-  # In case `/etc/sudoers` is modified by initial `upgrade`.
-  echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu;
-fi;
-if is-vagrant && user-exists vagrant; then
-
-  setup-admin \
-    --user=vagrant \
-    --name="${CFG_ADMIN_NAME}" \
-    --email="${CFG_ADMIN_EMAIL}" \
-    --shell="${CFG_ADMIN_PREFERRED_SHELL}";
-
-  # In case `/etc/sudoers` is modified by initial `upgrade`.
-  echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
-fi;
-# Setup root admin.
-
-setup-admin \
-  --user=root \
-  --name="${CFG_ADMIN_NAME}" \
-  --email="${CFG_ADMIN_EMAIL}" \
-  --shell="${CFG_ADMIN_PREFERRED_SHELL}";
-
-# Authentication for web-based tools.
-
-mkdir --parents /etc/bootstrap/passwds;
-htpasswd -cb /etc/bootstrap/passwds/.tools "${CFG_TOOLS_USERNAME}" "${CFG_TOOLS_PASSWORD}";
+  --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
+  --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";

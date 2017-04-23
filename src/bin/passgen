@@ -10,6 +10,6 @@ if [[ "$(whoami)" != 'root' ]]; then
 . /bootstrap/src/bash/strict-mode;
 . /bootstrap/src/bash/functions;
 
-# Remove broken symlinks.
+# Generate.
 
-rm-broken-lns "${@}";
+passgen "${@}";

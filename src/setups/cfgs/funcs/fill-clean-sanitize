@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2153
+
+# Fill, clean, sanitize.
+
+function cfgs-fill-clean-sanitize() {
+  local _cfg_key;
+
+  cfgs-fill-rcs;
+
+  # Trim all values.
+
+  for _cfg_key in "${cfgs[@]}"; do
+    export "${_cfg_key}"="$(trim "${!_cfg_key}")";
+  done;
+
+  # Lowercase these.
+
+  CFG_HOST="${CFG_HOST,,}";
+  CFG_ROOT_HOST="${CFG_ROOT_HOST,,}";
+
+  CFG_SLUG="${CFG_SLUG,,}";
+  CFG_VAR="${CFG_VAR,,}";
+
+  CFG_ADMIN_GENDER="${CFG_ADMIN_GENDER,,}";
+  CFG_ADMIN_USERNAME="${CFG_ADMIN_USERNAME,,}";
+  CFG_ADMIN_EMAIL="${CFG_ADMIN_EMAIL,,}";
+  CFG_ADMIN_PUBLIC_EMAIL="${CFG_ADMIN_PUBLIC_EMAIL,,}";
+
+  CFG_MYSQL_DB_HOST="${CFG_MYSQL_DB_HOST,,}";
+  CFG_MYSQL_DB_CHARSET="${CFG_MYSQL_DB_CHARSET,,}";
+  CFG_MYSQL_DB_COLLATE="${CFG_MYSQL_DB_COLLATE,,}";
+  CFG_MYSQL_DB_NAME="${CFG_MYSQL_DB_NAME,,}";
+  CFG_MYSQL_DB_USERNAME="${CFG_MYSQL_DB_USERNAME,,}";
+  CFG_MYSQL_X_DB_USERNAME="${CFG_MYSQL_X_DB_USERNAME,,}";
+
+  CFG_WORDPRESS_DEV_GENDER="${CFG_WORDPRESS_DEV_GENDER,,}";
+  CFG_WORDPRESS_DEV_USERNAME="${CFG_WORDPRESS_DEV_USERNAME,,}";
+  CFG_WORDPRESS_DEV_EMAIL="${CFG_WORDPRESS_DEV_EMAIL,,}";
+
+  CFG_DISCOURSE_SMTP_HOST="${CFG_DISCOURSE_SMTP_HOST,,}";
+  CFG_DISCOURSE_SMTP_AUTH_TYPE="${CFG_DISCOURSE_SMTP_AUTH_TYPE,,}";
+  CFG_DISCOURSE_SMTP_USERNAME="${CFG_DISCOURSE_SMTP_USERNAME,,}";
+
+  if [[ -z "${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" || ! -f "${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" ]]; then
+    if ! is-vm && [[ -f /root/.ssh/authorized_keys ]]; then
+      CFG_ADMIN_AUTHORIZED_SSH_KEYS=/root/.ssh/authorized_keys;
+    fi;
+  fi;
+};

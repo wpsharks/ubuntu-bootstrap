@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+# Password generator.
+
+function passgen() {
+  # Initialize.
+
+  local salt='';
+  local pepper='';
+  local seasoning='';
+  local length='';
+  local number='';
+
+  local allowed_chars='a-zA-Z0-9!?@#$%^&+=';
+  local fill_chars; fill_chars="$(printf '!?@#$%%^&+=%.0s' {1..250})";
+
+  # Parse options.
+
+  local short_options='s:p:l:n:';
+  local long_options='salt:,pepper:,length:,number:';
+  local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
+
+  eval set -- "${options}"; while true; do
+     case "${1}" in
+        -s|--salt)
+          salt="${2}";
+          shift 2;
+          ;;
+        -p|--pepper)
+          pepper="${2}";
+          shift 2;
+          ;;
+        -l|--length)
+          length="${2}";
+          shift 2;
+          ;;
+        -n|--number)
+          number="${2}";
+          shift 2;
+          ;;
+        --) shift 1; break;
+          ;;
+        *) echo 'Internal error.'; exit 1;
+          ;;
+     esac;
+  done;
+
+  [[ -z "${length}" ]] && length="${1:-}";
+  [[ -z "${length}" ]] && length=15;
+
+  [[ -z "${number}" ]] && number="${2:-}";
+  [[ -z "${number}" ]] && number=1;
+
+  # Allow newline when generating multiple.
+
+  [[ "${number}" -gt 1 ]] && allowed_chars+='\n';
+
+  # Generate strong password with numerals, mixed caSe, & symbols.
+
+  if [[ -n "${salt}" || -n "${pepper}" ]]; then
+
+    seasoning="$(echo -n "${salt}${pepper}" | tr -d '#\n')";
+
+    if [[ ! -f /etc/bootstrap/pwgen/key ]]; then
+      mkdir --parents /etc/bootstrap/pwgen; # Produces 4096 random bytes in a specific range of characters.
+      echo "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9!?@#$%^&+=' | fold -w 4096 | head -n 1)" > /etc/bootstrap/pwgen/key;
+    fi; # Needed only when there is seasoning. This is the basis for the SHA-1 algo in `pwgen`. See `man pwgen` for details.
+
+    pwgen -1 --capitalize --numerals --symbols --secure --sha1='/etc/bootstrap/pwgen/key#'"${seasoning}" "${length}" "${number}" | tr -c "${allowed_chars}" "${fill_chars}";
+
+  else pwgen -1 --capitalize --numerals --symbols --secure "${length}" "${number}" | tr -c "${allowed_chars}" "${fill_chars}"; fi;
+};

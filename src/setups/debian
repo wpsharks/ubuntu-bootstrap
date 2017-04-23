@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Non-interactive installs.
-
-export DEBIAN_FRONTEND=noninteractive;

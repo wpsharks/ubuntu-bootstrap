@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2153
+
+# Fills replacement codes.
+
+function cfgs-fill-rcs() {
+  local _cfg_key;
+  local _cfg_rc_key;
+
+  for _cfg_key in "${cfgs[@]}"; do
+    if [[ -z "${1:-}" || "${_cfg_key}" == "${1}" ]]; then
+      for _cfg_rc_key in "${cfgs[@]}"; do
+        export "${_cfg_key}"="${!_cfg_key//%%${_cfg_rc_key}%%/${!_cfg_rc_key}}";
+      done;
+    fi;
+  done;
+};

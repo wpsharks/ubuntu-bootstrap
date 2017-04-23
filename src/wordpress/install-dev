@@ -59,14 +59,14 @@ perl -i -0wpe 's/%%CFG_MYSQL_DB_NAME%%/'"$(esc-regex-rv "${php_v_db}")"'/ug' "${
 perl -i -0wpe 's/%%CFG_MYSQL_DB_USERNAME%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_USERNAME}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 perl -i -0wpe 's/%%CFG_MYSQL_DB_PASSWORD%%/'"$(esc-regex-rv "${CFG_MYSQL_X_DB_PASSWORD}")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
-perl -i -0wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%LOGGED_IN_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%NONCE_KEY%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
-perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(keygen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%AUTH_KEY%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%SECURE_AUTH_KEY%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%LOGGED_IN_KEY%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%NONCE_KEY%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%AUTH_SALT%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%SECURE_AUTH_SALT%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%LOGGED_IN_SALT%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
+perl -i -0wpe 's/%%NONCE_SALT%%/'"$(esc-regex-rv "$(passgen 64)")"'/ug' "${php_v_src_dir}"/wp-config.php;
 
 # Setup the WordPress installation guard key.
 

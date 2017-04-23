@@ -2,23 +2,33 @@
 
 # Install utilities.
 
+apt-get install build-essential --yes;
+
 apt-get install g++ --yes;
 apt-get install cmake --yes;
 apt-get install libtool --yes;
 apt-get install autoconf --yes;
 apt-get install pkg-config --yes;
-apt-get install libssl-dev --yes;
-apt-get install apache2-utils --yes;
-apt-get install build-essential --yes;
+
 apt-get install coreutils --yes;
-apt-get install gettext --yes;
+apt-get install apache2-utils --yes;
+
 apt-get install gnupg2 --yes;
+apt-get install openssl --yes;
+apt-get install libssl-dev --yes;
+
+apt-get install curl --yes;
+
 apt-get install zip --yes;
 apt-get install unzip --yes;
-apt-get install curl --yes;
+
+apt-get install pwgen --yes;
+
+apt-get install gettext --yes;
 apt-get install man --yes;
 
 apt-get install pngquant --yes;
+
 apt-get install pandoc --yes;
 apt-get install pandoc-citeproc --yes;
 

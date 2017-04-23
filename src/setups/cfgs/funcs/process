@@ -1,0 +1,450 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2153
+
+# Process CFGs.
+
+function process-cfgs() {
+  # Initialize.
+
+  local cfgs_confirmed='0';
+  local _cfg_key _i _cfg_value;
+  local _cfg_package_options _cfg_package_option;
+  local _cfg_response; # All of these are used below.
+
+  # Apply CLI args.
+
+  cfgs-apply-cli-args;
+
+  # If not using wizard, keep it simple.
+
+  if [[ "${CFG_USE_WIZARD}" != 1 ]]; then
+
+    cfgs-fill-clean-sanitize;
+    cfgs-validate;
+    cfgs-finalize-rectify;
+
+  else # Begin wizard loop & continue until we get confirmation.
+
+    apt-get install dialog --yes; # CLI interface dialog.
+    export DIALOGRC=/bootstrap/src/tpl.home/.dialogrc;
+
+    while [[ "${cfgs_confirmed}" != 1 ]]; do
+
+      ## Admin details.
+
+      for _cfg_key in \
+        'CFG_ADMIN_GENDER' \
+        \
+        'CFG_ADMIN_USERNAME' \
+        'CFG_ADMIN_PASSWORD' \
+        \
+        'CFG_ADMIN_NAME' \
+        'CFG_ADMIN_EMAIL' \
+        'CFG_ADMIN_PUBLIC_EMAIL' \
+        \
+        'CFG_ADMIN_PREFERRED_SHELL' \
+        'CFG_ADMIN_STATIC_IP_ADDRESS' \
+        'CFG_ADMIN_AUTHORIZED_SSH_KEYS' \
+        \
+        'CFG_AWS_TRANSFER_ACCESS_KEY_ID' \
+        'CFG_AWS_TRANSFER_SECRET_ACCESS_KEY' \
+        ; do _i=0; # Ask at least once.
+
+          cfgs-fill-rcs "${_cfg_key}";
+
+          while [[ "${_i}" -lt 1 || -z "${!_cfg_key}" ]]; do _i=$((_i+1));
+
+            _cfg_value="$( \
+              dialog \
+              \
+              --backtitle 'Configuration' \
+              --title 'Admin Details' \
+              --no-cancel \
+              \
+              --inputbox "${_cfg_key}" 8 75 "${!_cfg_key}" \
+              \
+              3>&1 1>&2 2>&3)"; # Output collection.
+
+            export "${_cfg_key}"="${_cfg_value}";
+
+          done;
+      done;
+
+      ## Installation package options.
+
+      _cfg_package_options="$( \
+        dialog \
+        \
+        --backtitle 'Configuration' \
+        --title 'Installation Package Options' \
+        --no-cancel \
+        \
+        --separate-output --checklist 'Use space bar to toggle.' 25 75 25 \
+        \
+        'CFG_INSTALL_SWAP' 'Install?' "$([[ "${CFG_INSTALL_SWAP}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_WS_CA_FILES' 'Install?' "$([[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_POSTFIX' 'Install?' "$([[ "${CFG_INSTALL_POSTFIX}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_MAILHOG' 'Install?' "$([[ "${CFG_INSTALL_MAILHOG}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_OPENVPN' 'Install?' "$([[ "${CFG_INSTALL_OPENVPN}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_DOCKER' 'Install?' "$([[ "${CFG_INSTALL_DOCKER}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_MYSQL' 'Install?' "$([[ "${CFG_INSTALL_MYSQL}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_MEMCACHE' 'Install?' "$([[ "${CFG_INSTALL_MEMCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_RAMDISK' 'Install?' "$([[ "${CFG_INSTALL_RAMDISK}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_PHP_CLI' 'Install?' "$([[ "${CFG_INSTALL_PHP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHP_FPM' 'Install?' "$([[ "${CFG_INSTALL_PHP_FPM}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_ENABLE_PHP_OPCACHE' 'Enable?' "$([[ "${CFG_ENABLE_PHP_OPCACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHP_XDEBUG' 'Install?' "$([[ "${CFG_INSTALL_PHP_XDEBUG}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_ENABLE_PHP_PHAR_READONLY' 'Enable?' "$([[ "${CFG_ENABLE_PHP_PHAR_READONLY}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_ENABLE_PHP_ASSERTIONS' 'Enable?' "$([[ "${CFG_ENABLE_PHP_ASSERTIONS}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_COMPOSER' 'Install?' "$([[ "${CFG_INSTALL_COMPOSER}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PMA' 'Install?' "$([[ "${CFG_INSTALL_PMA}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_PSYSH' 'Install?' "$([[ "${CFG_INSTALL_PSYSH}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHPCS' 'Install?' "$([[ "${CFG_INSTALL_PHPCS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHING' 'Install?' "$([[ "${CFG_INSTALL_PHING}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_PHPUNIT' 'Install?' "$([[ "${CFG_INSTALL_PHPUNIT}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_SAMI' 'Install?' "$([[ "${CFG_INSTALL_SAMI}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_APIGEN' 'Install?' "$([[ "${CFG_INSTALL_APIGEN}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_CACHETOOL' 'Install?' "$([[ "${CFG_INSTALL_CACHETOOL}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WP_CLI' 'Install?' "$([[ "${CFG_INSTALL_WP_CLI}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WP_I18N_TOOLS' 'Install?' "$([[ "${CFG_INSTALL_WP_I18N_TOOLS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WEBSHARKS_CORE' 'Install?' "$([[ "${CFG_INSTALL_WEBSHARKS_CORE}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_NGINX' 'Install?' "$([[ "${CFG_INSTALL_NGINX}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_APACHE' 'Install?' "$([[ "${CFG_INSTALL_APACHE}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_WEB_SERVER_SSL_ONLY' 'SSL only?' "$([[ "${CFG_WEB_SERVER_SSL_ONLY}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_CASPERJS' 'Install?' "$([[ "${CFG_INSTALL_CASPERJS}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_APP_REPO' 'Install?' "$([[ "${CFG_INSTALL_APP_REPO}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_WORDPRESS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_INSTALL_WORDPRESS_VM_SYMLINKS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_VM_SYMLINKS}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_WORDPRESS_DEV_CONTAINERS' 'Install?' "$([[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_DISCOURSE' 'Install?' "$([[ "${CFG_INSTALL_DISCOURSE}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_FIREWALL' 'Install?' "$([[ "${CFG_INSTALL_FIREWALL}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22' 'Enable?' "$([[ "${CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306' 'Enable?' "$([[ "${CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN' 'Enable?' "$([[ "${CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN}" == 1 ]] && echo 'on' || echo 'off')" \
+        'CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443' 'Enable?' "$([[ "${CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_FAIL2BAN' 'Install?' "$([[ "${CFG_INSTALL_FAIL2BAN}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        'CFG_INSTALL_UNATTENDED_UPGRADES' 'Install?' "$([[ "${CFG_INSTALL_UNATTENDED_UPGRADES}" == 1 ]] && echo 'on' || echo 'off')" \
+        \
+        3>&1 1>&2 2>&3)"; # Output collection.
+
+      CFG_INSTALL_SWAP='0';
+
+      CFG_INSTALL_WS_CA_FILES='0';
+
+      CFG_INSTALL_POSTFIX='0';
+      CFG_INSTALL_MAILHOG='0';
+
+      CFG_INSTALL_OPENVPN='0';
+
+      CFG_INSTALL_DOCKER='0';
+
+      CFG_INSTALL_MYSQL='0';
+
+      CFG_INSTALL_MEMCACHE='0';
+      CFG_INSTALL_RAMDISK='0';
+
+      CFG_INSTALL_PHP_CLI='0';
+      CFG_INSTALL_PHP_FPM='0';
+
+      CFG_ENABLE_PHP_OPCACHE='0';
+      CFG_INSTALL_PHP_XDEBUG='0';
+      CFG_ENABLE_PHP_PHAR_READONLY='0';
+      CFG_ENABLE_PHP_ASSERTIONS='0';
+
+      CFG_INSTALL_COMPOSER='0';
+      CFG_INSTALL_PMA='0';
+
+      CFG_INSTALL_PSYSH='0';
+      CFG_INSTALL_PHPCS='0';
+      CFG_INSTALL_PHING='0';
+      CFG_INSTALL_PHPUNIT='0';
+      CFG_INSTALL_SAMI='0';
+      CFG_INSTALL_APIGEN='0';
+      CFG_INSTALL_CACHETOOL='0';
+      CFG_INSTALL_WP_CLI='0';
+      CFG_INSTALL_WP_I18N_TOOLS='0';
+      CFG_INSTALL_WEBSHARKS_CORE='0';
+
+      CFG_INSTALL_NGINX='0';
+      CFG_INSTALL_APACHE='0';
+      CFG_WEB_SERVER_SSL_ONLY='0';
+
+      CFG_INSTALL_CASPERJS='0';
+
+      CFG_INSTALL_APP_REPO='0';
+
+      CFG_INSTALL_WORDPRESS='0';
+      CFG_INSTALL_WORDPRESS_VM_SYMLINKS='0';
+
+      CFG_INSTALL_WORDPRESS_DEV_CONTAINERS='0';
+
+      CFG_INSTALL_DISCOURSE='0';
+
+      CFG_INSTALL_FIREWALL='0';
+      CFG_FIREWALL_ALLOWS_ADMIN_ONLY_VIA_22='0';
+      CFG_FIREWALL_ALLOWS_MYSQL_VIA_3306='0';
+      CFG_FIREWALL_ALLOWS_MYSQL_INSIDE_VPN='0';
+      CFG_FIREWALL_ALLOWS_CF_ONLY_VIA_80_443='0';
+
+      CFG_INSTALL_FAIL2BAN='0';
+
+      CFG_INSTALL_UNATTENDED_UPGRADES='0';
+
+      for _cfg_package_option in $_cfg_package_options; do
+        export "${_cfg_package_option}"='1'; done;
+
+      ## MySQL installation details.
+
+      if [[ "${CFG_INSTALL_MYSQL}" == 1 ]]; then
+        if dialog \
+          \
+          --backtitle 'Configuration' \
+          --title 'Configure MySQL details?' \
+          --no-cancel \
+          \
+          --yes-label 'Yes (Configure)' \
+          --no-label 'No (Use Defaults)' \
+          --yesno '' 5 75; then
+
+            for _cfg_key in \
+              'CFG_MYSQL_DB_HOST' \
+              'CFG_MYSQL_DB_PORT' \
+              \
+              'CFG_MYSQL_SSL_ENABLE' \
+              \
+              'CFG_MYSQL_DB_CHARSET' \
+              'CFG_MYSQL_DB_COLLATE' \
+              \
+              'CFG_MYSQL_DB_NAME' \
+              \
+              'CFG_MYSQL_DB_USERNAME' \
+              'CFG_MYSQL_DB_PASSWORD' \
+              \
+              'CFG_MYSQL_X_DB_USERNAME' \
+              'CFG_MYSQL_X_DB_PASSWORD' \
+              \
+              'CFG_MYSQL_X_REQUIRES_SSL' \
+              ; do
+                cfgs-fill-rcs "${_cfg_key}";
+
+                _cfg_value="$( \
+                  dialog \
+                  \
+                  --backtitle 'Configuration' \
+                  --title 'MySQL Details' \
+                  --no-cancel \
+                  \
+                  --inputbox "${_cfg_key}" 10 70 "${!_cfg_key}" \
+                  \
+                  3>&1 1>&2 2>&3)"; # Output collection.
+
+                export "${_cfg_key}"="${_cfg_value}";
+            done;
+        fi;
+      fi;
+
+      ## PHP installation details.
+
+      if [[ "${CFG_INSTALL_PHP_CLI}" == 1 || "${CFG_INSTALL_PHP_FPM}" == 1 ]]; then
+        if dialog \
+          \
+          --backtitle 'Configuration' \
+          --title 'Configure PHP details?' \
+          --no-cancel \
+          \
+          --yes-label 'Yes (Configure)' \
+          --no-label 'No (Use Defaults)' \
+          --yesno '' 5 75; then
+
+            for _cfg_key in \
+              'CFG_INSTALL_PHP_VERSION' \
+              'CFG_PMA_BLOWFISH_KEY' \
+              ; do
+                cfgs-fill-rcs "${_cfg_key}";
+
+                _cfg_value="$( \
+                  dialog \
+                  \
+                  --backtitle 'Configuration' \
+                  --title 'PHP Details' \
+                  --no-cancel \
+                  \
+                  --inputbox "${_cfg_key}" 10 70 "${!_cfg_key}" \
+                  \
+                  3>&1 1>&2 2>&3)"; # Output collection.
+
+                export "${_cfg_key}"="${_cfg_value}";
+            done;
+        fi;
+      fi;
+
+      ## WP dev container installation details.
+
+      if [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+        if dialog \
+          \
+          --backtitle 'Configuration' \
+          --title 'Configure WP dev container details?' \
+          --no-cancel \
+          \
+          --yes-label 'Yes (Configure)' \
+          --no-label 'No (Use Defaults)' \
+          --yesno '' 5 75; then
+
+            for _cfg_key in \
+              'CFG_WORDPRESS_DEV_GENDER' \
+              \
+              'CFG_WORDPRESS_DEV_USERNAME' \
+              'CFG_WORDPRESS_DEV_PASSWORD' \
+              \
+              'CFG_WORDPRESS_DEV_NAME' \
+              'CFG_WORDPRESS_DEV_EMAIL' \
+              \
+              'CFG_WORDPRESS_DEV_PREFERRED_SHELL' \
+              'CFG_WORDPRESS_DEV_STATIC_IP_ADDRESS' \
+              'CFG_WORDPRESS_DEV_AUTHORIZED_SSH_KEYS' \
+              ; do
+                cfgs-fill-rcs "${_cfg_key}";
+
+                _cfg_value="$( \
+                  dialog \
+                  \
+                  --backtitle 'Configuration' \
+                  --title 'WordPress Dev Container Details' \
+                  --no-cancel \
+                  \
+                  --inputbox "${_cfg_key}" 10 70 "${!_cfg_key}" \
+                  \
+                  3>&1 1>&2 2>&3)"; # Output collection.
+
+                export "${_cfg_key}"="${_cfg_value}";
+            done;
+        fi;
+      fi;
+
+      ## Discourse installation details.
+
+      if [[ "${CFG_INSTALL_DISCOURSE}" == 1 ]]; then
+        if dialog \
+          \
+          --backtitle 'Configuration' \
+          --title 'Configure Discourse details?' \
+          --no-cancel \
+          \
+          --yes-label 'Yes (Configure)' \
+          --no-label 'No (Use Defaults)' \
+          --yesno '' 5 75; then
+
+            for _cfg_key in \
+              'CFG_DISCOURSE_SMTP_HOST' \
+              'CFG_DISCOURSE_SMTP_PORT' \
+              \
+              'CFG_DISCOURSE_SMTP_AUTH_TYPE' \
+              'CFG_DISCOURSE_SMTP_USERNAME' \
+              'CFG_DISCOURSE_SMTP_PASSWORD' \
+              ; do
+                cfgs-fill-rcs "${_cfg_key}";
+
+                _cfg_value="$( \
+                  dialog \
+                  \
+                  --backtitle 'Configuration' \
+                  --title 'Discourse Details' \
+                  --no-cancel \
+                  \
+                  --inputbox "${_cfg_key}" 10 70 "${!_cfg_key}" \
+                  \
+                  3>&1 1>&2 2>&3)"; # Output collection.
+
+                export "${_cfg_key}"="${_cfg_value}";
+            done;
+        fi;
+      fi;
+
+      ## Ask if they want to configure additional specifics.
+
+      if dialog \
+        \
+        --backtitle 'Configuration' \
+        --title 'Configure additional details?' \
+        --no-cancel \
+        \
+        --yes-label 'Yes (Configure)' \
+        --no-label 'No (Use Defaults)' \
+        --yesno '' 5 75; then
+
+          ### Ask for additional specific details.
+
+          for _cfg_key in \
+            'CFG_MAINTENANCE_BYPASS_KEY' \
+            'CFG_CONFIG_FILE' \
+            ; do
+              cfgs-fill-rcs "${_cfg_key}";
+
+              _cfg_value="$( \
+                dialog \
+                \
+                --backtitle 'Configuration' \
+                --title 'Additional Details' \
+                --no-cancel \
+                \
+                --inputbox "${_cfg_key}" 10 70 "${!_cfg_key}" \
+                \
+                3>&1 1>&2 2>&3)"; # Output collection occurs here.
+
+              export "${_cfg_key}"="${_cfg_value}";
+          done;
+      fi;
+
+      ## Fill, clean, sanitize.
+
+      cfgs-fill-clean-sanitize;
+
+      ## Validate config values now.
+
+      if ! cfgs-validate; then
+        continue; fi;
+
+      ## Finalize & rectify.
+
+      cfgs-finalize-rectify;
+
+      ## Sanitize & print list of all config vars now.
+
+      echo 'Your configuration looks like this:';
+      echo '-----------------------------------------';
+
+      for _cfg_key in "${cfgs[@]}"; do
+        echo '--'"${_cfg_key}"'='"'${!_cfg_key}'"' \'; done;
+
+      ## Quick review; ask for confirmation.
+
+      read -rp 'Does this all look right? [y/N] ' _cfg_response;
+      _cfg_response="${_cfg_response,,}"; # To lowercase.
+
+      if [[ "${_cfg_response}" =~ ^(yes|y)$ ]]; then
+        cfgs_confirmed='1'; fi;
+
+    done;
+  fi;
+  return 0; # Ready to go!
+};
