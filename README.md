@@ -60,8 +60,8 @@ $ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0;
 
 Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning. You can avoid that warning altogether later using the details below. For now, please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page!
 
-  _What if <https://my.vm> doesn't work for me?_
-  _Try [flushing your local DNS cache](https://jas.xyz/2p7Q9wr)._
+**Q:** What if <https://my.vm> doesn't work for me?
+**A:** Try [flushing your local DNS cache](https://jas.xyz/2p7Q9wr).
 
 ---
 
