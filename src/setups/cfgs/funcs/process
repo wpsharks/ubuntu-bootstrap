@@ -7,7 +7,7 @@ function process-cfgs() {
   # Initialize.
 
   local cfgs_confirmed='0';
-  local _cfg_key _i _cfg_value;
+  local _cfg_key _cfg_value;
   local _cfg_package_options _cfg_package_option;
   local _cfg_response; # All of these are used below.
 
@@ -48,26 +48,22 @@ function process-cfgs() {
         \
         'CFG_AWS_TRANSFER_ACCESS_KEY_ID' \
         'CFG_AWS_TRANSFER_SECRET_ACCESS_KEY' \
-        ; do _i=0; # Ask at least once.
+        ; do # Ask at least once.
 
           cfgs-fill-rcs "${_cfg_key}";
 
-          while [[ "${_i}" -lt 1 || -z "${!_cfg_key}" ]]; do _i=$((_i+1));
+          _cfg_value="$( \
+            dialog \
+            \
+            --backtitle 'Configuration' \
+            --title 'Admin Details' \
+            --no-cancel \
+            \
+            --inputbox "${_cfg_key}" 8 75 "${!_cfg_key}" \
+            \
+            3>&1 1>&2 2>&3)"; # Output collection.
 
-            _cfg_value="$( \
-              dialog \
-              \
-              --backtitle 'Configuration' \
-              --title 'Admin Details' \
-              --no-cancel \
-              \
-              --inputbox "${_cfg_key}" 8 75 "${!_cfg_key}" \
-              \
-              3>&1 1>&2 2>&3)"; # Output collection.
-
-            export "${_cfg_key}"="${_cfg_value}";
-
-          done;
+          export "${_cfg_key}"="${_cfg_value}";
       done;
 
       ## Installation package options.

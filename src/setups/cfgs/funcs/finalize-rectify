@@ -108,7 +108,7 @@ function cfgs-finalize-rectify() {
 
   # --------------------------------------------------------------------------------------------------------------------
 
-  if [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" != 1 ]]; then
+  if [[ "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" != 1 || -z "${CFG_WORDPRESS_DEV_USERNAME}" ]]; then
     CFG_WORDPRESS_DEV_GENDER='';
 
     CFG_WORDPRESS_DEV_USERNAME='';

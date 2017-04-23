@@ -20,6 +20,8 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 if [[ ! -f /bootstrap/.installed-version ]]; then
 
+  umask 0002; # Use eventual umask while installing.
+
   # --------------------------------------------------------------------------------------------------------------------
 
   export CFG_INSTALLED_VERSION='';
@@ -27,14 +29,13 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   # --------------------------------------------------------------------------------------------------------------------
 
-  umask 0002; # While installing, use the eventual umask.
-  set -o xtrace; # Print each command that is run.
-
-  # --------------------------------------------------------------------------------------------------------------------
-
   . /bootstrap/src/setups/cfgs/init;
   . /bootstrap/src/setups/cfgs/setup;
   . /bootstrap/src/setups/cfgs/process;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
+  set -o xtrace; # Print each command that is run.
 
   # --------------------------------------------------------------------------------------------------------------------
 

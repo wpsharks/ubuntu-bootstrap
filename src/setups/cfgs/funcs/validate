@@ -65,7 +65,7 @@ function cfgs-validate() {
     fi; # Cannot be empty.
   fi;
 
-  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 ]]; then
+  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_WORDPRESS_DEV_CONTAINERS}" == 1 && -n "${CFG_WORDPRESS_DEV_USERNAME}" ]]; then
     for _cfg_key in \
       'CFG_WORDPRESS_DEV_GENDER' \
       \

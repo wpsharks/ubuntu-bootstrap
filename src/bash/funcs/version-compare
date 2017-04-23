@@ -8,8 +8,8 @@ function version-compare() {
 
   else # Use `dpkg` as a fallback.
     local v1="${1:-}";
-    local v2="${2:-}";
-    local op="${3:-}";
+    local op="${2:-}";
+    local v2="${3:-}";
 
     v1="$(echo "${v1}" | perl -0wpe 's/([0-9\-])(dev|alpha|a|beta|b|rc|#|pl|p)/$1~$2/uig')";
     v2="$(echo "${v2}" | perl -0wpe 's/([0-9\-])(dev|alpha|a|beta|b|rc|#|pl|p)/$1~$2/uig')";
@@ -22,8 +22,8 @@ function version-compare() {
 };
 function version-compare-php() {
   local v1="'${1:-}'";
-  local v2="'${2:-}'";
-  local op="'${3:-}'";
+  local op="'${2:-}'";
+  local v2="'${3:-}'";
 
   if [[ "$(php -r 'echo (int)version_compare('"${v1}"', '"${v2}"', '"${op}"');')" == 1 ]];
     then return 0; else return 1; fi;

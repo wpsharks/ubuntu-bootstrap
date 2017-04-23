@@ -67,6 +67,12 @@ Vagrant.configure(2) do |config|
     ];
   else config.vm.network :private_network, ip: _static_ip; end;
 
+  # Enable caching if the `vagrant-cachier` plugin is installed.
+
+  if Vagrant.has_plugin?('vagrant-cachier')
+    config.cache.scope = :box;
+  end;
+
   # Configure provisioners for this VM.
 
   if ENV['VM_4CI'] == '1' || ENV['VM_4PKG'] == '1'

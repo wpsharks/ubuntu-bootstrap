@@ -2,9 +2,9 @@
 
 ## VirtualBox + Vagrant + Landrush; running Ubuntu 16.04 LTS (Xenial Xersus) w/ Nginx (or Apache), MariaDB (MySQL), PHP (choice of PHP 7.1, PHP 7.0, PHP 5.6, PHP 5.5), and WordPress
 
-### Installation Instructions
+## Installation Instructions
 
-#### Step 1: Satisfy Software Requirements
+### 1.) Satisfy Software Requirements
 
 You need VirtualBox, Vagrant, and a DNS plugin. The following commands will do the trick.
 
@@ -28,40 +28,31 @@ $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 # This allows for special event handling. Helpful, but not required at this time.
 ```
 
-##### `vagrant-hostsupdater` vs Landrush
-
-The `vagrant-hostsupdater` plugin is the easiest way to get started. It's quite simple in that it merely updates the `/etc/hosts` file in macOS. This avoids any confusion. You can just `$ sudo vi /etc/hosts` and take a quick peek at what's been done after you `vagrant up` for the first time.
-
-However, unlike the more powerful Landrush plugin, `vagrant-hostsupdater` doesn't automatically assign a new IP for each VM instance that you bring up. Instead, the IP is established by the `Vagrantfile`, and in the WebSharks Ubuntu Bootstrap (if you run the `vagrant-hostsupdater` plugin), your VM's IP address will always be the default hard-coded: `192.168.42.42`
-
-You may eventually want to run multiple VMs at the same time; i.e., you'll need multiple IP addresses. To accomplish this with the `vagrant-hostsupdater` plugin you'll need to edit the [`Vagrantfile`](Vagrantfile) manually. Bump the IP from `192.168.42.42` (default), to `192.168.42.43`, `192.168.42.44`, etc. — for each of your additional VM instances.
-
-The Landrush plugin is slightly heavier, but it's also more flexible. It spins up a small DNS server and redirects DNS traffic, automatically registering/unregistering IP addresses for VMs as they come up and go down. With Landrush there is no need to edit the `Vagrantfile` manually. You can run several VMs all at the same time, all on different IPs, and without needing to edit the `Vagrantfile`.
-
-#### Step 2: Clone GitHub Repo (Ubuntu Bootstrap)
+### 2.) Clone GitHub Repo (Ubuntu Bootstrap)
 
 ```bash
 $ mkdir ~/vms && cd ~/vms;
 $ git clone https://github.com/websharks/ubuntu-bootstrap my.vm;
 ```
 
-_Note that `my.vm` becomes your domain name. Change it if you like. Must end with `.vm` please._
+_Note the sub-directory name (`my.vm`) becomes your domain name._
+_Change it if you like. Must end with `.vm` please._
 
-#### Step 3: Vagrant Up!
+### 3.) Vagrant Up!
 
 ```bash
 $ cd ~/vms/my.vm;
 $ vagrant up;
 ```
 
-#### Step 4: Install software :-)
+### 4.) Install software :-)
 
 ```bash
 $ vagrant ssh;
 $ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0;
 ```
 
-#### Step 5: Confirm Working!
+### 5.) Confirm Working!
 
 Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning. You can avoid that warning altogether later using the details below. For now, please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page!
 
@@ -70,9 +61,9 @@ Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning.
 
 ---
 
-### Additional Steps (All Optional)
+## Additional Steps (All Optional)
 
-#### Install Root CA
+### Install Root CA
 
 If you'd like to always see a green SSL status for your local test sites (i.e., avoid `https://` warnings on anything ending with `.vm`), you can download and install [this root CA certificate file](https://github.com/websharks/ubuntu-bootstrap/blob/master/src/ssl/vm-ca-crt.pem) and set your trust settings to "Always Trust" for this certificate.
 
@@ -82,13 +73,13 @@ On a Mac, you can simply drag n' drop the certificate file onto your Keychain.ap
 
 _**Note:** Prior to macOS Sierra, there was a nasty bug in Keychain.app that would lock your system when attempting to 'Always Trust'. If you're running an older OS X release try [this command-line alternative given by @raamdev](https://github.com/websharks/ubuntu-bootstrap/issues/11#issuecomment-224332504)._
 
-#### Add Files to Web Directory
+### Add Files to Web Directory
 
 Doc root: `~/vms/my.vm/src/app/src/`
 
 The latest version of WordPress will already be installed. However, you can add any additional application files that you'd like. e.g., phpBB, Drupal, Joomla, whatever you like. It's probably a good idea to put anything new inside a sub-directory; e.g., `~/vms/my.vm/src/app/src/phpBB`
 
-#### Understanding Environment Variables
+### Understanding Environment Variables
 
 - `$_SERVER['CFG_MYSQL_DB_HOST']` Database host.
 - `$_SERVER['CFG_MYSQL_DB_NAME']` Database name.
@@ -97,7 +88,7 @@ The latest version of WordPress will already be installed. However, you can add 
 
 _**Tip:** For a full list of all global environment variables, see: `src/setups/env-vars` in the repo. Or, from the command-line on your VM type: `$ cat /etc/environment` (shows you the values too)._
 
-#### Access Web-Based Tools
+### Access Web-Based Tools
 
 A username/password is required for access.
 username: `admin`, password: `admin`
@@ -112,7 +103,7 @@ username: `admin`, password: `admin`
 - <https://my.vm/---tools/apache-info> Apache info page (if installed).
 - <http://my.vm:8025> MailHog web interface for test emails.
 
-#### Tear it Down and Customize
+### Tear it Down and Customize
 
 ```bash
 $ cd ~/vms/my.vm;
@@ -121,19 +112,19 @@ $ vagrant destroy;
 
 In the project directory you'll find a `/src/vagrant/bootstrap-custom` file. This bash script runs as the `root` user during `vagrant up`. Therefore, you can install software and configure anything you like in this script. By default, this script does nothing. All of the software installation and system configuration takes place whenever you run `/bootstrap/src/installer` inside the VM.
 
-##### Customization (Two Choices Available)
+#### Customization (Two Choices Available)
 
 1. Customize `/src/installer` and the associated setup files that it calls upon, which are located in: `/src/setups/*`. _**Note:** If you go this route, there really is no reason to customize the `/src/vagrant/bootstrap-custom` file. You can leave it as-is._
 
 2. Or, instead of working with the more complex installer, you can keep things simple and add your customizations to the `/src/vagrant/bootstrap-custom` script, which is a very simple starting point. The `/src/vagrant/bootstrap-custom` runs whenever you type `vagrant up`, so this is a logical choice for beginners. _**Note:** If you go this route, you can simply choose not to run `/bootstrap/src/installer`, because all of your customizations will be in the `/src/vagrant/bootstrap-custom` file; i.e., there will be no reason to run the installer._
 
-##### When you're done with your customizations, type:
+#### When you're done with your customizations, type:
 
 ```bash
 $ vagrant up;
 ```
 
-###### If you decided to use the `/bootstrap/src/installer` option, also type:
+##### If you decided to use the `/bootstrap/src/installer` option, also type:
 
 ```bash
 $ vagrant ssh;
@@ -143,9 +134,9 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 
 ---
 
-### Domain Name Tips & Tricks
+## Domain Name Tips & Tricks
 
-#### Creating a Second VM w/ a Different Domain Name
+### Creating a Second VM w/ a Different Domain Name
 
 ```bash
 $ git clone https://github.com/jaswrks/vagrant-ubuntu-lemp my-second.vm;
@@ -156,7 +147,7 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 # Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
-#### Understanding Domain Name Mapping
+### Understanding Domain Name Mapping
 
 The URL which leads to your VM is based on the name of the directory that you cloned the repo into; e.g., `my.vm` or `my-second.vm` in the above examples. However, the directory that you clone into MUST end with `.vm` for this to work as expected. If the directory you cloned into doesn't end with `.vm`, the default domain name will be `http://ubuntu.vm`. You can change this hard-coded default by editing `config.vm.hostname` in `Vagrantfile`.
 
@@ -164,7 +155,7 @@ In either case, the domain name is also wildcarded; i.e., `my.vm`, `www.my.vm`, 
 
 ---
 
-### Testing WordPress Themes/Plugins Easily!
+## Testing WordPress Themes/Plugins Easily!
 
 See `/Vagrantfile` where you will find this section already implemented.
 _~ See also: `src/wordpress/install-symlinks`_
@@ -186,7 +177,7 @@ if File.directory?(wp_business_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUS
 end;
 ```
 
-#### ↑ What is happening here w/ these WordPress directories?
+### ↑ What is happening here w/ these WordPress directories?
 
 The `Vagrantfile` is automatically mounting drives on your VM that are sourced by your local `~/projects` directory (if you have one). Thus, if you have your WordPress themes/plugins in `~/projects/wordpress` (i.e., in your local filesystem), it will be mounted on the VM automatically as `/wp-projects`.
 
@@ -194,14 +185,14 @@ In the `src/wordpress/install-symlinks` file, we iterate `/wp-projects` and buil
 
 The additional mounts (i.e., `~/projects/personal/wordpress` and `~/projects/business/wordpress`) are simply alternate locations that I use personally. Remove them if you like. See: `Vagrantfile` and `src/wordpress/install-symlinks` to remove in both places. You don't really _need_ to remove them though, because if these locations don't exist on your system they simply will not be mounted. In fact, you might consider leaving them, and just alter the paths to reflect your own personal preference—or for future implementation.
 
-#### The default WordPress mapping looks like this:
+### The default WordPress mapping looks like this:
 
 - `~/projects/wordpress` on your local system.
   - Is mounted on the VM as: `/wp-projects`
 - Then (on the VM) the `src/wordpress/install-symlinks` script symlinks each theme/plugin into:
   - `/app/src/wp-content/[themes|plugins]` appropriately.
 
-#### What directory structure do I need exactly?
+### What directory structure do I need exactly?
 
 Inside `~/projects/wordpress` you need to have two sub-directories. One for themes and another for plugins.
 
@@ -210,7 +201,7 @@ Inside `~/projects/wordpress` you need to have two sub-directories. One for them
 
 Now, whenever you run `/bootstrap/src/installer` from the VM, your local copy of `~/projects/wordpress/themes/my-theme` becomes `/app/src/wp-content/themes/my-theme` on the VM. Your local copy of `~/projects/wordpress/plugins/my-plugin` becomes `/app/src/wp-content/plugins/my-plugin` on the VM ... and so on... for each theme/plugin sub-directory, and for each of the three possible mounts listed above. This all happens automatically if you followed the instructions correctly.
 
-#### Can I override the default source directories for WordPress?
+### Can I override the default source directories for WordPress?
 
 Yes. Looking over the code snippet above, you can see that there are three environment variables that you can set in your `~/.profile` that, if found, will override the default locations automatically. Here's a quick example showing how you might customize these in your own `~/.profile`
 
@@ -230,7 +221,7 @@ export WP_MY_VM_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 
 ---
 
-### Bootstrap Command-Line Arguments
+## Bootstrap Command-Line Arguments
 
 The following CLI arguments can be passed to `/bootstrap/src/installer`, just in case you'd like to avoid the configuration wizard entirely. These are all optional; i.e., if you don't provide these arguments you will be prompted to configure the bootstrap using a command-line dialog interface whenever the installer runs.
 
@@ -473,6 +464,18 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
-#### Bootstrapping Base Images for Custom Vagrant Boxes
+## `vagrant-hostsupdater` vs Landrush
+
+The `vagrant-hostsupdater` plugin is the easiest way to get started. It's quite simple in that it merely updates the `/etc/hosts` file in macOS. This avoids any confusion. You can just `$ sudo vi /etc/hosts` and take a quick peek at what's been done after you `vagrant up` for the first time.
+
+However, unlike the more powerful Landrush plugin, `vagrant-hostsupdater` doesn't automatically assign a new IP for each VM instance that you bring up. Instead, the IP is established by the `Vagrantfile`, and in the WebSharks Ubuntu Bootstrap (if you run the `vagrant-hostsupdater` plugin), your VM's IP address will always be the default hard-coded: `192.168.42.42`
+
+You may eventually want to run multiple VMs at the same time; i.e., you'll need multiple IP addresses. To accomplish this with the `vagrant-hostsupdater` plugin you'll need to edit the [`Vagrantfile`](Vagrantfile) manually. Bump the IP from `192.168.42.42` (default), to `192.168.42.43`, `192.168.42.44`, etc. — for each of your additional VM instances.
+
+The Landrush plugin is slightly heavier, but it's also more flexible. It spins up a small DNS server and redirects DNS traffic, automatically registering/unregistering IP addresses for VMs as they come up and go down. With Landrush there is no need to edit the `Vagrantfile` manually. You can run several VMs all at the same time, all on different IPs, and without needing to edit the `Vagrantfile`.
+
+---
+
+## Bootstrapping Base Images for Custom Vagrant Boxes
 
 Please see: [Packaging a Custom Box](https://github.com/websharks/ubuntu-bootstrap/wiki/Packaging-a-Custom-Box) for full instructions.
