@@ -8,7 +8,7 @@ VirtualBox + Vagrant + Landrush, running Ubuntu 16.04 LTS (Xenial Xersus) with y
 
 ### 1.) Satisfy Software Requirements
 
-You need VirtualBox, Vagrant, and a DNS plugin.
+You need VirtualBox, Vagrant, and a DNS plugin.  
 _The following commands will do the trick for you._
 
 ```bash
@@ -39,7 +39,7 @@ $ mkdir ~/vms && cd ~/vms;
 $ git clone https://github.com/websharks/ubuntu-bootstrap my.vm;
 ```
 
-_Note the sub-directory name (`my.vm`) becomes your domain name._
+_Note the sub-directory name (`my.vm`) becomes your domain name._  
 _Change it if you like. Must end with `.vm` please._
 
 ### 3.) Vagrant Up
@@ -60,7 +60,7 @@ $ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0;
 
 Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning. You can avoid that warning altogether later using the details below. For now, please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page!
 
-**Q:** What if <https://my.vm> doesn't work for me?
+**Q:** What if <https://my.vm> doesn't work for me?  
 **A:** Try [flushing your local DNS cache](https://jas.xyz/2p7Q9wr).
 
 ---
