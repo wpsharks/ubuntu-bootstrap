@@ -63,8 +63,6 @@ Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning.
 **Q:** What if <https://my.vm> doesn't work for me?  
 **A:** Try [flushing your local DNS cache](https://jas.xyz/2p7Q9wr).
 
----
-
 ## Additional Steps (All Optional)
 
 ### Install Root CA
@@ -136,8 +134,6 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 # Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
 
----
-
 ## Domain Name Tips & Tricks
 
 ### Creating a Second VM w/ a Different Domain Name
@@ -156,8 +152,6 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 The URL which leads to your VM is based on the name of the directory that you cloned the repo into; e.g., `my.vm` or `my-second.vm` in the above examples. However, the directory that you clone into MUST end with `.vm` for this to work as expected. If the directory you cloned into doesn't end with `.vm`, the default domain name will be `http://ubuntu.vm`. You can change this hard-coded default by editing `config.vm.hostname` in `Vagrantfile`.
 
 In either case, the domain name is also wildcarded; i.e., `my.vm`, `www.my.vm`, `wordpress.my.vm` all map to the exact same location: `~/vms/my.vm/app/src/`. This is helpful when testing WordPress Multisite Networks, because you can easily setup a sub-domain network, or even an MU domain mapping plugin.
-
----
 
 ## Testing WordPress Themes/Plugins Easily!
 
@@ -222,8 +216,6 @@ export WP_MY_VM_PROJECTS_DIR=~/my-projects/wordpress;
 export WP_MY_VM_PERSONAL_PROJECTS_DIR=~/my-personal-projects/wordpress;
 export WP_MY_VM_BUSINESS_PROJECTS_DIR=~/my-business-projects/wordpress;
 ```
-
----
 
 ## Bootstrap Command-Line Arguments
 
@@ -466,8 +458,6 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 - `--CFG_CONFIG_FILE=/app/.config.json` This is for any purpose you like. The value that you set here becomes a global environment variable that your application can consume. If set, it should be a configuration file path on the VM. The file does not even need to exist when configured, it's simply an environment variable that you can use elsewhere in your application later.
 
----
-
 ## `vagrant-hostsupdater` vs Landrush
 
 The `vagrant-hostsupdater` plugin is the easiest way to get started. It's quite simple in that it merely updates the `/etc/hosts` file in macOS. This avoids any confusion. You can just `$ sudo vi /etc/hosts` and take a quick peek at what's been done after you `vagrant up` for the first time.
@@ -477,8 +467,6 @@ However, unlike the more powerful Landrush plugin, `vagrant-hostsupdater` doesn'
 You may eventually want to run multiple VMs at the same time; i.e., you'll need multiple IP addresses. To accomplish this with the `vagrant-hostsupdater` plugin you'll need to edit the [`Vagrantfile`](Vagrantfile) manually. Bump the IP from `192.168.42.42` (default), to `192.168.42.43`, `192.168.42.44`, etc. — for each of your additional VM instances.
 
 The Landrush plugin is slightly heavier, but it's also more flexible. It spins up a small DNS server and redirects DNS traffic, automatically registering/unregistering IP addresses for VMs as they come up and go down. With Landrush there is no need to edit the `Vagrantfile` manually. You can run several VMs all at the same time, all on different IPs, and without needing to edit the `Vagrantfile`.
-
----
 
 ## Bootstrapping Base Images for Custom Vagrant Boxes
 
