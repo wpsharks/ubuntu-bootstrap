@@ -32,7 +32,7 @@ $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 ```
 _**Tip:** See [`vagrant-hostsupdater` vs. LandRush](#vagrant-hostsupdater-vs-landrush)_
 
-### 2.) Clone GitHub Repo (Ubuntu Bootstrap)
+### 2.) Clone WebSharks Ubuntu Bootstrap
 
 ```bash
 $ mkdir ~/vms && cd ~/vms;
