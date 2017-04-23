@@ -6,7 +6,8 @@
 
 ### 1.) Satisfy Software Requirements
 
-You need VirtualBox, Vagrant, and a DNS plugin. The following commands will do the trick.
+You need VirtualBox, Vagrant, and a DNS plugin.
+_The following commands will do the trick for you._
 
 ```bash
 $ brew cask install virtualbox;
@@ -27,6 +28,7 @@ $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 # This allows for special event handling. Helpful, but not required at this time.
 ```
+_**Tip:** See [`vagrant-hostsupdater` vs. LandRush](#vagrant-hostsupdater-vs-landrush)_
 
 ### 2.) Clone GitHub Repo (Ubuntu Bootstrap)
 
@@ -38,21 +40,21 @@ $ git clone https://github.com/websharks/ubuntu-bootstrap my.vm;
 _Note the sub-directory name (`my.vm`) becomes your domain name._
 _Change it if you like. Must end with `.vm` please._
 
-### 3.) Vagrant Up!
+### 3.) Vagrant Up
 
 ```bash
 $ cd ~/vms/my.vm;
 $ vagrant up;
 ```
 
-### 4.) Install software :-)
+### 4.) Install Software
 
 ```bash
 $ vagrant ssh;
 $ sudo /bootstrap/src/installer --CFG_USE_WIZARD=0;
 ```
 
-### 5.) Confirm Working!
+### 5.) Confirm Working
 
 Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning. You can avoid that warning altogether later using the details below. For now, please bypass this self-signed certificate warning and proceed. You should then see the WordPress installation page!
 
