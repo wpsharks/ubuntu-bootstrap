@@ -30,14 +30,14 @@ $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 ```
 
-Optionally install the triggers plugin. Optional (recommended).  
+Optionally install the triggers plugin.  
 For details, see <https://github.com/emyl/vagrant-triggers>
 
 ```bash
 $ vagrant plugin install vagrant-triggers;
 ```
 
-Optionally install a caching plugin. Optional (recommended).  
+Optionally install a caching plugin.  
 For details, see <http://fgrehm.viewdocs.io/vagrant-cachier/>
 
 ```bash
