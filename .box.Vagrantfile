@@ -24,6 +24,9 @@ Vagrant.configure(2) do |config|
 
   # Configure VirtualBox name, DNS, and resources.
 
+  if Vagrant.has_plugin?('vagrant-disksize')
+    config.disksize.size = '20GB'; end;
+
   config.vm.provider 'virtualbox' do |vb|
     vb.name = 'websharks-ubuntu-xenial-16.04-lts-'+"#{config.vm.hostname}";
     vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on'];
@@ -72,6 +75,11 @@ Vagrant.configure(2) do |config|
       'php54.'+"#{config.vm.hostname}", 'php55.'+"#{config.vm.hostname}", 'php56.'+"#{config.vm.hostname}", 'php70.'+"#{config.vm.hostname}", 'php71.'+"#{config.vm.hostname}",
     ];
   else config.vm.network :private_network, ip: _static_ip; end;
+
+  # Enable caching if the `vagrant-cachier` plugin is installed.
+
+  if Vagrant.has_plugin?('vagrant-cachier')
+    config.cache.scope = :box; end;
 
   # Configure provisioners for this VM.
 
