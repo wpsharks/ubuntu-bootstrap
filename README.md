@@ -151,9 +151,10 @@ $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 
 ```bash
 $ git clone https://github.com/jaswrks/vagrant-ubuntu-lemp my-second.vm;
+
 $ cd my-second.vm;
-$ vagrant up;
-$ vagrant ssh;
+$ vagrant up && vagrant ssh;
+
 $ sudo /bootstrap/src/installer; # Presents a configuration dialog.
 # Tip: to bypass configuration add the `--CFG_USE_WIZARD=0` argument to the installer.
 ```
