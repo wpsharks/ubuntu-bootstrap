@@ -19,6 +19,7 @@
 - Removing `CFG_OTHER_HOSTS` from configuration wizard as it is no longer necessary.
 - Restoring support for the latest version of the `vagrant-cachier` plugin.
 - Updated the README file for this repo to improve instructions.
+- The `create-user` and `create-admin` utilities are now capable of creating a user with a seasoned password that can be recovered by the user later using the `getpass` command-line tool; e.g., `create-admin --user=johndoe22 --salt=[salt] --pepper=[pepper]`. `johndoe22` can log in later and acquire his password by running `getpass [salt] [pepper]`. The `johndoe22` user can also update his password by running `sudo setpass`.
 
 ## v170322.42412
 
