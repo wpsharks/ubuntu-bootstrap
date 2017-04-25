@@ -7,11 +7,13 @@ function create-admin() {
 
   local user='';
   local pass='';
+  local salt='';
+  local pepper='';
 
   # Parse options.
 
-  local short_options='u:p:';
-  local long_options='user:,pass:';
+  local short_options='u:p:s:r:';
+  local long_options='user:,pass:,salt:,pepper:';
   local options; options="$(getopt --options "${short_options}" --longoptions "${long_options}" -- "${@}")";
 
   eval set -- "${options}"; while true; do
@@ -24,6 +26,14 @@ function create-admin() {
           pass="${2}";
           shift 2;
           ;;
+        -s|--salt)
+          salt="${2}";
+          shift 2;
+          ;;
+        -r|--pepper)
+          pepper="${2}";
+          shift 2;
+          ;;
         --) shift 1; break;
           ;;
         *) echo 'Internal error.'; exit 1;
@@ -32,7 +42,8 @@ function create-admin() {
   done;
 
   if [[ -z "${pass}" ]]; then
-    pass="$(passgen 15)"; fi;
+    pass="$(passgen --salt="${salt}" --pepper="${pepper}" 15)";
+  fi; # The `salt` & `pepper` are optional.
 
   # Create.
 

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+apt-get install gnupg2 --yes;
+apt-get install openssl --yes;
+apt-get install libssl-dev --yes;
+apt-get install uuid-runtime --yes;

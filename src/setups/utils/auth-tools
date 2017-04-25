@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+apt-get install acl --yes;
+apt-get install pwgen --yes;
+apt-get install apache2-utils --yes;

@@ -16,7 +16,7 @@ if [[ "$(whoami)" != 'root' ]]; then
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Run setup routines once only.
+# Run setup routines. Once only; else fail down below.
 
 if [[ ! -f /bootstrap/.installed-version ]]; then
 
@@ -29,9 +29,7 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   # --------------------------------------------------------------------------------------------------------------------
 
-  . /bootstrap/src/setups/cfgs/init;
-  . /bootstrap/src/setups/cfgs/setup;
-  . /bootstrap/src/setups/cfgs/process;
+  . /bootstrap/src/setups/cfgs/_stub;
 
   # --------------------------------------------------------------------------------------------------------------------
 
@@ -44,25 +42,31 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   # --------------------------------------------------------------------------------------------------------------------
 
-  . /bootstrap/src/setups/utilities;
-  . /bootstrap/src/setups/git-utils;
-  . /bootstrap/src/setups/keybase;
-
-  # --------------------------------------------------------------------------------------------------------------------
-
   . /bootstrap/src/setups/swap;
 
   # --------------------------------------------------------------------------------------------------------------------
 
+  . /bootstrap/src/setups/utils/_stub;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
+  . /bootstrap/src/setups/git;
   . /bootstrap/src/setups/zsh;
+  . /bootstrap/src/setups/ssh;
   . /bootstrap/src/setups/mosh;
+  . /bootstrap/src/setups/keybase;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/users;
-  . /bootstrap/src/setups/mkdirs;
   . /bootstrap/src/setups/umask;
+  . /bootstrap/src/setups/mkdirs;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
   . /bootstrap/src/setups/runit;
   . /bootstrap/src/setups/env-vars;
   . /bootstrap/src/setups/ssl-certs;
-  . /bootstrap/src/setups/git-crypt;
 
   # --------------------------------------------------------------------------------------------------------------------
 
@@ -88,7 +92,7 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   # --------------------------------------------------------------------------------------------------------------------
 
-  . /bootstrap/src/setups/php/stub;
+  . /bootstrap/src/setups/php/_stub;
 
   . /bootstrap/src/setups/composer;
   . /bootstrap/src/setups/pma;
@@ -128,7 +132,6 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
 
   # --------------------------------------------------------------------------------------------------------------------
 
-  . /bootstrap/src/setups/ssh-config;
   . /bootstrap/src/setups/firewall;
   . /bootstrap/src/setups/fail2ban;
 

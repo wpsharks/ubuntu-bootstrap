@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+apt-get install tree --yes;
+apt-get install ncdu --yes;

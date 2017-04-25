@@ -9,6 +9,7 @@ if [[ "${CFG_INSTALL_APACHE}" == 1 ]]; then
 
   apt-get install apache2 --yes;
   apt-get install apache2-dev --yes;
+  apt-get install apache2-utils --yes;
 
   # Configure Apache web server.
 

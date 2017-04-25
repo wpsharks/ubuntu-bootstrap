@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-# Initialize/config.
+# Setup config. file.
 
 mkdir --parents /etc/bootstrap/ssl;
 mkdir --parents /etc/bootstrap/ssl/data;

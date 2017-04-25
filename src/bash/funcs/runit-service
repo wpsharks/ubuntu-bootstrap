@@ -21,6 +21,7 @@ function runit-service() {
 
   else return 1; fi; # Failure.
 };
+
 function maybe-add-runit-service() {
   local service="${1:-}";
 

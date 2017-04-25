@@ -21,10 +21,10 @@ if ! is-vm && ! in-docker; then
   perl -i -wpe 's/^(\s*)(?:#\s*)?PermitRootLogin\s+.*$/$1PermitRootLogin no/u' /etc/ssh/sshd_config;
   perl -i -wpe 's/^(\s*)(?:#\s*)?PasswordAuthentication\s+.*$/$1PasswordAuthentication no/u' /etc/ssh/sshd_config;
 
-  # Only allow SSH access to these groups.
+  # Only allow SSH access to the `ssh-access` group.
 
-  echo '# Allow specific groups only.' >> /etc/ssh/sshd_config;
-  echo 'AllowGroups sudo ssh-access' >> /etc/ssh/sshd_config;
+  echo '# Allow specific group only.' >> /etc/ssh/sshd_config;
+  echo 'AllowGroups ssh-access' >> /etc/ssh/sshd_config;
 
   # For these groups, only allow SFTP access — nothing more.
 

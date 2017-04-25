@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+apt-get install jq --yes;
+apt-get install xclip --yes;
+apt-get install gettext --yes;
+apt-get install colordiff --yes;
+
+apt-get install pandoc --yes;
+apt-get install pandoc-citeproc --yes;

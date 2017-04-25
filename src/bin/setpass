@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# Running as root?
+
+if [[ "$(whoami)" != 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+if [[ "$(logname)" == 'root' ]]; then
+  echo 'Please run w/ `sudo`.'; exit 1; fi;
+
+# Include strict mode & functions.
+
+. /bootstrap/src/bash/strict-mode;
+. /bootstrap/src/bash/functions;
+
+# Initialize.
+
+user="$(logname)"; pass=''; pass2='';
+
+# Ask for password (8+ chars).
+
+while [[ "${#pass}" -lt 8 || "${pass}" != "${pass2}" ]]; do
+  read -s -p 'Password (8+ chars): ' pass; echo;
+  read -s -p 'Password (again to confirm): ' pass2; echo;
+done; # Continues until passwords match.
+
+# Set system password as requested.
+
+echo "${user}"':'"${pass}" | chpasswd;
+
+# Web-based tools auth.
+
+mkdir --parents /etc/bootstrap/passwds;
+touch /etc/bootstrap/passwds/.tools;
+
+htpasswd -D /etc/bootstrap/passwds/.tools "${user}" &>/dev/null;
+htpasswd -b /etc/bootstrap/passwds/.tools "${user}" "${pass}";

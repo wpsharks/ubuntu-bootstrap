@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Install utilities.
+
+. /bootstrap/src/setups/utils/arc-tools;
+. /bootstrap/src/setups/utils/auth-tools;
+. /bootstrap/src/setups/utils/build-tools;
+. /bootstrap/src/setups/utils/core-tools;
+. /bootstrap/src/setups/utils/disk-tools;
+. /bootstrap/src/setups/utils/doc-tools;
+. /bootstrap/src/setups/utils/enc-tools;
+. /bootstrap/src/setups/utils/git-tools;
+. /bootstrap/src/setups/utils/health-tools;
+. /bootstrap/src/setups/utils/media-tools;
+. /bootstrap/src/setups/utils/url-tools;

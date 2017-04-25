@@ -2,9 +2,9 @@
 
 # New groups.
 
-addgroup app;
-addgroup ssh-access;
-addgroup sftp-only;
+addgroup app || true;
+addgroup ssh-access || true;
+addgroup sftp-only || true;
 
 # Setup root admin.
 
@@ -18,35 +18,37 @@ setup-admin \
 
 # Maybe setup system admins.
 
-if is-vagrant && user-exists ubuntu; then
+if is-vagrant; then
+  if user-exists ubuntu; then
 
-  setup-admin \
-    --user=ubuntu \
-    --name="${CFG_ADMIN_NAME}" \
-    --email="${CFG_ADMIN_EMAIL}" \
-    --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
-    --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
-    --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
+    setup-admin \
+      --user=ubuntu \
+      --name="${CFG_ADMIN_NAME}" \
+      --email="${CFG_ADMIN_EMAIL}" \
+      --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
+      --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
+      --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
 
-  # In case `/etc/sudoers` is modified by initial `upgrade`.
-  echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu;
+    # In case `/etc/sudoers` is modified by initial `upgrade`.
+    echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu;
+  fi;
+
+  if user-exists vagrant; then
+
+    setup-admin \
+      --user=vagrant \
+      --name="${CFG_ADMIN_NAME}" \
+      --email="${CFG_ADMIN_EMAIL}" \
+      --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
+      --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
+      --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
+
+    # In case `/etc/sudoers` is modified by initial `upgrade`.
+    echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
+  fi;
 fi;
 
-if is-vagrant && user-exists vagrant; then
-
-  setup-admin \
-    --user=vagrant \
-    --name="${CFG_ADMIN_NAME}" \
-    --email="${CFG_ADMIN_EMAIL}" \
-    --shell="${CFG_ADMIN_PREFERRED_SHELL}" \
-    --ssh-keys="${CFG_ADMIN_AUTHORIZED_SSH_KEYS}" \
-    --static-ip="${CFG_ADMIN_STATIC_IP_ADDRESS}";
-
-  # In case `/etc/sudoers` is modified by initial `upgrade`.
-  echo 'vagrant ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/vagrant;
-fi;
-
-# Create & setup 'the' admin.
+# Create & setup admin.
 
 create-admin \
   --user="${CFG_ADMIN_USERNAME}" \

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Function includes.
+
+for _file in "$(dirname "${BASH_SOURCE[0]}")"/funcs/**; do
+  [[ -f "${_file}" ]] && . "${_file}";
+done; unset _file;
+
+# Initialize, setup, and process CFGs.
+
+. /bootstrap/src/setups/cfgs/init;
+. /bootstrap/src/setups/cfgs/setup;
+. /bootstrap/src/setups/cfgs/process;

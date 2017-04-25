@@ -3,15 +3,16 @@
 # Remove existing.
 
 if can-run git; then
-  apt-get --purge remove git --yes; fi;
+  apt-get --purge remove git --yes;
+fi; # Pave way for latest version.
 
-# Install Git (latest version).
+# Install latest version.
 
 apt-add-repository ppa:git-core/ppa --yes;
 apt-get update;
 apt-get install git --yes;
 
-# Install the Hub tool from GitHub.
+# Install git'hub' tool binary.
 
 curl https://github.com/github/hub/releases/download/v2.2.8/hub-linux-amd64-2.2.8.tgz --location --output /tmp/hub.tgz;
 
@@ -21,17 +22,25 @@ tar --extract --ungzip --verbose --strip-components=1 --file=/tmp/hub.tgz -C /us
 ln --symbolic /usr/local/src/hub/bin/hub /usr/bin/hub;
 chmod +x /usr/bin/hub; # Make `hub` executable now.
 
-# Install Git LFS for large file storage.
+# Install large file storage.
 
 curl https://packagecloud.io/gpg.key --location | sudo apt-key add -;
 apt-add-repository 'deb https://packagecloud.io/github/git-lfs/ubuntu/ xenial main' --yes;
 apt-get update;
 apt-get install git-lfs --yes;
 
-# Install Git-Crypt for decrypting files in repos.
+# Install git-crypt.
 
 mkdir --parents /usr/local/src/git-crypt;
 git clone https://github.com/AGWA/git-crypt /usr/local/src/git-crypt --branch=master --depth=1;
 
 cd /usr/local/src/git-crypt;
 make; make install; make clean;
+
+# Configure git-crypt key.
+
+if [[ -f /etc/git-crypt.app.key ]]; then
+  addgroup app || true;
+  chown root:app /etc/git-crypt.app.key;
+  chmod 640 /etc/git-crypt.app.key;
+fi;

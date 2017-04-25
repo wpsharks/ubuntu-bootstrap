@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+apt-get install zip --yes;
+apt-get install unzip --yes;

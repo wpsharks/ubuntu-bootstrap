@@ -2,6 +2,7 @@
 
 - Refactoring to improve organization and to pave the way for new features.
 - Refactored the CFG phase that parses command-line options and prepares installation routines.
+- Refactored the installation of utilities such as `curl` and build essentials.
 - Adding `CFG_INSTALL_WEBSHARKS_CORE` to the configuration wizard.
 - Adding `CFG_INSTALL_CACHETOOL` to the configuration wizard.
 - Adding `CFG_INSTALL_PMA` to the configuration wizard.

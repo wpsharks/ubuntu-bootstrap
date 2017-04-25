@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+apt-get install coreutils --yes;
+apt-get install man --yes;

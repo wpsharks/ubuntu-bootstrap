@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 
 if in-docker && can-run sv; then
-
-  # Configure RUnit.
-
-  ## Create service dirs.
-
   mkdir --parents /etc/service;
-
-  ## Create a `service` alias.
-
   ln --symbolic --force /bootstrap/src/bin/runit-service /usr/sbin/service;
-
 fi;
