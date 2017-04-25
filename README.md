@@ -15,7 +15,9 @@ _The following commands will do the trick for you._
 $ brew cask install virtualbox;
 $ brew cask install vagrant;
 
-# Also tweak VirtualBox by running this line please:
+# ---------------------------------------------
+
+# Tweak VirtualBox by running this line please:
 # See: <https://github.com/mitchellh/vagrant/issues/3083> for details.
 $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 
@@ -28,12 +30,14 @@ $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 
 # ---------------------------------------------
 
+# Optionally install the triggers plugin.
 $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 # This allows for special event handling. Helpful, but not required at this time.
 # For details, see: https://github.com/emyl/vagrant-triggers
 
 # ---------------------------------------------
 
+# Optionally install a caching plugin.
 $ vagrant plugin install vagrant-cachier; # Optional (recommended).
 # This allows for faster subsequent installations as it caches `apt-get`.
 # For details, see: http://fgrehm.viewdocs.io/vagrant-cachier/
