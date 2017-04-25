@@ -11,8 +11,8 @@ function passgen() {
   local length='';
   local number='';
 
-  local allowed_chars='a-zA-Z0-9!?@#$%^&+=';
-  local fill_chars; fill_chars="$(printf '!?@#$%%^&+=%.0s' {1..250})";
+  local allowed_chars='a-zA-Z0-9!?@#%^&+=';
+  local fill_chars; fill_chars="$(printf '!?@#$%%^+=%.0s' {1..250})";
 
   # Parse options.
 
@@ -63,7 +63,7 @@ function passgen() {
 
     if [[ ! -f /etc/bootstrap/pwgen/key ]]; then
       mkdir --parents /etc/bootstrap/pwgen; # Produces 4096 random bytes in a specific range of characters.
-      echo "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9!?@#$%^&+=' | fold -w 4096 | head -n 1)" > /etc/bootstrap/pwgen/key;
+      echo "$(cat /dev/urandom | tr -dc 'a-zA-Z0-9!?@#%^&+=' | fold -w 4096 | head -n 1)" > /etc/bootstrap/pwgen/key;
     fi; # Needed only when there is seasoning. This is the basis for the SHA-1 algo in `pwgen`. See `man pwgen` for details.
 
     pwgen -1 --capitalize --numerals --symbols --secure --sha1='/etc/bootstrap/pwgen/key#'"${seasoning}" "${length}" "${number}" | tr -c "${allowed_chars}" "${fill_chars}";

@@ -3,6 +3,6 @@
 # Random key generator.
 
 function keygen() {
-  local allowed_chars='a-zA-Z0-9!?@#$%^&+=';
+  local allowed_chars='a-zA-Z0-9!?@#%^&+=';
   cat /dev/urandom | tr -dc "${allowed_chars}" | fold -w "${1:-64}" | head -n 1;
 };
