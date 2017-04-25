@@ -12,6 +12,7 @@ You need VirtualBox, Vagrant, and a DNS plugin.
 _The following commands will do the trick for you._
 
 ```bash
+$ brew install cask;
 $ brew cask install virtualbox vagrant;
 ```
 
