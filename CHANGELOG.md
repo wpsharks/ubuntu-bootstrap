@@ -1,4 +1,4 @@
-## $v
+## v170425.73362
 
 - Adding support for the [`vagrant-disksize` plugin](https://github.com/sprotheroe/vagrant-disksize).
 - Now installing the `nginx-extras` package by default instead of just `nginx`, because the extras package includes some additional/useful modules, such as the Lua extension.
