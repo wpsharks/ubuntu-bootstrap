@@ -18,6 +18,7 @@
 - Deprecating `keygen` utility in favor of the new `passgen` utility.
 - Removing `CFG_OTHER_HOSTS` from configuration wizard as it is no longer necessary.
 - Restoring support for the latest version of the `vagrant-cachier` plugin.
+- Updated the README file for this repo to improve instructions.
 
 ## v170322.42412
 
