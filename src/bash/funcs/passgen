@@ -12,7 +12,7 @@ function passgen() {
   local number='';
 
   local allowed_chars='a-zA-Z0-9!?@#%^&+=';
-  local fill_chars; fill_chars="$(printf '!?@#$%%^+=%.0s' {1..250})";
+  local fill_chars; fill_chars="$(printf '!?@#%%^&+=%.0s' {1..250})";
 
   # Parse options.
 
