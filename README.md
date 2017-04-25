@@ -30,18 +30,18 @@ $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 ```
 
-Optionally install the triggers plugin.  
+Optionally install the triggers plugin. Optional (recommended).  
 For details, see <https://github.com/emyl/vagrant-triggers>
 
 ```bash
-$ vagrant plugin install vagrant-triggers; # Optional (recommended).
+$ vagrant plugin install vagrant-triggers;
 ```
 
-Optionally install a caching plugin.
+Optionally install a caching plugin. Optional (recommended).  
 For details, see <http://fgrehm.viewdocs.io/vagrant-cachier/>
 
 ```bash
-$ vagrant plugin install vagrant-cachier; # Optional (recommended).
+$ vagrant plugin install vagrant-cachier;
 ```
 
 ### 2.) Clone WebSharks Ubuntu Bootstrap
