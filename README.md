@@ -29,13 +29,22 @@ $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 # vagrant plugin install landrush; # More difficult, but greater flexibility.
 ```
 
-Optionally install the triggers plugin. See [plugin details](https://github.com/emyl/vagrant-triggers).
+Optionally install the disksize plugin. See [plugin details](https://github.com/sprotheroe/vagrant-disksize).  
+_If installed, the WebSharks Ubuntu Bootstrap will automatically allocate 20GB instead of the default 10GB._
+
+```bash
+$ vagrant plugin install vagrant-disksize;
+```
+
+Optionally install the triggers plugin. See [plugin details](https://github.com/emyl/vagrant-triggers).  
+_This enables some additional bootstrapping magic that can make your experience a little better._
 
 ```bash
 $ vagrant plugin install vagrant-triggers;
 ```
 
-Optionally install a caching plugin. See [plugin details](http://fgrehm.viewdocs.io/vagrant-cachier).
+Optionally install a caching plugin. See [plugin details](http://fgrehm.viewdocs.io/vagrant-cachier).  
+_This reduces the amount of downloading the WebSharks Ubuntu Bootstrap needs to do over time._
 
 ```bash
 $ vagrant plugin install vagrant-cachier;

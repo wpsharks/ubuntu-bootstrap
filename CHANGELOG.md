@@ -1,3 +1,8 @@
+## $v
+
+- Adding support for the [`vagrant-disksize` plugin](https://github.com/sprotheroe/vagrant-disksize).
+- Now installing the `nginx-extras` package by default instead of just `nginx`, because the extras package includes some additional/useful modules, such as the Lua extension.
+
 ## v170425.59362
 
 - WordPress dev containers are now installed by default. So in addition to `my.vm` (which runs a PHP version of your choice), you will also have specific versions of PHP available at: `php71.my.vm`, `php70.my.vm`, `php56.my.vm`, `php55.my.vm`, and `php54.my.vm`. Note that the default `my.vm` web server runs Nginx, while all of the PHP version-specific dev containers run Apache.

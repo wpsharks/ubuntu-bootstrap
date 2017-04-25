@@ -6,7 +6,7 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
 
   apt-add-repository ppa:nginx/development --yes;
   apt-get update; # Update after adding repo.
-  apt-get install nginx --yes;
+  apt-get install nginx-extras --yes;
 
   # Config Ngnix web server.
 

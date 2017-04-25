@@ -21,6 +21,10 @@ Vagrant.configure(2) do |config|
   _VM_HOSTNAME_UC_VAR = config.vm.hostname.upcase.tr('.-', '_');
 
   # Configure VirtualBox name, DNS, and resources.
+  # See <https://www.virtualbox.org/manual/ch08.html#vboxmanage-modifyvm>
+
+  if Vagrant.has_plugin?('vagrant-disksize')
+    config.disksize.size = '20GB'; end;
 
   config.vm.provider 'virtualbox' do |vb|
     vb.name = 'websharks-ubuntu-xenial-16.04-lts-'+"#{config.vm.hostname}";
