@@ -15,35 +15,33 @@ _The following commands will do the trick for you._
 $ brew cask install virtualbox vagrant;
 ```
 
-Tweak VirtualBox by running this line please.
+Tweak VirtualBox by running this line please.  
+See <https://github.com/mitchellh/vagrant/issues/3083> for details.
 
 ```bash
-# See <https://github.com/mitchellh/vagrant/issues/3083> for details.
 $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 ```
 
-Install ONE of these two DNS plugin options.
+Install ONE of these two DNS plugin options.  
+See [`vagrant-hostsupdater` vs. LandRush](https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush) for a comparison.
 
 ```bash
 $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 $ vagrant plugin install landrush; # More difficult, but greater flexibility.
-# See <https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush>
 ```
 
-Optionally install the triggers plugin.
+Optionally install the triggers plugin.  
+For details, see <https://github.com/emyl/vagrant-triggers>
 
 ```bash
 $ vagrant plugin install vagrant-triggers; # Optional (recommended).
-# This allows for special event handling. Helpful, but not required at this time.
-# For details, see <https://github.com/emyl/vagrant-triggers>
 ```
 
 Optionally install a caching plugin.
+For details, see <http://fgrehm.viewdocs.io/vagrant-cachier/>
 
 ```bash
 $ vagrant plugin install vagrant-cachier; # Optional (recommended).
-# This allows for faster subsequent installations as it caches `apt-get`.
-# For details, see <http://fgrehm.viewdocs.io/vagrant-cachier/>
 ```
 
 ### 2.) Clone WebSharks Ubuntu Bootstrap
