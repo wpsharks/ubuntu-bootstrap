@@ -94,6 +94,11 @@ else
   echo '# Uncomment & set your IP address.' >> "${php_v_src_dir}"/.htaccess;
   echo '# php_value xdebug.remote_host MY.IP.ADDRESS' >> "${php_v_src_dir}"/.htaccess;
 fi;
+
+# On a VM, bypass dev guard by allowing explicitly.
+
+if is-vm; then touch "${php_v_src_dir}"/.allow-wp; fi;
+
 # Set permissions in the web directory.
 # Owned by `www-data`; who exists on both sides.
 

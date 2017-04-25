@@ -1,5 +1,6 @@
 ## $v
 
+- WordPress dev containers are now installed by default. So in addition to `my.vm` (which runs a PHP version of your choice), you will also have specific versions of PHP available at: `php71.my.vm`, `php70.my.vm`, `php56.my.vm`, `php55.my.vm`, and `php54.my.vm`. Note that the default `my.vm` web server runs Nginx, while all of the PHP version-specific dev containers run Apache.
 - Installing `mosh` by default. See [Issue #20](https://github.com/websharks/ubuntu-bootstrap/issues/20).
 - Automatically configure `mosh` firewall rules. See [Issue #20](https://github.com/websharks/ubuntu-bootstrap/issues/20).
 - Refactoring to improve organization and to pave the way for new features.
