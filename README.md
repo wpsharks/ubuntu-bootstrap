@@ -22,7 +22,7 @@ See <https://github.com/mitchellh/vagrant/issues/3083> for details.
 $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 ```
 
-Install ONE of these two DNS plugin options.  
+Choose: Install one of these two DNS plugin options.  
 See [`vagrant-hostsupdater` vs. LandRush](https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush) for a comparison.
 
 ```bash
