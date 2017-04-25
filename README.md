@@ -21,11 +21,11 @@ Tweak VirtualBox by running this line please. See [details](https://github.com/m
 $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 ```
 
-Install a DNS plugin. See [`vagrant-hostsupdater` vs. LandRush](https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush) comparison.
+Install a DNS plugin. See [`vagrant-hostsupdater` vs. LandRush](https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush)
 
 ```bash
 $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
-# $ vagrant plugin install landrush; # More difficult, but greater flexibility.
+# vagrant plugin install landrush; # More difficult, but greater flexibility.
 ```
 
 Optionally install the triggers plugin. See [plugin details](https://github.com/emyl/vagrant-triggers).
