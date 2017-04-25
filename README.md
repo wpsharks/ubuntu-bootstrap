@@ -24,11 +24,13 @@ $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 # You need only one of these. See explanation below.
 $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 $ vagrant plugin install landrush; # More difficult, but greater flexibility.
+# See: https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush
 
 # ---------------------------------------------
 
 $ vagrant plugin install vagrant-triggers; # Optional (recommended).
 # This allows for special event handling. Helpful, but not required at this time.
+# For details, see: https://github.com/emyl/vagrant-triggers
 
 # ---------------------------------------------
 
@@ -36,7 +38,6 @@ $ vagrant plugin install vagrant-cachier; # Optional (recommended).
 # This allows for faster subsequent installations as it caches `apt-get`.
 # For details, see: http://fgrehm.viewdocs.io/vagrant-cachier/
 ```
-_**Tip:** See [`vagrant-hostsupdater` vs. LandRush](#vagrant-hostsupdater-vs-landrush)_
 
 ### 2.) Clone WebSharks Ubuntu Bootstrap
 
