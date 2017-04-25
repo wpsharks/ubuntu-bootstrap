@@ -21,7 +21,7 @@ $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 
 # ---------------------------------------------
 
-# You need only one of these. See explanation below.
+# Install ONE of these two DNS plugin options.
 $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
 $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 # See: https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush
