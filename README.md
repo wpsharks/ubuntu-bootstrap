@@ -72,6 +72,8 @@ Open <https://my.vm>. Upon first visit, you'll run into an SSL security warning.
 **Q:** What if <https://my.vm> doesn't work for me?  
 **A:** Try [flushing your local DNS cache](https://jas.xyz/2p7Q9wr).
 
+_**Tip:** WordPress dev containers are available too. In addition to `my.vm`, you also have specific versions of PHP available at: `php71.my.vm`, `php70.my.vm`, `php56.my.vm`, `php55.my.vm`, and `php54.my.vm`. By default, the main `my.vm` web server runs Nginx, while all of the PHP version-specific dev containers run Apache._
+
 ## Additional Steps (All Optional)
 
 ### Install Root CA
