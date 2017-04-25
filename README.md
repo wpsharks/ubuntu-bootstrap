@@ -15,26 +15,26 @@ _The following commands will do the trick for you._
 $ brew cask install virtualbox vagrant;
 ```
 
-Tweak VirtualBox by running this line please. See [details](https://github.com/mitchellh/vagrant/issues/3083).
+Tweak VirtualBox by running this line please. See [details](https://github.com/mitchellh/vagrant/issues/3083) to learn more.
 
 ```bash
 $ VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0;
 ```
 
-Choose: Install a DNS plugin. See [`vagrant-hostsupdater` vs. LandRush](https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush) comparison.
+Install a DNS plugin. See [`vagrant-hostsupdater` vs. LandRush](https://github.com/websharks/ubuntu-bootstrap#vagrant-hostsupdater-vs-landrush) comparison.
 
 ```bash
 $ vagrant plugin install vagrant-hostsupdater; # Easiest (recommended).
-$ vagrant plugin install landrush; # More difficult, but greater flexibility.
+# $ vagrant plugin install landrush; # More difficult, but greater flexibility.
 ```
 
-Optionally install the triggers plugin. See [details](https://github.com/emyl/vagrant-triggers).
+Optionally install the triggers plugin. See [plugin details](https://github.com/emyl/vagrant-triggers).
 
 ```bash
 $ vagrant plugin install vagrant-triggers;
 ```
 
-Optionally install a caching plugin. See [details](http://fgrehm.viewdocs.io/vagrant-cachier).
+Optionally install a caching plugin. See [plugin details](http://fgrehm.viewdocs.io/vagrant-cachier).
 
 ```bash
 $ vagrant plugin install vagrant-cachier;
