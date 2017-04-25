@@ -16,6 +16,7 @@
 - Adding a new `passgen` binary, capable of generating stronger passwords guaranteed to contain numerals, mixed caSe, & symbols in a sanitized range of allowed chars. Powered in part by `pwgen`. This utility is also capable of reproducible hash-based password generation.
 - Deprecating `keygen` utility in favor of the new `passgen` utility.
 - Removing `CFG_OTHER_HOSTS` from configuration wizard as it is no longer necessary.
+- Restoring support for the latest version of the `vagrant-cachier` plugin.
 
 ## v170322.42412
 

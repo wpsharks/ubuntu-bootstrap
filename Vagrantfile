@@ -70,8 +70,7 @@ Vagrant.configure(2) do |config|
   # Enable caching if the `vagrant-cachier` plugin is installed.
 
   if Vagrant.has_plugin?('vagrant-cachier')
-    config.cache.scope = :box;
-  end;
+    config.cache.scope = :box; end;
 
   # Configure provisioners for this VM.
 
