@@ -12,9 +12,9 @@ $php_error_log = '/var/log/php/errors.log';
 
 if (is_file($php_error_log) && filesize($php_error_log)) {
     c::email(
-        $Config->contacts['admin']['email'],
-        'PHP Errors @ '.$Config->urls['hosts']['app'],
-        'PHP Errors @ '.$Config->urls['hosts']['app'],
+        $Config->©contacts['©admin']['©email'],
+        'PHP Errors @ '.$Config->©urls['©hosts']['©app'],
+        'PHP Errors @ '.$Config->©urls['©hosts']['©app'],
         [$php_error_log]
     );
     file_put_contents($php_error_log, '');
