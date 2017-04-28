@@ -9,4 +9,4 @@
 
 # Get password from `salt` & `pepper`.
 
-passgen --salt="${1:-}" --pepper="${2:-}";
+echo "$(passgen --salt="${1:-}" --pepper="${2:-}")";
