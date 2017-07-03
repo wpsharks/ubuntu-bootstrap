@@ -1,3 +1,7 @@
+## $v
+
+- Adding support for `/~ver-x.x.x/file.ext` rewrites for performance optimization.
+
 ## v170425.73362
 
 - Adding support for the [`vagrant-disksize` plugin](https://github.com/sprotheroe/vagrant-disksize).
