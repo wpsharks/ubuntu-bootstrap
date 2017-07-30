@@ -1,4 +1,4 @@
-## $v
+## v170730.10174
 
 - Adding support for Yoast SEO premium redirects via Nginx.
 - Adding support for app-specific Nginx configuration file additions in three different contexts: `main`, `http`, and `server`.
