@@ -1,6 +1,11 @@
 ## $v
 
+- Adding support for Yoast SEO premium redirects via Nginx.
+- Adding support for app-specific Nginx configuration file additions in three different contexts: `main`, `http`, and `server`.
 - Adding support for `/~ver-x.x.x/file.ext` rewrites for performance optimization.
+- Adding support for CDN proxied downloads via `cdn.*/dl`, `cdn.*/dls`, `cdn.*/download`, `cdn.*/downloads`, in addition to `cdn.*/software`, which already existed. In short, this release adds additional base paths that can be used to proxy downloads that live on a CDN.
+- Adding support for Apple Developer Certification files; now allowing `/.well-known/*` to be served publicly, even though it's a dotfile location. This particular dotfile location has become a standard for Apple verification files, among others.
+- Now using `$is_args` variable instead of hard-coded `?` in all Nginx configuration files.
 
 ## v170425.73362
 
