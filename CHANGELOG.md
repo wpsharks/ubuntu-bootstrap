@@ -1,4 +1,4 @@
-## $v
+## v170822.67290
 
 - Adding MIME type for `.wav` files.
 - Adding CORS handling for `OPTIONS` and other complex request types. This impacts requests made to `cors.*` and/or `api.*` host names only.
