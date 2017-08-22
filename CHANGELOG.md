@@ -1,3 +1,7 @@
+## $v
+
+- Enhancing CORS handling for `OPTIONS` and other complex request types.
+
 ## v170822.67290
 
 - Adding MIME type for `.wav` files.
