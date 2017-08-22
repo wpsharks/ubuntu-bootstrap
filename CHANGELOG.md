@@ -1,3 +1,8 @@
+## $v
+
+- Adding MIME type for `.wav` files.
+- Adding CORS handling for `OPTIONS` and other complex request types. This impacts requests made to `cors.*` and/or `api.*` host names only.
+
 ## v170730.10174
 
 - Adding support for Yoast SEO premium redirects via Nginx.
