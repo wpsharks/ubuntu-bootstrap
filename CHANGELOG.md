@@ -1,4 +1,4 @@
-## $v
+## v170823.41514
 
 - fix: Bug in Nginx modules following extras package added recently.
  Enhancing CORS handling for `OPTIONS` and other complex request types.
