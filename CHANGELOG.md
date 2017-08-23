@@ -1,3 +1,7 @@
+## $v
+
+- fix: Bug in Nginx modules following extras package added recently.
+
 ## v170823.30668
 
 - Enhancing CORS handling for `OPTIONS` and other complex request types.

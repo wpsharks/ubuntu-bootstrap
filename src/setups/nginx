@@ -11,7 +11,8 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
   # Config Ngnix web server.
 
   rm --force /etc/nginx/nginx.conf;
-  rm --force /etc/nginx/sites-enabled/default;
+  mv /etc/nginx/modules-enabled/* /etc/nginx/modules-available/;
+  mv /etc/nginx/sites-enabled/* /etc/nginx/sites-available/;
 
   mkdir --parents /etc/nginx/conf.d/main;
   mkdir --parents /etc/nginx/conf.d/http;
@@ -20,6 +21,9 @@ if [[ "${CFG_INSTALL_NGINX}" == 1 ]]; then
 
   ln --symbolic /bootstrap/src/nginx/.conf /etc/nginx/nginx.conf;
   cat /etc/nginx/~env.conf >> /etc/nginx/env.conf; rm /etc/nginx/~env.conf;
+
+  mv /etc/nginx/modules-available/50-mod-http-headers-more-filter.conf \
+    /etc/nginx/modules-enabled/50-mod-http-headers-more-filter.conf;
 
   ln --symbolic /bootstrap/src/nginx/conf.d/main/_defaults.conf /etc/nginx/conf.d/main/_defaults.conf;
   ln --symbolic /bootstrap/src/nginx/conf.d/http/_defaults.conf /etc/nginx/conf.d/http/_defaults.conf;
