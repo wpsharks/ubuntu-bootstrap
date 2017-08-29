@@ -1,3 +1,7 @@
+## $v
+
+- Upgrading to MariaDB 10.2 with support for JSON queries.
+
 ## v170823.41514
 
 - fix: Bug in Nginx modules following extras package added recently.
