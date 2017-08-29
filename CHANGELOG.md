@@ -1,4 +1,4 @@
-## $v
+## v170829.66239
 
 - Nginx config. file tweaks.
 - Upgrading to MariaDB 10.2 with support for JSON queries.
