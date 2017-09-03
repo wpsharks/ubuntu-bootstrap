@@ -57,7 +57,7 @@ tar \
   \
   ${data_to_export};
 
-if [[ -n "${CFG_AWS_TRANSFER_ACCESS_KEY_ID}" ]]; then
+if [[ -n "${CFG_AWS_TRANSFER_ACCESS_KEY_ID}" && -n "${CFG_AWS_TRANSFER_SECRET_ACCESS_KEY}" ]]; then
   sharefile-s3 /tmp/exported-data.tar.gz symmetric;
 else sharefile /tmp/exported-data.tar.gz symmetric; fi;
 
