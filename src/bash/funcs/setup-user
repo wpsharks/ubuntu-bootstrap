@@ -124,7 +124,7 @@ function setup-user() {
 
   if [[ "${user}" == 'root' ]]; then
     perl -i -0wpe 's/%%user%%/admin/ug' "${home_dir}"/.wp-cli/config.yml;
-  elif if-vagrant && [[ "${user}" == 'vagrant' || "${user}" == 'ubuntu' ]]; then
+  elif is-vagrant && [[ "${user}" == 'vagrant' || "${user}" == 'ubuntu' ]]; then
     perl -i -0wpe 's/%%user%%/admin/ug' "${home_dir}"/.wp-cli/config.yml;
   else # Use this particular username in all other cases.
     perl -i -0wpe 's/%%user%%/'"$(esc-regex-rv "${user}")"'/ug' "${home_dir}"/.wp-cli/config.yml;
