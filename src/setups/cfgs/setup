@@ -63,6 +63,13 @@ CFG_INSTALL_DOCKER='1'; in-docker && CFG_INSTALL_DOCKER='0';
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+CFG_INSTALL_OAUTH_KEYS='1';
+CFG_OAUTH_PUBLIC_KEY=/etc/bootstrap/ssl/client-public-key.pem;
+CFG_OAUTH_PRIVATE_KEY=/etc/bootstrap/ssl/client-private-key.pem;
+CFG_OAUTH_ENCRYPTION_KEY="$(passgen 32 | base64)";
+
+# ----------------------------------------------------------------------------------------------------------------------
+
 CFG_INSTALL_MYSQL='1';
 
 CFG_MYSQL_DB_HOST='127.0.0.1';

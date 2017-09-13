@@ -1,3 +1,11 @@
+## $v
+
+- Adding `CFG_INSTALL_OAUTH_KEYS`, see README for details.
+- Adding `CFG_OAUTH_PUBLIC_KEY`, see README for details.
+- Adding `CFG_OAUTH_PRIVATE_KEY`, see README for details.
+- Adding `CFG_OAUTH_ENCRYPTION_KEY`, see README for details.
+- Auto-extract public SSL keys when generating key-pairs.
+
 ## v170829.66239
 
 - Nginx config. file tweaks.

@@ -35,6 +35,20 @@ function cfgs-validate() {
       fi;
   done;
 
+  if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_OAUTH_KEYS}" == 1 ]]; then
+    for _cfg_key in \
+      'CFG_OAUTH_PUBLIC_KEY' \
+      'CFG_OAUTH_PRIVATE_KEY' \
+      'CFG_OAUTH_ENCRYPTION_KEY' \
+      ; do # None can be empty.
+
+        if [[ -z "${!_cfg_key}" ]]; then
+          cfg_key_empty="${_cfg_key}";
+          break; # Stop here.
+        fi;
+    done;
+  fi;
+
   if [[ -z "${cfg_key_empty}" && "${CFG_INSTALL_MYSQL}" == 1 ]]; then
     for _cfg_key in \
       'CFG_MYSQL_DB_HOST' \

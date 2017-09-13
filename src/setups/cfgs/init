@@ -66,6 +66,13 @@ export CFG_INSTALL_DOCKER; cfgs+=('CFG_INSTALL_DOCKER');
 
 # ----------------------------------------------------------------------------------------------------------------------
 
+export CFG_INSTALL_OAUTH_KEYS; cfgs+=('CFG_INSTALL_OAUTH_KEYS');
+export CFG_OAUTH_PUBLIC_KEY; cfgs+=('CFG_OAUTH_PUBLIC_KEY');
+export CFG_OAUTH_PRIVATE_KEY; cfgs+=('CFG_OAUTH_PRIVATE_KEY');
+export CFG_OAUTH_ENCRYPTION_KEY; cfgs+=('CFG_OAUTH_ENCRYPTION_KEY');
+
+# ----------------------------------------------------------------------------------------------------------------------
+
 export CFG_INSTALL_MYSQL; cfgs+=('CFG_INSTALL_MYSQL');
 
 export CFG_MYSQL_DB_HOST; cfgs+=('CFG_MYSQL_DB_HOST');

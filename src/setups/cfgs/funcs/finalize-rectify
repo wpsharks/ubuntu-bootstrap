@@ -13,6 +13,14 @@ function cfgs-finalize-rectify() {
 
   # --------------------------------------------------------------------------------------------------------------------
 
+  if [[ "${CFG_INSTALL_OAUTH_KEYS}" != 1 ]]; then
+    CFG_OAUTH_PUBLIC_KEY='';
+    CFG_OAUTH_PRIVATE_KEY='';
+    CFG_OAUTH_ENCRYPTION_KEY='';
+  fi;
+
+  # --------------------------------------------------------------------------------------------------------------------
+
   if [[ "${CFG_INSTALL_MYSQL}" != 1 ]]; then
     CFG_MYSQL_DB_HOST='';
     CFG_MYSQL_DB_PORT='';

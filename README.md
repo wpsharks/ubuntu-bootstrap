@@ -312,6 +312,13 @@ _**Tip:** You can learn more about how these work and what the defaults are by l
 
 ---
 
+- `--CFG_INSTALL_OAUTH_KEYS=0|1` Install OAuth keys?
+- `--CFG_OAUTH_PUBLIC_KEY=[file]` OAuth SSL public key file.
+- `--CFG_OAUTH_PRIVATE_KEY=[file]` OAuth SSL private key file.
+- `--CFG_OAUTH_ENCRYPTION_KEY=xxxxxxx...` OAuth 32-byte, base64-encoded key.
+
+---
+
 - `--CFG_INSTALL_MYSQL=0|1` Install MySQL?
 
 ---

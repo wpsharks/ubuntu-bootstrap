@@ -29,8 +29,8 @@ export OPENSSL_CSR_ALTNAMES="DNS:${CFG_ROOT_HOST},DNS:*.${CFG_ROOT_HOST}";
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Generate CA private key & certificate for this server.
-## Use existing if possible, because it is likely that we have saved these in our local keychain already.
-## Doing so allows for the CA to be marked as "Always Trust" in order to avoid self-signed errors.
+# Use existing if possible, because it is likely that we have saved these in our local keychain already.
+# Doing so allows for the CA to be marked as "Always Trust" in order to avoid self-signed errors.
 
 if [[ "${CFG_INSTALL_WS_CA_FILES}" == 1 ]]; then
   git clone git@github.com:websharks/server-ca-files.git --branch=master --depth=1 /tmp/ca-files;
@@ -81,7 +81,7 @@ openssl ca -gencrl \
 
 # Server CSR, private key, and certificate.
 
-## Generate CSR (and private key) for this server.
+## Generate CSR (and keys) for this server.
 
 openssl req \
   -nodes \
@@ -92,6 +92,10 @@ openssl req \
   -config /etc/ssl/bootstrap-openssl.cnf \
   -keyout /etc/bootstrap/ssl/server-private-key.pem \
   -out /etc/bootstrap/ssl/server-csr.pem;
+
+openssl rsa \
+  -in /etc/bootstrap/ssl/server-private-key.pem \
+  -pubout -out /etc/bootstrap/ssl/server-public-key.pem;
 
 ## Generate certificate file for this server using the above.
 
@@ -128,6 +132,10 @@ openssl req \
   -keyout /etc/bootstrap/ssl/client-private-key.pem \
   -out /etc/bootstrap/ssl/client-csr.pem;
 
+openssl rsa \
+  -in /etc/bootstrap/ssl/client-private-key.pem \
+  -pubout -out /etc/bootstrap/ssl/client-public-key.pem;
+
 ## Generate certificate file for clients using the above.
 
 openssl x509 \
@@ -151,10 +159,12 @@ openssl dhparam -dsaparam -out /etc/bootstrap/ssl/dhparam.pem 2048;
 
 # Symlink the official certificate files for this server.
 
-ln --symbolic /etc/bootstrap/ssl/server-private-key.pem /etc/bootstrap/ssl/official-private-key.pem;
 ln --symbolic /etc/bootstrap/ssl/server-crt.pem /etc/bootstrap/ssl/official-crt.pem;
 ln --symbolic /etc/bootstrap/ssl/server-ca-chain.pem /etc/bootstrap/ssl/official-chain.pem;
 ln --symbolic /etc/bootstrap/ssl/server-ca-fullchain.pem /etc/bootstrap/ssl/official-fullchain.pem;
+
+ln --symbolic /etc/bootstrap/ssl/server-public-key.pem /etc/bootstrap/ssl/official-public-key.pem;
+ln --symbolic /etc/bootstrap/ssl/server-private-key.pem /etc/bootstrap/ssl/official-private-key.pem;
 
 # ----------------------------------------------------------------------------------------------------------------------
 
