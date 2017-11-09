@@ -51,6 +51,7 @@ if [[ ! -f /bootstrap/.installed-version ]]; then
   # --------------------------------------------------------------------------------------------------------------------
 
   . /bootstrap/src/setups/git;
+  . /bootstrap/src/setups/svn;
   . /bootstrap/src/setups/zsh;
   . /bootstrap/src/setups/ssh;
   . /bootstrap/src/setups/mosh;
