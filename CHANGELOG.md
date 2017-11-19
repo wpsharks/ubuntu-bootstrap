@@ -1,4 +1,4 @@
-## $v
+## v171119.80953
 
 - Now installing NodeJs 8.x + NPM package manager.
 - Adding `svgo` command-line utility via NPM.
