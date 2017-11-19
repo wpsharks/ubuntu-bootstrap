@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
+npm install svgo --global;
 apt-get install pngquant --yes;

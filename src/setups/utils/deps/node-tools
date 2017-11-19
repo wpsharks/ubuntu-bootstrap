@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+curl https://deb.nodesource.com/setup_8.x --location | bash --;
+apt-get install nodejs --yes;

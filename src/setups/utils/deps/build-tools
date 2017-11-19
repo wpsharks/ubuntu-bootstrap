@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 apt-get install build-essential --yes;
-
 apt-get install g++ --yes;
 apt-get install cmake --yes;
 apt-get install libtool --yes;

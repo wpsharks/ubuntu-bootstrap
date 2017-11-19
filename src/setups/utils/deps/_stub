@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+. /bootstrap/src/setups/utils/deps/build-tools;
+. /bootstrap/src/setups/utils/deps/core-tools;
+. /bootstrap/src/setups/utils/deps/url-tools;
+. /bootstrap/src/setups/utils/deps/git-tools;
+. /bootstrap/src/setups/utils/deps/node-tools;

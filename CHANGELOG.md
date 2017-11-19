@@ -1,5 +1,7 @@
 ## $v
 
+- Now installing NodeJs 8.x + NPM package manager.
+- Adding `svgo` command-line utility via NPM.
 - Adding `CFG_INSTALL_OAUTH_KEYS`, see README for details.
 - Adding `CFG_OAUTH_PUBLIC_KEY`, see README for details.
 - Adding `CFG_OAUTH_PRIVATE_KEY`, see README for details.
