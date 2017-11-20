@@ -1,4 +1,4 @@
-## $v
+## v171120.10329
 
 - Add Inkspace as Imagick SVG delegate.
 
