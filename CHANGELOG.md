@@ -1,3 +1,7 @@
+## $v
+
+- Add Inkspace as Imagick SVG delegate.
+
 ## v171119.80953
 
 - Now installing NodeJs 8.x + NPM package manager.
