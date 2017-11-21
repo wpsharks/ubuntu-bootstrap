@@ -2,4 +2,3 @@
 
 npm install svgo --global;
 apt-get install pngquant --yes;
-apt-get install inkscape --yes;
