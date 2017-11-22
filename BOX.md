@@ -12,7 +12,7 @@ $ cd ~/vms/my.vm;
 
 ## WUB Packaging Flag (Vagrant Up)
 
-When you bring up a new VM, tell the WebSharks Ubuntu Bootstrap that you want to enter Packaging Mode. This is done from the command-line on the Host (i.e., from your own personal system) with environment variable `VM_4PKG=1`.
+When you bring up a new VM, tell the Ubuntu Bootstrap that you want to enter Packaging Mode. This is done from the command-line on the Host (i.e., from your own personal system) with environment variable `VM_4PKG=1`.
 
 ```bash
 $ cd ~/vms/my.vm;
@@ -181,7 +181,7 @@ $ cd ~/vms/my.vm;
 
 ## WUB Packaging Flag (Vagrant Up)
 
-When you bring up a new VM, tell the WebSharks Ubuntu Bootstrap that you want to enter Packaging Mode. This is done from the command-line on the Host (i.e., from your own personal system) with environment variable `VM_4PKG=1`.
+When you bring up a new VM, tell the Ubuntu Bootstrap that you want to enter Packaging Mode. This is done from the command-line on the Host (i.e., from your own personal system) with environment variable `VM_4PKG=1`.
 
 ```bash
 $ cd ~/vms/my.vm;

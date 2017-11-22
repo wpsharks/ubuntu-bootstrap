@@ -13,7 +13,7 @@ if [[ "$(whoami)" != 'root' ]]; then
 # Maybe create theme symlinks.
 
 if [[ -d /app/src/wp-content/themes ]]; then
-  for _wp_dir in /wp-projects /wp-personal /wp-business; do
+  for _wp_dir in /wp-{projects,personal,business}-*; do
 
     if [[ -d "${_wp_dir}"/themes ]]; then
       for _dir in "${_wp_dir}"/themes/*; do
@@ -35,7 +35,7 @@ fi; # Housekeeping.
 # Maybe create plugin symlinks.
 
 if [[ -d /app/src/wp-content/plugins ]]; then
-  for _wp_dir in /wp-projects /wp-personal /wp-business; do
+  for _wp_dir in /wp-{projects,personal,business}-*; do
 
     if [[ -d "${_wp_dir}"/plugins ]]; then
       for _dir in "${_wp_dir}"/plugins/*; do

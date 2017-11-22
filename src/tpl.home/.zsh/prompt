@@ -5,13 +5,13 @@
 
 function precmd() {
   PROMPT='%F{002}'"$(whoami)";
-  PROMPT+='%F{240}@%F{006}'"$(hostname --long)";
-  PROMPT+='%F{233}[%F{240}'"${PWD}"'%F{233}]'$'\n';
+  PROMPT+='%f@%F{006}'"$(hostname --long)";
+  PROMPT+='%f['"${PWD}"']'$'\n';
   PROMPT+='%F{002}$ ';
   PROMPT+='%f';
 
   RPROMPT='%F{002}'"$(whoami)";
-  RPROMPT+='%F{240}@%F{006}'"$(hostname --long)";
-  is-vm && RPROMPT+='%F{240} (VM)' || RPROMPT+='';
+  RPROMPT+='%f@%F{006}'"$(hostname --long)";
+  is-vm && RPROMPT+='%f (VM)' || RPROMPT+='';
   RPROMPT+='%f';
 };

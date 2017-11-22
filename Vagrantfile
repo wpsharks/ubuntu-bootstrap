@@ -45,14 +45,24 @@ Vagrant.configure(2) do |config|
   config.vm.synced_folder './src/app', '/app', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
   config.vm.synced_folder './src/app/src', '/app/src', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
 
-  if File.directory?(wp_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress'))
-    config.vm.synced_folder wp_projects_dir, '/wp-projects', mount_options: ['defaults', 'ro'];
+  wp_project_dirs = ( ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress') ).split(/[:;]+/).map(&:strip);
+  wp_personal_project_dirs = ( ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress') ).split(/[:;]+/).map(&:strip);
+  wp_business_project_dirs = ( ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUSINESS_PROJECTS_DIR"] || ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress') ).split(/[:;]+/).map(&:strip);
+
+  wp_project_dirs.each_with_index do |dir, i|
+    if File.directory?(dir)
+      config.vm.synced_folder dir, "/wp-projects-#{i}", mount_options: ['defaults', 'ro'];
+    end;
   end;
-  if File.directory?(wp_personal_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress'))
-    config.vm.synced_folder wp_personal_projects_dir, '/wp-personal', mount_options: ['defaults', 'ro'];
+  wp_personal_project_dirs.each_with_index do |dir, i|
+    if File.directory?(dir)
+      config.vm.synced_folder dir, "/wp-personal-#{i}", mount_options: ['defaults', 'ro'];
+    end;
   end;
-  if File.directory?(wp_business_projects_dir = ENV["WP_#{_VM_HOSTNAME_UC_VAR}_BUSINESS_PROJECTS_DIR"] || ENV['WP_BUSINESS_PROJECTS_DIR'] || File.expand_path('~/projects/business/wordpress'))
-    config.vm.synced_folder wp_business_projects_dir, '/wp-business', mount_options: ['defaults', 'ro'];
+  wp_business_project_dirs.each_with_index do |dir, i|
+    if File.directory?(dir)
+      config.vm.synced_folder dir, "/wp-business-#{i}", mount_options: ['defaults', 'ro'];
+    end;
   end;
 
   # Configure DNS using one of two compatible plugins.
@@ -66,6 +76,8 @@ Vagrant.configure(2) do |config|
   elsif Vagrant.has_plugin?('vagrant-hostsupdater')
     config.vm.network :private_network, ip: _static_ip;
     config.hostsupdater.aliases = [
+      'my.'+"#{config.vm.hostname}", 'dev.'+"#{config.vm.hostname}",
+      'io.'+"#{config.vm.hostname}", 'api.'+"#{config.vm.hostname}", 'cdn.'+"#{config.vm.hostname}",
       'sub.'+"#{config.vm.hostname}", 'sub1.'+"#{config.vm.hostname}", 'sub2.'+"#{config.vm.hostname}", 'sub3.'+"#{config.vm.hostname}",
       'php54.'+"#{config.vm.hostname}", 'php55.'+"#{config.vm.hostname}", 'php56.'+"#{config.vm.hostname}", 'php70.'+"#{config.vm.hostname}", 'php71.'+"#{config.vm.hostname}",
     ];
@@ -96,7 +108,7 @@ Vagrant.configure(2) do |config|
   # Message to display after a `vagrant up` is complete.
 
   if !File.file?(File.dirname(File.expand_path(__FILE__))+'/.installed-version')
-    config.vm.post_up_message = 'Welcome to the WebSharks Ubuntu Bootstrap :-)' + "\n" +
+    config.vm.post_up_message = 'Welcome to the Ubuntu Bootstrap :-)' + "\n" +
       'Type: `vagrant ssh` to log into the VM. Then type: `sudo /bootstrap/src/installer` to install software.';
   end;
 end;

@@ -1,6 +1,9 @@
-## v171120.10329
+## $v
 
-- Add Inkspace as Imagick SVG delegate.
+- Remove Inkscape in favor of RSVG.
+- Add support for delimited WordPress directory shares.
+- Improve README file; better explain WordPress directory structure.
+- Fix Zsh prompt, use only 16 colors for maximum compatibility.
 
 ## v171119.80953
 
@@ -208,7 +211,7 @@
 
 - Moved WordPress installation scripts into `src/wordpress/install` and `src/wordpress/install-symlinks` — making them more portable. This way they can also be called from outside of the bootstrap installer when necessary.
 
-- Moved VM `/wordpress` mount (for symlinks) to `/wp-projects` instead. This should not have any impact on existing WordPress symlink customizations via `~/.profile` though, as it only impacts the location of the mount on the VM — not in your local file system. The reason for this change was to make room for WordPress itself, which may eventually live under `/wordpress` (on the VM) at some point in a future release of the WebSharks Ubuntu Bootstrap. The README for this repo has been updated to reflect this new location.
+- Moved VM `/wordpress` mount (for symlinks) to `/wp-projects` instead. This should not have any impact on existing WordPress symlink customizations via `~/.profile` though, as it only impacts the location of the mount on the VM — not in your local file system. The reason for this change was to make room for WordPress itself, which may eventually live under `/wordpress` (on the VM) at some point in a future release of the Ubuntu Bootstrap. The README for this repo has been updated to reflect this new location.
 
 - Improving the default WP-CLI configuration file template. It now defines `--user`, which is set to the current user's username, instead of always the default `admin` value as before. This means that when you use WP-CLI with the default configuration file template created by the WUB, you're logged into WordPress as the user you SSH into the VM with. However, there are exceptions. If you log into the VM as user `vagrant` (e.g., `$ vagrant ssh`) or as `root` (e.g., `$ sudo ...`), a default user of `admin` still applies as before. The reason for this change is that it now makes it possible to create a user account on the VM, SSH into the VM as that user, and use WP-CLI as that matching user in WordPress, by default. This works so long as the user you're logged into the VM with is not `vagrant` or `root`. Not necessarily recommended, but now possible :-)
 
