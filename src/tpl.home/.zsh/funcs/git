@@ -1,8 +1,65 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# `hub` alias for GitHub.
+# Git (hub) utils.s
 
 function git() {
   hub "${@}";
 };
+
+function git-tree-dir() {
+  local dir=''; # Initialize.
+  dir="$(git rev-parse --show-toplevel 2>/dev/null)";
+
+  if [[ -z "${dir}" || ! -d "${dir}" ]]; then
+    return 1; # Error status.
+  fi;
+  echo "${dir}";
+};
+
+function g() { git "${@}"; };
+function gk() { gitk "${@}"; };
+
+function gi() { git init "${@}"; };
+
+function gs() { git status "${@}"; };
+function gls() { git ls-files "${@}"; };
+
+function gt() { git tag "${@}"; };
+function gb() { git branch "${@}"; };
+function gco() { git checkout "${@}"; };
+
+function ga() { git add "${@}"; };
+function gaa() { git add --all "${@}"; };
+function grm() { git rm "${@}"; };
+
+function gst() { git stash "${@}"; };
+function gcm() { git commit -v "${@}"; };
+function grs() { git reset "${@}"; };
+
+function gp() { git pull "${@}"; };
+function gf() { git fetch "${@}"; };
+function gpush() { git push "${@}"; };
+
+function gm() { git merge "${@}"; };
+function grb() { git rebase "${@}"; };
+
+function gre() { git remote "${@}"; };
+function gsm() { git submodule "${@}"; };
+
+function gc8() { git create "${@}"; };
+function gfk() { git fork "${@}"; };
+function gpr() { git pull-request "${@}"; };
+function gbr() { git browse -- "${@}"; };
+
+function gc() { git clone --recurse-submodules "${@}"; };
+function gc1b() { git clone --recurse-submodules --depth=1 --branch "${@}"; };
+
+function gd() { git diff "${@}"; };
+function gdc() { git diff --cached "${@}"; };
+
+function gl() { git log "${@}"; }; # Standard `git log`.
+function glo() { git log --abbrev-commit --pretty=oneline --decorate --graph --all "${@}"; };
+function glo3() { git log --abbrev-commit --pretty=oneline --decorate --graph --all --since=3.months "${@}"; };
+
+function gfc() { date +'%s' > "$(git-tree-dir)"/.gitchange; };

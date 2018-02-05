@@ -1,0 +1,3 @@
+[global]
+store-passwords = yes
+store-auth-creds = yes

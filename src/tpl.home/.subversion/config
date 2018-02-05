@@ -1,0 +1,203 @@
+[helpers]
+diff-cmd = colordiff
+
+[miscellany]
+enable-auto-props = yes
+global-ignores = #* .#* ._* .~* *.log *~ .*~ *.bak *.rej *.orig *.patch *.diff .vagrant/ typings/ .idea/ *.sublime-project *.sublime-workspace vendor/ node_modules/ jspm_packages/ bower_components/ .sass-cache/ .elasticbeanstalk/ *.ctags *.tags .git/ .svn/ _svn/ CVS/ .cvsignore .bzr/ .bzrignore .hg/ .hgignore SCCS/ RCS/ $RECYCLE.BIN/ Desktop.ini Thumbs.db ehthumbs.db .AppleDB .AppleDouble .AppleDesktop .com.apple.timemachine.donotpresent 'Network Trash Folder' 'Temporary Items' .LSOverride .Spotlight-V100 .VolumeIcon.icns .TemporaryItems .fseventsd .DS_Store .Trashes .apdisk Icon?
+
+[auto-props]
+# Text
+
+*.md = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.txt = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Logs
+
+*.log = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# YAML
+
+*.yaml = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.yml = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Properties.
+
+*.properties = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.props = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Translations
+
+*.pot = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# SQL
+
+*.sql = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.sqlite = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Templates
+
+*.liq = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.liquid = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.tmpl = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.tpl = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Config
+
+*.admins = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.cfg = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.cnf = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.conf = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.htaccess = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.htaccess-apache = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.htpasswd = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.ini = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# CSS
+
+*.css = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.css.map = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.less = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.sass = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.scss = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# JavaScript
+
+*.babelrc = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.js = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.js.map = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.json = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.json5 = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.jsx = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.npmrc = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.ts = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.tsx = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Applescript
+
+*.applescript = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.scpt = svn:mime-type=application/octet-stream
+
+# PHP
+
+*.inc = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.php = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.php4 = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.php5 = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.php6 = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.phps = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.x-php = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# ASP
+
+*.asp = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.aspx = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Perl
+
+*.cgi = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.pl = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# HTML/XML
+
+*.dtd = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.hta = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.htc = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.htm = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.html = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.shtml = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.xhtml = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.xml = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.xsd = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.xsl = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.xslt = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+
+# Documents
+
+*.csv = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.doc = svn:mime-type=application/msword
+*.docx = svn:mime-type=application/vnd.openxmlformats-officedocument.wordprocessingml.document
+*.odt = svn:mime-type=application/vnd.oasis.opendocument.text
+*.pdf = svn:mime-type=application/pdf
+*.pptx = svn:mime-type=application/vnd.openxmlformats-officedocument.presentationml.presentation
+*.rtf = svn:mime-type=application/rtf
+*.tsv = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.xls = svn:mime-type=application/vnd.ms-excel
+*.xlsx = svn:mime-type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+# Images
+
+*.ai = svn:mime-type=application/postscript
+*.bmp = svn:mime-type=image/x-ms-bmp
+*.eps = svn:mime-type=application/postscript
+*.gif = svn:mime-type=image/gif
+*.ico = svn:mime-type=image/x-icon
+*.jpe = svn:mime-type=image/jpeg
+*.jpeg = svn:mime-type=image/jpeg
+*.jpg = svn:mime-type=image/jpeg
+*.png = svn:mime-type=image/png
+*.psd = svn:mime-type=image/photoshop
+*.pspimage = svn:mime-type=image/x-pspimage
+*.svg = svn:mime-type=image/svg+xml;; charset=utf-8; svn:eol-style=native
+*.tif = svn:mime-type=image/tiff
+*.tiff = svn:mime-type=image/tiff
+*.webp = svn:mime-type=image/webp
+
+# Audio
+
+*.mid = svn:mime-type=audio/midi
+*.midi = svn:mime-type=audio/midi
+*.mp3 = svn:mime-type=audio/mpeg
+*.ogg = svn:mime-type=audio/ogg
+*.wav = svn:mime-type=audio/wav
+*.wma = svn:mime-type=audio/x-ms-wma
+
+# Video
+
+*.avi = svn:mime-type=video/x-msvideo
+*.blend = svn:mime-type=application/x-blender
+*.fla = svn:mime-type=application/x-fla
+*.flv = svn:mime-type=video/x-flv
+*.mov = svn:mime-type=video/quicktime
+*.mp4 = svn:mime-type=video/mp4
+*.mpeg = svn:mime-type=video/mpeg
+*.mpg = svn:mime-type=video/mpeg
+*.ogv = svn:mime-type=video/ogv
+*.qt = svn:mime-type=video/quicktime
+*.swf = svn:mime-type=application/x-shockwave-flash
+*.webm = svn:mime-type=video/webm
+*.wmv = svn:mime-type=video/x-ms-wmv
+
+# Fonts
+
+*.eot = svn:mime-type=application/vnd.ms-fontobject
+*.otf = svn:mime-type=application/font-otf
+*.ttf = svn:mime-type=application/font-ttf
+*.woff = svn:mime-type=application/font-woff
+
+# Archives
+
+*.7z = svn:mime-type=application/x-7z-compressed
+*.dmg = svn:mime-type=application/x-apple-diskimage
+*.gtar = svn:mime-type=application/x-gtar
+*.gz = svn:mime-type=application/gzip
+*.iso = svn:mime-type=application/x-iso
+*.jar = svn:mime-type=application/java-archive
+*.phar = svn:mime-type=application/x-phar
+*.rar = svn:mime-type=application/x-rar-compressed
+*.tar = svn:mime-type=application/tar
+*.tgz = svn:mime-type=application/gzip
+*.zip = svn:mime-type=application/zip
+
+# Other
+
+*.bash = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.bat = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.bin = svn:mime-type=application/octet-stream
+*.class = svn:mime-type=application/octet-stream
+*.com = svn:mime-type=application/octet-stream
+*.dll = svn:mime-type=application/octet-stream
+*.exe = svn:mime-type=application/octet-stream
+*.pem = svn:mime-type=application/x-x509-ca-cert;; charset=utf-8; svn:eol-style=native
+*.sh = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native
+*.so = svn:mime-type=application/octet-stream
+*.zsh = svn:mime-type=text/plain;; charset=utf-8; svn:eol-style=native

@@ -14,8 +14,7 @@ function git-repo-github-origin-parse() {
     response="$(echo "${owner_slug}" | perl -wpe 's/^.+?\///u')"; fi;
 
   if [[ -z "${response}" ]]; then
-    echo 'Failed to parse '"${parse}"'.';
-    exit 1; fi; # Error status;
-
-  echo "${response}"; # Return parsed response.
+    return 1; # Error status.
+  fi;
+  echo "${response}";
 };

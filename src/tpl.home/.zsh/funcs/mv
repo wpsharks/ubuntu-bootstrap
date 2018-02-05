@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# MV utils.
+
+function mv() {
+  :: mv --interactive "${@}";
+};

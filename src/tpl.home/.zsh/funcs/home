@@ -4,5 +4,5 @@
 # Home directory.
 
 function home() {
-  builtin cd ~/ && ls;
+  cd ~/;
 };

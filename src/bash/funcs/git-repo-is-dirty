@@ -5,5 +5,7 @@
 function git-repo-is-dirty() {
   if [[ -n "$(git status --short 2>/dev/null)" ]]; then
     return 0; # Yes, the repo is dirty.
-  else return 1; fi; # Clean.
+  else
+    return 1; # Not dirty.
+  fi;
 };

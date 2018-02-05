@@ -4,5 +4,5 @@
 # Up one directory.
 
 function up() {
-  builtin cd ../ && ls;
+  cd ../;
 };

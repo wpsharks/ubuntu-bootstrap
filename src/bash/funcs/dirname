@@ -8,15 +8,14 @@ function dirname() {
   local realpath="${3:-}";
 
   if [[ -z "${times}" || "${times}" -lt 1 ]]; then
-    times=1; fi; # Must be >= `1`.
-
+    times=1; # Must be >= `1`.
+  fi;
   if [[ "${realpath}" == '--realpath' ]]; then
-    dirname="$(realpath "${dirname}")"; fi;
-
+    dirname="$(realpath "${dirname}")";
+  fi;
   while [[ "${times}" -gt 0 ]]; do
     dirname="$(command dirname "${dirname}")";
     ((times--));
   done;
-
   echo "${dirname}";
 };

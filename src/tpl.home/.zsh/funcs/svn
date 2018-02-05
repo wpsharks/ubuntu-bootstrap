@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# SVN utils.
+
+function svn() {
+  :: svn "${@}";
+};
+
+function svn-tree-dir() {
+  local dir=''; # Initialize.
+  dir="$(pwd)"; # Current directory.
+
+  while [[ -n "${dir}" && "${dir}" != / && "${dir}" != . && ! -d "${dir}"/.svn ]]; do
+    dir="$(dirname "${dir}")";
+  done;
+  if [[ -z "${dir}" || ! -d "${dir}"/.svn ]]; then
+    return 1; # Error status.
+  fi;
+  echo "${dir}";
+};
+
+function s() { svn "${@}"; };
+
+function sls() { svn list "${@}"; };
+function ss() { svn status "${@}"; };
+
+function sa() { svn add "${@}"; };
+function saa() { svn add --force . "${@}"; };
+function srm() { svn remove --force-interactive "${@}"; };
+function smv() { svn move --force-interactive "${@}"; };
+function scy() { svn copy "${@}"; };
+
+function sup() { svn update "${@}"; };
+function scommit() { svn commit "${@}"; };
+
+function sm() { svn merge "${@}"; };
+function sw() { svn switch "${@}"; };
+function sco() { svn checkout "${@}"; };
+
+function sd() { svn diff "${@}"; };
+function sp() { svn patch "${@}"; };
+function srv() { svn revert "${@}"; };
+function srva() { svn revert --recursive . "${@}"; };
+
+function sc() { svn cat "${@}"; };
+function sl() { svn log "${@}"; };
+
+function spg() { svn propget "${@}"; };
+function sps() { svn propset "${@}"; };
+function spl() { svn proplist "${@}"; };
+
+function sfc() { date +'%s' > "$(svn-tree-dir)"/.svnchange; };
+function sig() { svn propset svn:global-ignores --file ~/.subversion/ignore .; };

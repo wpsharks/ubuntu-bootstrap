@@ -20,11 +20,15 @@ function version-compare() {
     # See: <http://jas.xyz/1PA7b8e>
   fi;
 };
+
 function version-compare-php() {
   local v1="'${1:-}'";
   local op="'${2:-}'";
   local v2="'${3:-}'";
 
-  if [[ "$(php -r 'echo (int)version_compare('"${v1}"', '"${v2}"', '"${op}"');')" == 1 ]];
-    then return 0; else return 1; fi;
+  if [[ "$(php -r 'echo (int)version_compare('"${v1}"', '"${v2}"', '"${op}"');')" == 1 ]]; then
+    return 0;
+  else
+    return 1;
+  fi;
 };

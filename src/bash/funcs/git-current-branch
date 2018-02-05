@@ -7,8 +7,7 @@ function git-current-branch() {
   branch="$(git symbolic-ref --short --quiet HEAD 2>/dev/null)";
 
   if [[ -z "${branch}" ]]; then
-    echo 'Failed to acquire current git branch.';
-    exit 1; fi; # Error status;
-
-  echo "${branch}"; # Return current branch name.
+    return 1; # Error status.
+  fi;
+  echo "${branch}";
 };

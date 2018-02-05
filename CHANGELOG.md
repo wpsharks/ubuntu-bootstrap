@@ -1,3 +1,12 @@
+## $v
+
+- Enhance ignore patterns.
+- Optimize Zsh for performance.
+- Add `.subversion` config files.
+- Enhance Nginx MIME types.
+- Enhance Apache MIME types.
+- Use rebase pull strategy.
+
 ## v171122.35122
 
 - Remove Inkscape in favor of RSVG.

@@ -9,11 +9,17 @@ setopt emacs; # See: <http://jas.xyz/1GwFQUF>
 # Extended pattern matching operators.
 setopt extended_glob; # See: <http://jas.xyz/1Re99Pf>
 
-# Converts `cd arg` to `cd ~arg` in some cases.
-setopt cdable_vars; # See: <http://jas.xyz/1FOdYee>
-
 # Allow comments on the command line when experimenting.
 setopt interactive_comments; # See: <http://jas.xyz/1Re99Pf>
+
+# --- Directory Stack Options --- #
+
+# See: <https://jas.xyz/2Ac4dZb>
+DIRSTACKSIZE=10           # Max directories in history stack.
+setopt auto_cd;           # Converts `arg` to `cd arg` in some cases.
+setopt cdable_vars;       # Converts `cd arg` to `cd ~arg` in some cases.
+setopt auto_pushd;        # Make `cd` push old directory onto stack.
+setopt pushd_ignore_dups; # Don’t push multiple copies of the same directory.
 
 # --- Colors & Syntax Highlighting --- #
 
@@ -23,13 +29,21 @@ eval "$(dircolors /usr/local/src/dircolors-solarized/dircolors.ansi-dark)";
 # Syntax highlightingl e.g., `brew install zsh-syntax-highlighting`.
 . /usr/local/src/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh;
 
-# --- Auto-Complete Options --- #
+# --- Auto Completion Options --- #
 
 # Add completions directory to `${fpath}`.
 fpath=(/usr/local/src/zsh-completions/src ${fpath});
 
-# Initialize completion & dependencies in Zsh.
-autoload -Uz compinit; compinit; zmodload -i zsh/complist;
+# Initialize auto-complete, see: <https://jas.xyz/2n1wH53>
+check_zcompdump=0; autoload -Uz compinit;
+for _ in ~/.zcompdump*(.Nmh+24); do check_zcompdump=1; break; done;
+if [[ "${check_zcompdump}" == 1 ]]; then compinit && compdump; else compinit -C; fi;
+
+# Load menu functionality for auto-completion.
+zmodload -i zsh/complist; # See: <https://jas.xyz/2zA6zDX>
+
+# Insert first ambigous entry before opening menu.
+setopt menu_complete; # See: <http://jas.xyz/1FOec52>
 
 # CaSe-insensitive (all), partial-word, and then substring completion.
 zstyle ':completion:*' matcher-list 'M:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*';
@@ -44,12 +58,8 @@ zstyle ':completion:*:cd:*' tag-order 'local-directories directory-stack path-di
 zstyle ':completion::complete:*' use-cache true;
 zstyle ':completion::complete:*' cache-path ~/.cache/zcomp;
 
-# shellcheck disable=SC2154
 # Colors to match-up with directory listings.
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}";
-
-# Insert first ambigous entry before opening menu.
-setopt menu_complete; # See: <http://jas.xyz/1FOec52>
 
 # Select (highlight) items in menu.
 zstyle ':completion:*' menu select;
@@ -76,8 +86,7 @@ bindkey '^[[Z' reverse-menu-complete; # See: <http://jas.xyz/1cXKgYP>
 
 # --- History-Related Options --- #
 
-# History settings. See: <http://jas.xyz/1JPkSBF>
-# shellcheck disable=SC2034
+# See: <http://jas.xyz/1JPkSBF>
 SAVEHIST=10000;                   # Max history lines in memory.
 HISTSIZE=10000;                   # Max history lines in file.
 HISTFILE=~/.zshistory;            # Where to store history lines.
@@ -94,13 +103,7 @@ setopt hist_reduce_blanks;        # Remove superfluous blanks before recording e
 setopt hist_verify;               # Don't execute immediately upon history expansion.
 setopt hist_beep;                 # Beep when accessing nonexistent history.
 
-# See: <http://jas.xyz/1NERlcE>
-# See: <http://jas.xyz/1BTykgS>
-# shellcheck disable=SC2034
-DEBIAN_PREVENT_KEYBOARD_CHANGES='yes';
+# ↑↓ arrows. See: <http://jas.xyz/1BTykgS>
 bindkey '^[[A' history-beginning-search-backward;
 bindkey '^[[B' history-beginning-search-forward;
-
-# --- Rename; ZSH style! --- #
-
-autoload -U zmv; # See: <http://jas.xyz/1Kvnov0>
+DEBIAN_PREVENT_KEYBOARD_CHANGES='yes';

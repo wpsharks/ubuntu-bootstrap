@@ -4,6 +4,7 @@
 
 function git-branch-exists() {
   if [[ -z "${1:-}" ]]; then
-    return 1; fi; # Not possible.
+    return 1; # Not possible.
+  fi;
   git rev-parse --verify --quiet "${1}" &>/dev/null;
 };

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# RM utils.
+
+function rm() {
+  :: rm --interactive "${@}";
+};

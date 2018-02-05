@@ -8,8 +8,7 @@ function git-github-issue-ref() {
   local issue="${3:-}";
 
   if [[ -z "${owner}" || -z "${slug}" || -z "${issue}" || ! "${issue}" =~ ^[1-9][0-9]*$ ]]; then
-    echo 'Invalid input parameters. Unable to generate GitHub issue ref.';
-    exit 1; fi; # Error status.
-
+    return 1; # Error status.
+  fi;
   echo "${owner}"'/'"$(echo "${slug}" | perl -wpe 's/\-pro$//ui')"'#'"${issue}";
 };

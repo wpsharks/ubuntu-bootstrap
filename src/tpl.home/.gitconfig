@@ -10,31 +10,23 @@
   editor = vim
 [push]
   default = simple
+[pull]
+	rebase = true
+[color]
+  ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
 [credential]
   helper = store
 [alias]
-  s = status
-  df = diff
-  dc = diff --cached
-
-  br = branch
-  co = checkout
-  mas = checkout master
-  dev = checkout dev
-
-  cl = clone
-  clr = clone --recurse-submodules
-
-  lr = ls-remote --heads
-  lrt = ls-remote --tags
-
-	fs = !phing feature-start -D
-	ff = !phing feature-finish -D
-
-  lg = log --since=3.months --abbrev-commit --pretty=oneline --decorate --graph --all
-
+  # See: `~/.zsh/funcs/git` for others.
+	fs = "!f() { phing feature-start -D issue=\"$1\"; }; f"
+  ff = "!f() { phing feature-finish -D force=false; }; f"
+  fff = "!f() { phing feature-finish -D force=true; }; f"
   aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
 [filter "lfs"]
+  required = true
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge --skip %f
-	required = true

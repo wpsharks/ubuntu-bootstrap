@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# Prev directory.
+# Vim shortcut/alias.
 
-function back() {
-  cd -;
+function v() {
+  vim "${@}";
 };

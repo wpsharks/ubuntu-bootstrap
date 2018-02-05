@@ -4,5 +4,5 @@
 # Change directory.
 
 function cd() {
-  builtin cd "${@}" && ls;
+  :: cd "${@}" && ls;
 };

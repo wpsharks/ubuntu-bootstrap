@@ -14,6 +14,7 @@
 # Backups
 
 *~
+.*~
 *.bak
 
 # Patches
@@ -75,6 +76,7 @@ bower_components/
 
 .svn/
 _svn/
+.svnignore
 
 CVS/
 .cvsignore
@@ -112,7 +114,6 @@ Temporary Items
 .Trashes
 .apdisk
 Icon?
-!Icons
 ._*
 
 # ----------------------------------------------------------------------------------------------------------------------

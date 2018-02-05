@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Directory trees.
+
+function tree() {
+  :: tree -aFpugh --dirsfirst "${@}";
+};
+
+function tree1() { tree -L 1 "${@}"; };
+function tree2() { tree -L 2 "${@}"; };
+function tree3() { tree -L 3 "${@}"; };
+function tree4() { tree -L 4 "${@}"; };
+function tree5() { tree -L 5 "${@}"; };

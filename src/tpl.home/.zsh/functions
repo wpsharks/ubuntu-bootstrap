@@ -2,7 +2,6 @@
 # For sheckcheck ↑ only.
 
 # Function includes.
-# shellcheck disable=SC1090
 
 for _file in ~/.zsh/funcs/**; do
   [[ -f "${_file}" ]] && . "${_file}";

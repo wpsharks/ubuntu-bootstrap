@@ -7,8 +7,7 @@ function git-tree-dir() {
   dir="$(git rev-parse --show-toplevel 2>/dev/null)";
 
   if [[ -z "${dir}" || ! -d "${dir}" ]]; then
-    echo 'Failed to acquire git tree directory.';
-    exit 1; fi; # Error status;
-
-  echo "${dir}"; # Return tree directory.
+    return 1; # Error status.
+  fi;
+  echo "${dir}";
 };

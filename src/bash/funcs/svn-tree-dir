@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# SVN tree directory.
+
+function svn-tree-dir() {
+  local dir=''; # Initialize.
+  dir="$(pwd)"; # Current directory.
+
+  while [[ -n "${dir}" && "${dir}" != / && "${dir}" != . && ! -d "${dir}"/.svn ]]; do
+    dir="$(dirname "${dir}")";
+  done;
+  if [[ -z "${dir}" || ! -d "${dir}"/.svn ]]; then
+    return 1; # Error status.
+  fi;
+  echo "${dir}";
+};

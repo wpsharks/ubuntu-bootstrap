@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # For sheckcheck ↑ only.
 
-# Grep w/ better defaults.
+# Grep utils.
 
 function grep() {
-  command grep --perl-regexp --color=auto "${@}";
+  :: grep --perl-regexp --color=auto "${@}";
 };

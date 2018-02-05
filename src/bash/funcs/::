@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Command utils.
+
+function ::() {
+  if [[ "${1:-}" == cd || "${1:-}" == dirs ]]; then
+    builtin "${@}";
+  else
+    command "${@}";
+  fi;
+};

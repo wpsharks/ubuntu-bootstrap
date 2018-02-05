@@ -42,8 +42,8 @@ Vagrant.configure(2) do |config|
   # Mount shared/synced directories on the VM.
 
   config.vm.synced_folder '.', '/vagrant', mount_options: ['defaults'];
-  config.vm.synced_folder './src/app', '/app', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
-  config.vm.synced_folder './src/app/src', '/app/src', mount_options: ['defaults', 'uid=www-data', 'gid=www-data', 'umask=002'];
+  config.vm.synced_folder './src/app', '/app', mount_options: ['defaults', 'uid=33', 'gid=33', 'umask=002'];
+  config.vm.synced_folder './src/app/src', '/app/src', mount_options: ['defaults', 'uid=33', 'gid=33', 'umask=002'];
 
   wp_project_dirs = ( ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PROJECTS_DIR"] || ENV['WP_PROJECTS_DIR'] || File.expand_path('~/projects/wordpress') ).split(/[:;]+/).map(&:strip);
   wp_personal_project_dirs = ( ENV["WP_#{_VM_HOSTNAME_UC_VAR}_PERSONAL_PROJECTS_DIR"] || ENV['WP_PERSONAL_PROJECTS_DIR'] || File.expand_path('~/projects/personal/wordpress') ).split(/[:;]+/).map(&:strip);

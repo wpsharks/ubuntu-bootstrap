@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# For sheckcheck ↑ only.
-
-# Reset SSH known hosts.
-
-function sshr() {
-  rm --force ~/.ssh/known_hosts;
-};
