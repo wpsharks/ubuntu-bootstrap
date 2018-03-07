@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# For sheckcheck ↑ only.
+
+# Docker shortcut/alias.
+
+function d() {
+  docker "${@}";
+};
+
+function dcp() {
+  docker-compose "${@}";
+};
+
+function dwp() {
+  local name="${1:-}";
+  local container='';
+
+  if [[ "${name/_wordpress_}" != "${name}" ]]; then
+    container="${name}"; # A full container name.
+  else
+    container="${name}_wordpress_1";
+  fi;
+
+  # Run WP-CLI on docker.
+
+  docker run -it --rm \
+    --volumes-from "${container}" \
+    --network container:"${container}" \
+    wordpress:cli \
+    "${@:2}";
+};
