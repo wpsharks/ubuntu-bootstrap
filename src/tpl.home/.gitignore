@@ -40,6 +40,10 @@ typings/
 *.sublime-project
 *.sublime-workspace
 
+# VS Code
+
+*.code-workspace
+
 # Vendor
 
 vendor/

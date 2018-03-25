@@ -3,7 +3,7 @@ diff-cmd = colordiff
 
 [miscellany]
 enable-auto-props = yes
-global-ignores = #* .#* ._* .~* *.log *~ .*~ *.bak *.rej *.orig *.patch *.diff .vagrant/ typings/ .idea/ *.sublime-project *.sublime-workspace vendor/ node_modules/ jspm_packages/ bower_components/ .sass-cache/ .elasticbeanstalk/ *.ctags *.tags .git/ .svn/ _svn/ CVS/ .cvsignore .bzr/ .bzrignore .hg/ .hgignore SCCS/ RCS/ $RECYCLE.BIN/ Desktop.ini Thumbs.db ehthumbs.db .AppleDB .AppleDouble .AppleDesktop .com.apple.timemachine.donotpresent 'Network Trash Folder' 'Temporary Items' .LSOverride .Spotlight-V100 .VolumeIcon.icns .TemporaryItems .fseventsd .DS_Store .Trashes .apdisk Icon?
+global-ignores = #* .#* ._* .~* *.log *~ .*~ *.bak *.rej *.orig *.patch *.diff .vagrant/ typings/ .idea/ *.sublime-project *.sublime-workspace *.code-workspace vendor/ node_modules/ jspm_packages/ bower_components/ .sass-cache/ .elasticbeanstalk/ *.ctags *.tags .git/ .svn/ _svn/ CVS/ .cvsignore .bzr/ .bzrignore .hg/ .hgignore SCCS/ RCS/ $RECYCLE.BIN/ Desktop.ini Thumbs.db ehthumbs.db .AppleDB .AppleDouble .AppleDesktop .com.apple.timemachine.donotpresent 'Network Trash Folder' 'Temporary Items' .LSOverride .Spotlight-V100 .VolumeIcon.icns .TemporaryItems .fseventsd .DS_Store .Trashes .apdisk Icon?
 
 [auto-props]
 # Text

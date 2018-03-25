@@ -234,6 +234,10 @@ typings/ export-ignore
 *.sublime-project export-ignore
 *.sublime-workspace export-ignore
 
+# VS Code
+
+*.code-workspace export-ignore
+
 # SASS
 
 .sass-cache/ export-ignore
